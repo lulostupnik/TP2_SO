@@ -1,5 +1,5 @@
 #RUN in CONTAINER
-#pvs-studio-analyzer credentials "PVS-Studio Free" "FREE-FREE-FREE-FREE"
+pvs-studio-analyzer credentials "PVS-Studio Free" "FREE-FREE-FREE-FREE"
 
 
 #find . -name "*.c" | while read line; do sed -i '1s/^\(.*\)$/\/\/ This is a personal academic project. Dear PVS-Studio, please check it.\n\1/' "$line"; done
@@ -20,3 +20,5 @@ rm PVS-Studio.log
 #rm */PVS-Studio.log
 #rm Bootloader/BMFS/PVS-Studio.log
 #rm Userland/shellCodeModule/PVS-Studio.log
+rm .config/ -r
+rm .bash_history -r
