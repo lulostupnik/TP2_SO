@@ -313,12 +313,8 @@ static void initialize_map(){
 static void play_arcade_song() {
     // Frequencies for the notes in the song.
     uint32_t C4 = 262;
-    uint32_t D4 = 294;
     uint32_t E4 = 330;
-    uint32_t F4 = 349;
     uint32_t G4 = 392;
-    uint32_t A4 = 440;
-    uint32_t B4 = 494;
     uint32_t C5 = 523;
 
     // Duration of each note in milliseconds.

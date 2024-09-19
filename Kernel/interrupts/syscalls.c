@@ -16,9 +16,9 @@ extern uint64_t regs_shot_available;
 
 int64_t sysCallHandler(Registers * regs) {
     switch(regs->rax){
-        case 0: return sys_read(regs->rdi, (char *) regs->rsi, regs->rdx); break;
+        case 0: return sys_read(regs->rdi, (uint16_t *) regs->rsi, regs->rdx); break;
         case 1: return sys_write(regs->rdi, (char *) regs->rsi, regs->rdx); break;
-        case 2: return sys_get_register_snapshot((RegisterSet *) regs->rdi); break;
+        case 2: return sys_get_register_snapshot((Snapshot *) regs->rdi); break;
         case 3: return sys_beep(regs->rdi, regs->rsi); break;
         case 4: return sys_set_font_size(regs->rdi); break;
         case 5: return sys_clear_screen(); break;
@@ -28,7 +28,7 @@ int64_t sysCallHandler(Registers * regs) {
         case 9: return sys_set_mode(regs->rdi); break;
         case 10: return sys_get_screen_information((ScreenInformation *) regs->rdi); break;
         case 11: return sys_nano_sleep(regs->rdi); break;
-        case 12: return sys_get_time(regs->rdi);break;
+        case 12: return sys_get_time((time_struct*)regs->rdi);break;
         default: return NOT_VALID_SYS_ID;
 
     }

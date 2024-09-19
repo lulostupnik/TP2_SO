@@ -53,7 +53,7 @@ static void reBufferPrint();
 static void printBuffer();
 
 
-int64_t vdriver_set_font_color(Color c){
+void vdriver_set_font_color(Color c){
     font_color = c;
 }
 
@@ -328,6 +328,6 @@ static void printBuffer(){
     uint64_t aux = buffer_index; // con clear screen se borra
     clearScreen();
     for(int i=0 ; i<aux ; i++){
-        vdriver_text_write(char_buffer[i].fd, &char_buffer[i].c, 1 );
+        vdriver_text_write(char_buffer[i].fd, (char *) &char_buffer[i].c, 1 );
     }
 }

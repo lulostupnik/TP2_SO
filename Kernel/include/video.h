@@ -83,7 +83,7 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 
 int64_t vdriver_text_write(uint64_t fd, const char * buffer, int64_t amount);
 int64_t vdriver_text_set_font_size(uint64_t size);
-int64_t vdriver_set_font_color(Color c);
+void vdriver_set_font_color(Color c);
 
 int64_t vdriver_video_draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, Color color);
 int64_t vdriver_video_draw_font(uint64_t x, uint64_t y, uint8_t ascii, Color color, uint64_t fontSize);

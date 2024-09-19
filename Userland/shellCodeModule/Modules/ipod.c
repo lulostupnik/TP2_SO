@@ -3,7 +3,7 @@
 
 void ipod_menu(){
     puts("Which of the following songs would you like to hear:\n");
-    for(char i = 0; i < SONG_AMOUNT; i++){
+    for(int i = 0; i < SONG_AMOUNT; i++){
         printf("%c. %s\n", i + '0', my_songs[i]->name);
     }
 
