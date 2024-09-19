@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <libc.h>
 
 
@@ -114,6 +116,7 @@ char * numToString(uint64_t num, uint64_t base) {
     } while(num != 0);
     return ptr;
 }
+
 
 
 

@@ -1,0 +1,38 @@
+pvs-studio.com/en/docs/warnings/	1	err	Help: The documentation for all analyzer warnings is available here: https://pvs-studio.com/en/docs/warnings/.
+/root/Bootloader/BMFS/bmfs.c	562	err	V595 The 'disk' pointer was utilized before it was verified against nullptr. Check lines: 562, 585.
+/root/Bootloader/BMFS/bmfs.c	648	warn	V1032 The pointer 'dir_copy' is cast to a more strictly aligned pointer type.
+/root/Bootloader/BMFS/bmfs.c	704	warn	V1032 The pointer 'Directory' is cast to a more strictly aligned pointer type.
+/root/Bootloader/BMFS/bmfs.c	462	note	V575 The potential null pointer is passed into 'memset' function. Inspect the first argument.
+/root/Bootloader/BMFS/bmfs.c	492	note	V575 The potential null pointer is passed into 'rewind' function. Inspect the first argument.
+/root/Bootloader/BMFS/bmfs.c	248	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	264	note	V576 Incorrect format. Consider checking the fourth actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	264	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	418	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. Under certain conditions the pointer can be null.
+/root/Bootloader/BMFS/bmfs.c	699	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	379	note	V584 The 'diskSize' value is present on both sides of the '>' operator. The expression is incorrect or it can be simplified.
+/root/Bootloader/BMFS/bmfs.c	511	note	V1004 The 'mbr' pointer was used unsafely after it was verified against nullptr. Check lines: 402, 511.
+/root/Kernel/Drivers/keyboard.c	34	warn	V1009 Check the array initialization. Only the first element is initialized explicitly. The rest elements are initialized with zeros.
+/root/Kernel/Drivers/keyboard.c	77	note	V1003 The macro 'specialKeyPressedMapIdx' is a dangerous expression. The parameter 'code' must be surrounded by parentheses.
+/root/Kernel/Drivers/video.c	142	err	V781 The value of the 'i' index is checked after it was used. Perhaps there is a mistake in program logic.
+/root/Kernel/Drivers/video.c	77	note	V560 A part of conditional expression is always false: size < 0. Unsigned type value is never < 0.
+/root/Kernel/kernel.c	32	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x400000
+/root/Kernel/kernel.c	33	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x500000
+/root/Userland/shellCodeModule/Lib/libc.c	250	err	V575 The null pointer is passed into 'vfprintf' function. Inspect the first argument.
+/root/Userland/shellCodeModule/Lib/libc.c	396	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	397	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	398	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	399	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	400	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	401	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	402	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	403	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	404	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	405	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	406	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	407	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	408	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	409	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	410	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	411	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Lib/libc.c	412	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The integer argument of 32-bit size is expected.
+/root/Userland/shellCodeModule/Main/shell.c	131	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The argument is expected to be not greater than 32-bit.

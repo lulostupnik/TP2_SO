@@ -1,3 +1,15 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <eliminator.h>
 #include <libc.h>
 
@@ -71,7 +83,6 @@ static void singlePlayer(){
 
     while(1){
         sys_nano_sleep(1);
-        buffer_size = 0;
         buffer_size = sys_read(0, buffer, 1);
 
 
@@ -146,7 +157,6 @@ static void multiPlayer(){
 
     while(1){
         sys_nano_sleep(1);
-        buffer_size = 0;
         buffer_size = sys_read(0, buffer, 1);
 
 
@@ -289,7 +299,7 @@ static void print_string(uint64_t x, uint64_t y, const char* str, uint64_t font_
 
 
 static void fill_position(uint64_t x, uint64_t y, Color color){
-    if(x < 0 || y < 0 || x >= MAP_WIDTH || y > MAP_HEIGHT){
+    if(x >= MAP_WIDTH || y >= MAP_HEIGHT){
         return;
     }
     draw_rectangle(x*PIXEL, y*PIXEL, PIXEL, PIXEL, color);

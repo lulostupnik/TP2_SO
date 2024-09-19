@@ -1,3 +1,15 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <shell.h>
 
 
@@ -114,7 +126,7 @@ void showcurrentTime(){
     time_struct time;
     sys_get_time(&time);
     toUtcMinus3(&time);
-    printf("%d/%d/%d [d/m/y]\n", time.day, time.month, time.year);
+    printf("%d/%d/%d [d/m/y]\n", time.day, time.month, time.year);  //Obs: En el PVS aparece como warning porque no implementamos %u (uint8_t)
     int64_t h = time.hour;
     printf("%d:%d:%d [hour/min/sec] (Argentina)\n", h, time.minutes, time.seconds);  // la hora es -3 para que este en tiempo argentino.
     return;
