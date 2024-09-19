@@ -15,4 +15,6 @@ plog-converter -a '64:1,2,3;GA:1,2,3;OP:1,2,3' -t tasklist -o report.tasks PVS-S
 
 rm strace_out
 rm PVS-Studio.log
-rm */PVS-Studio.log
+#rm */PVS-Studio.log
+#rm Bootloader/BMFS/PVS-Studio.log
+#rm Userland/shellCodeModule/PVS-Studio.log

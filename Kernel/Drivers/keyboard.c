@@ -31,7 +31,7 @@ extern uint16_t pressedKeyShiftMap[][2];
 
 #define CANT_FUNCTION_KEYS 12
 static void f1key(void);
-static function_key functionKeyFunArray[CANT_FUNCTION_KEYS] = {f1key};
+static function_key functionKeyFunArray[CANT_FUNCTION_KEYS] = {f1key, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 };
 static void f1key(void){
     reg_shot_flag = 1;
 }
@@ -47,7 +47,7 @@ void setFKeyFunction(uint64_t key_number, function_key f){
 static void functionKeyHandler(uint64_t code){
     int64_t i = -1;
     switch (code) {
-        case F1:i = 0;break;
+        case F1: i= 0;break;
         case F2: i =1; break;
         case F3: i=2; break;
         case F4: i =3; break;
@@ -74,7 +74,7 @@ static uint8_t isPressed(uint8_t key){
     return !isReleased(key);
 }
 
-#define specialKeyPressedMapIdx(code) (code - FIRST_SPECIAL_KEY)
+#define specialKeyPressedMapIdx(code) ((code) - FIRST_SPECIAL_KEY)
 static uint16_t specialKeyPressedMap[SPECIAL_KEYS_CANT] = {0};
 static int isSpecialKey(uint16_t code){
     return (code >= FIRST_SPECIAL_KEY) && (code <= LAST_SPECIAL_KEY);

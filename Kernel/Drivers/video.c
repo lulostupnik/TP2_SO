@@ -74,7 +74,7 @@ int64_t vdriver_text_set_font_size(uint64_t size) {
         return -1;
     }
 
-    if (size < 0 || SCREEN_WIDTH < size * FONT_WIDTH || SCREEN_HEIGHT < size * FONT_HEIGHT) {
+    if (SCREEN_WIDTH < size * FONT_WIDTH || SCREEN_HEIGHT < size * FONT_HEIGHT) {
         return -1;
     }
     if (size == font_size) {
@@ -139,7 +139,7 @@ int64_t vdriver_text_write(uint64_t fd, const char * buffer, int64_t amount){
     }
 
     uint64_t i = 0;
-    while (buffer[i] != 0 && i<amount) {
+    while (i<amount && buffer[i] != 0 ) {
         switch (buffer[i]) {
             case '\n':
                 newLine();
