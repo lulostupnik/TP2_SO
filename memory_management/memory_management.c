@@ -40,16 +40,13 @@ void my_mm_init(void *p, int s)
     current = 0;
 }
 
-void *my_malloc()
+void *my_malloc(int size)
 {
-    if (current < BLOCK_COUNT)
-    {
-        return free_ptrs[current++];
-    }
-    else
+    if (size > BLOCK_SIZE || current >= BLOCK_COUNT)
     {
         return NULL;
     }
+    return free_ptrs[current++];
 }
 
 void my_free(void *p)
@@ -88,8 +85,10 @@ int main()
         while (rq < BLOCK_COUNT)
         {
             printf("rq: %d\n", rq);
-            mm_rqs[rq].size = BLOCK_SIZE;
-            mm_rqs[rq].address = my_malloc(/*mm_rqs[rq].size*/);
+            mm_rqs[rq].size = GetUniform(max_memory - total - 1) + 1;
+            printf("mm_rqs[%d].size: %d\n", rq, mm_rqs[rq].size);
+            mm_rqs[rq].address = my_malloc(mm_rqs[rq].size);
+            printf("mm_rqs[%d].address: %p\n", rq, mm_rqs[rq].address);
 
             if (mm_rqs[rq].address)
             {
