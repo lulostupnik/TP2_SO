@@ -26,8 +26,7 @@ static void * const shellDataModuleAddress = (void*)0x500000;
 
 static void * const heap = (void *)0x600000;
 
-#define HEAP_SIZE 0x100000
-// #define HEAP_STRUCTURE_SIZE 0
+
 
 
 typedef int (*EntryPoint)();

@@ -75,13 +75,16 @@ Modules/test_mm_module.c:2:1: note: 'printf' is defined in header '<stdio.h>'; d
     2 | 
 gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c tests/test_mm.c -o tests/test_mm.o
 tests/test_mm.c: In function 'test_mm':
-tests/test_mm.c:50:17: warning: implicit declaration of function 'memset' [-Wimplicit-function-declaration]
-   50 |                 memset(mm_rqs[i].address, i, mm_rqs[i].size);
+tests/test_mm.c:53:17: warning: implicit declaration of function 'memset' [-Wimplicit-function-declaration]
+   53 |                 memset(mm_rqs[i].address, i, mm_rqs[i].size);
       |                 ^~~~~~
 tests/test_mm.c:5:1: note: 'memset' is defined in header '<string.h>'; did you forget to '#include <string.h>'?
     4 | #include <libc.h>
   +++ |+#include <string.h>
     5 | 
+tests/test_mm.c:70:1: warning: control reaches end of non-void function [-Wreturn-type]
+   70 | }
+      | ^
 gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c tests/test_util.c -o tests/test_util.o
 nasm -felf64 Lib/div0.asm -o Lib/div0.o
 nasm -felf64 Lib/infinite_stack.asm -o Lib/infinite_stack.o
@@ -93,7 +96,7 @@ make[2]: Leaving directory '/root/Userland/shellCodeModule'
 printf "This is shell data." >> 0001-shellDataModule.bin && dd if=/dev/zero bs=1 count=1 >> 0001-shellDataModule.bin
 1+0 records in
 1+0 records out
-1 byte copied, 9.5583e-05 s, 10.5 kB/s
+1 byte copied, 3.5324e-05 s, 28.3 kB/s
 make[1]: Leaving directory '/root/Userland'
 cd Image; make all
 make[1]: Entering directory '/root/Image'

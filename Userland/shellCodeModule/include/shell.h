@@ -9,7 +9,7 @@
 #define MAX_COMMAND_SIZE 100
 #define MAX_ZOOM 3
 #define MIN_ZOOM 1
-#define MAX_MODULES 10
+#define MAX_MODULES 11
 //Constants for the shell
 
 #define WELCOME "Bienvenido a BarriOS!\n"

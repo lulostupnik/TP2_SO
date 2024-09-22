@@ -12,10 +12,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <memory_management.h>
 
-#define MAX_BLOCKS 20
-#define BLOCK_SIZE 10
-#define BLOCK_COUNT 10
 
 typedef struct MM_rq
 {
