@@ -23,5 +23,5 @@ cmake-build-debug
 .tgdbinit.save
 make_out.txt
 .gdb_history
-
+compile_out.txt
 .bash_history

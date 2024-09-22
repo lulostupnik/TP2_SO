@@ -88,7 +88,7 @@ make[2]: Leaving directory '/root/Userland/shellCodeModule'
 printf "This is shell data." >> 0001-shellDataModule.bin && dd if=/dev/zero bs=1 count=1 >> 0001-shellDataModule.bin
 1+0 records in
 1+0 records out
-1 byte copied, 4.1705e-05 s, 24.0 kB/s
+1 byte copied, 4.7844e-05 s, 20.9 kB/s
 make[1]: Leaving directory '/root/Userland'
 cd Image; make all
 make[1]: Entering directory '/root/Image'
