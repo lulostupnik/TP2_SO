@@ -4,7 +4,7 @@
 #include <libc.h>
 
 
-#define CANT_OF_LOOPS 1000
+#define CANT_OF_LOOPS 10000
 typedef struct MM_rq
 {
     void *address;
@@ -19,11 +19,17 @@ uint64_t test_mm(uint64_t argc, char *argv[])
     uint64_t total;
     uint64_t max_memory;
 
-    if (argc != 1)
+    if (argc != 1){
+        printf("Error: argc must be 1");
         return -1;
+    }
+   
 
-    if ((max_memory = satoi(argv[0])) <= 0)
+    if ((max_memory = satoi(argv[0])) <= 0){
+        printf("Error: could not read from argv");
         return -1;
+    }
+  
 
     int i = CANT_OF_LOOPS;
     printf("Running test....\n");
@@ -39,12 +45,13 @@ uint64_t test_mm(uint64_t argc, char *argv[])
             mm_rqs[rq].address = my_malloc(mm_rqs[rq].size);
             if (mm_rqs[rq].address)
             {
-              
                 total += mm_rqs[rq].size;
                 rq++;
-                
             }
+
+           
         }
+      
         // Set
         uint32_t i;
         for (i = 0; i < rq; i++)

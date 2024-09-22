@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "test_util.h"
 
-#define MAX_BLOCKS 256
+#define MAX_BLOCKS 1024
 
 void * my_malloc(uint64_t size);
 void my_free(void *ptr);
