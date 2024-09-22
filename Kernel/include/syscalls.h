@@ -218,6 +218,10 @@ int64_t sys_get_time(time_struct * time);
 //FOR TP2_SO
 
 
+void * sys_malloc(uint64_t size);
+void sys_free(void *p);
+
+
 int64_t my_getpid();
 int64_t my_create_process(char *name, uint64_t argc, char *argv[]);
 int64_t my_nice(uint64_t pid, uint64_t newPrio);

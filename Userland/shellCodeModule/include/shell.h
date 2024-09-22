@@ -2,6 +2,8 @@
 #include <eliminator.h>
 #include <exceptions.h>
 #include <ipod.h>
+#include <test_mm_module.h>
+
 #ifndef CMD_INTERPRETER_H
 #define CMD_INTERPRETER_H
 #define MAX_COMMAND_SIZE 100
@@ -38,6 +40,11 @@ void showcurrentTime();
 void getRegs();
 
 void clear();
+
+
+
+// --------------- TP2:
+
 
 
 #endif /* CMD_INTERPRETER_H */

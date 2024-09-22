@@ -33,7 +33,8 @@ static module modules[] = {
     {"dividebyzero", div0},
     {"opcode", op_code},
     {"clear", clear},
-    {"ipod", ipod_menu}
+    {"testmm", start_test_mm},
+    {"ipod", ipod_menu},   //@TODO no anda. 
 };
 
 
@@ -49,7 +50,7 @@ int main(){
     }
     c=b;*/
 
-    infinite_stack();
+   
 
     setFontSize(font_size);
 
@@ -91,7 +92,8 @@ static void help(){
     puts("- dividebyzero: Genera una excepcion de division por cero.\n");
     puts("- opcode: Genera una excepcion de codigo de operacion invalido.\n");
     puts("- clear: Limpia la pantalla.\n");
-    puts("- ipod: Inicia el reproductor de musica.\n\n");
+    puts("- ipod: Inicia el reproductor de musica.\n");
+    puts("- testmm: Testea el uso del malloc y free.\n\n");
 
 }
 

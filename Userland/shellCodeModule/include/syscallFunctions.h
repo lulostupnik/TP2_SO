@@ -95,5 +95,8 @@ int64_t sys_nano_sleep(uint32_t ticks);
 
 int64_t sys_get_time(time_struct * time);
 
+void * sys_malloc(uint64_t size);
+
+void sys_free(void *p);
 
 #endif 

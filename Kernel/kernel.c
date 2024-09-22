@@ -9,6 +9,7 @@
 #include <idtLoader.h>
 #include <syscalls.h>
 #include <keyboard.h>
+#include <memory_management.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -23,7 +24,10 @@ static const uint64_t PageSize = 0x1000;
 static void * const shellCodeModuleAddress = (void*)0x400000;
 static void * const shellDataModuleAddress = (void*)0x500000;
 
+static void * const heap = (void *)0x600000;
 
+#define HEAP_SIZE 0x100000
+// #define HEAP_STRUCTURE_SIZE 0
 
 
 typedef int (*EntryPoint)();
@@ -58,6 +62,7 @@ void * initializeKernelBinary()
 int main()
 {
     load_idt();
+	my_mm_init(heap, HEAP_SIZE);
 	((EntryPoint)shellCodeModuleAddress)();
 	return 0;
 }

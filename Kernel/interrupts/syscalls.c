@@ -41,6 +41,8 @@ int64_t sysCallHandler(Registers * regs) {
         case 10: return sys_get_screen_information((ScreenInformation *) regs->rdi); break;
         case 11: return sys_nano_sleep(regs->rdi); break;
         case 12: return sys_get_time((time_struct*)regs->rdi);break;
+        case 13: return sys_malloc(regs->rdi); break;
+        case 14: sys_free((void*)regs->rdi); break;
         default: return NOT_VALID_SYS_ID;
 
     }
@@ -149,6 +151,15 @@ int64_t sys_get_time(time_struct * time){
 
 
 //ADDED FOR TP2_SO:
+#include <memory_management.h>
+
+
+void * sys_malloc(uint64_t size){
+    return my_malloc(size);
+}
+void sys_free(void *p){
+    my_free(p);
+}
 
 
 int64_t my_getpid()
