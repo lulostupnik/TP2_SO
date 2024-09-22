@@ -2,7 +2,7 @@
 
 
 void start_test_mm(){
-    char * argv[] = {"100"};
+    char * argv[] = {MAX_MEMORY};
     if(test_mm(1, argv) == -1){
         printf("Could not start test\n");
     }

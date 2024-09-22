@@ -3,21 +3,20 @@
 #include <test_mm.h>
 #include <libc.h>
 
-#define MAX_BLOCKS 10
 
-#define CANT_OF_LOOPS 1000000
+#define CANT_OF_LOOPS 1000
 typedef struct MM_rq
 {
     void *address;
-    uint32_t size;
+    uint64_t size;
 } mm_rq;
 
 uint64_t test_mm(uint64_t argc, char *argv[])
 {
 
     mm_rq mm_rqs[MAX_BLOCKS];
-    uint8_t rq;
-    uint32_t total;
+    uint64_t rq;
+    uint64_t total;
     uint64_t max_memory;
 
     if (argc != 1)
@@ -40,12 +39,12 @@ uint64_t test_mm(uint64_t argc, char *argv[])
             mm_rqs[rq].address = my_malloc(mm_rqs[rq].size);
             if (mm_rqs[rq].address)
             {
+              
                 total += mm_rqs[rq].size;
                 rq++;
+                
             }
-
         }
-
         // Set
         uint32_t i;
         for (i = 0; i < rq; i++)

@@ -1,24 +1,12 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include <shell.h>
 
 
 static void help();
 
 static void toUtcMinus3(time_struct * time);
-
-extern void infinite_stack();
-
 
 static uint64_t font_size = 1; // font_size 1 is the default size
 
@@ -34,24 +22,13 @@ static module modules[] = {
     {"opcode", op_code},
     {"clear", clear},
     {"testmm", start_test_mm},
-    {"ipod", ipod_menu},   //@TODO no anda. 
+    {"ipod", ipod_menu},  
 };
 
 
 
 int main(){
-
-  /*  uint64_t a = 0x1FFFFFFF;
-    uint64_t b;
-    uint64_t c;
-    while(a>0){
-        a--;
-        b++;
-    }
-    c=b;*/
-
    
-
     setFontSize(font_size);
 
     puts(WELCOME);

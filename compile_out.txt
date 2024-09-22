@@ -7,96 +7,35 @@ gcc -ansi -std=c99 -Wall -pedantic -o bmfs.bin bmfs.c
 make[2]: Leaving directory '/root/Bootloader/BMFS'
 cd Pure64; make all
 make[2]: Entering directory '/root/Bootloader/Pure64'
-nasm src/bootsectors/bmfs_mbr.asm -o bmfs_mbr.sys
-nasm src/bootsectors/pxestart.asm -o pxestart.sys
-cd src; nasm pure64.asm -o ../pure64.sys
+make[2]: Nothing to be done for 'all'.
 make[2]: Leaving directory '/root/Bootloader/Pure64'
 make[1]: Leaving directory '/root/Bootloader'
 cd Kernel; make all
 make[1]: Entering directory '/root/Kernel'
-nasm -felf64 loader.asm -o loader.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c kernel.c -o kernel.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c lib.c -o lib.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c moduleLoader.c -o moduleLoader.o
-nasm -felf64 asm/interrupts.asm -o asm/interrupts.o
-nasm -felf64 asm/libasm.asm -o asm/libasm.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c Drivers/font.c -o Drivers/font.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c Drivers/keyboard.c -o Drivers/keyboard.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c Drivers/keysMap.c -o Drivers/keysMap.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c Drivers/rtc.c -o Drivers/rtc.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c Drivers/speaker.c -o Drivers/speaker.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c Drivers/time.c -o Drivers/time.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c Drivers/video.c -o Drivers/video.o
-Drivers/video.c: In function 'vdriver_video_draw_pixel':
-Drivers/video.c:211:29: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-  211 |     uint8_t * framebuffer = (uint8_t *) VBE_mode_info->framebuffer;
-      |                             ^
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c interrupts/exceptions.c -o interrupts/exceptions.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c interrupts/idtLoader.c -o interrupts/idtLoader.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c interrupts/irqDispatcher.c -o interrupts/irqDispatcher.o
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c interrupts/syscalls.c -o interrupts/syscalls.o
-interrupts/syscalls.c: In function 'sysCallHandler':
-interrupts/syscalls.c:44:25: warning: returning 'void *' from a function with return type 'int64_t' {aka 'long int'} makes integer from pointer without a cast [-Wint-conversion]
-   44 |         case 13: return sys_malloc(regs->rdi); break;
-      |                         ^~~~~~~~~~~~~~~~~~~~~
-interrupts/syscalls.c:49:1: warning: control reaches end of non-void function [-Wreturn-type]
-   49 | }
-      | ^
-gcc -g -m64 -fno-exceptions -fno-asynchronous-unwind-tables -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -mno-red-zone -Wall -ffreestanding -nostdlib -fno-common -std=c99 -fno-pie -I./include -c libs/memory_management.c -o libs/memory_management.o
-ld --warn-common -z max-page-size=0x1000 -T kernel.ld -o kernel.bin loader.o kernel.o lib.o moduleLoader.o asm/interrupts.o asm/libasm.o  Drivers/font.o Drivers/keyboard.o Drivers/keysMap.o Drivers/rtc.o Drivers/speaker.o Drivers/time.o Drivers/video.o interrupts/exceptions.o interrupts/idtLoader.o interrupts/irqDispatcher.o interrupts/syscalls.o libs/memory_management.o     
-ld --warn-common -z max-page-size=0x1000 -T kernel.ld --oformat=elf64-x86-64 -o kernel.elf loader.o kernel.o lib.o moduleLoader.o asm/interrupts.o asm/libasm.o  Drivers/font.o Drivers/keyboard.o Drivers/keysMap.o Drivers/rtc.o Drivers/speaker.o Drivers/time.o Drivers/video.o  interrupts/exceptions.o interrupts/idtLoader.o interrupts/irqDispatcher.o interrupts/syscalls.o libs/memory_management.o      # Debug
-ld: warning: asm/libasm.o: missing .note.GNU-stack section implies executable stack
-ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+make[1]: Nothing to be done for 'all'.
 make[1]: Leaving directory '/root/Kernel'
 cd Userland; make all
 make[1]: Entering directory '/root/Userland'
 cd shellCodeModule; make
 make[2]: Entering directory '/root/Userland/shellCodeModule'
-gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c Lib/libc.c -o Lib/libc.o
-gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c Main/shell.c -o Main/shell.o
-gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c Modules/eliminator.c -o Modules/eliminator.o
-Modules/eliminator.c: In function 'singlePlayer':
-Modules/eliminator.c:77:14: warning: variable 'p1_lost' set but not used [-Wunused-but-set-variable]
-   77 |     uint64_t p1_lost = 0;
-      |              ^~~~~~~
-gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c Modules/ipod.c -o Modules/ipod.o
-gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c Modules/songs.c -o Modules/songs.o
-gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c Modules/test_mm_module.c -o Modules/test_mm_module.o
-Modules/test_mm_module.c: In function 'start_test_mm':
-Modules/test_mm_module.c:6:8: warning: implicit declaration of function 'test_mm' [-Wimplicit-function-declaration]
-    6 |     if(test_mm(1, argv) == -1){
-      |        ^~~~~~~
-Modules/test_mm_module.c:7:9: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
-    7 |         printf("Could not start test\n");
-      |         ^~~~~~
-Modules/test_mm_module.c:2:1: note: 'printf' is defined in header '<stdio.h>'; did you forget to '#include <stdio.h>'?
-    1 | #include <test_mm_module.h>
-  +++ |+#include <stdio.h>
-    2 | 
 gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c tests/test_mm.c -o tests/test_mm.o
 tests/test_mm.c: In function 'test_mm':
-tests/test_mm.c:53:17: warning: implicit declaration of function 'memset' [-Wimplicit-function-declaration]
-   53 |                 memset(mm_rqs[i].address, i, mm_rqs[i].size);
+tests/test_mm.c:54:17: warning: implicit declaration of function 'memset' [-Wimplicit-function-declaration]
+   54 |                 memset(mm_rqs[i].address, i, mm_rqs[i].size);
       |                 ^~~~~~
 tests/test_mm.c:5:1: note: 'memset' is defined in header '<string.h>'; did you forget to '#include <string.h>'?
     4 | #include <libc.h>
   +++ |+#include <string.h>
     5 | 
-tests/test_mm.c:70:1: warning: control reaches end of non-void function [-Wreturn-type]
-   70 | }
+tests/test_mm.c:71:1: warning: control reaches end of non-void function [-Wreturn-type]
+   71 | }
       | ^
-gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie -I./include -c tests/test_util.c -o tests/test_util.o
-nasm -felf64 Lib/div0.asm -o Lib/div0.o
-nasm -felf64 Lib/infinite_stack.asm -o Lib/infinite_stack.o
-nasm -felf64 Lib/opCode.asm -o Lib/opCode.o
-nasm -felf64 Lib/syscallFunctions.asm -o Lib/syscallFunctions.o
-gcc -m64 -fno-exceptions -std=c99 -Wall -ffreestanding -nostdlib -fno-common -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -fno-builtin-malloc -fno-builtin-free -fno-builtin-realloc -fno-pie _loader.c -c -o _loader.o
-ld  -T shellCodeModule.ld -o ../0000-shellCodeModule.bin _loader.o Lib/libc.o Main/shell.o Modules/eliminator.o Modules/ipod.o Modules/songs.o Modules/test_mm_module.o tests/test_mm.o tests/test_util.o Lib/div0.o Lib/infinite_stack.o Lib/opCode.o Lib/syscallFunctions.o
+ld  -T shellCodeModule.ld -o ../0000-shellCodeModule.bin _loader.o Lib/libc.o Main/shell.o Modules/eliminator.o Modules/ipod.o Modules/songs.o Modules/test_mm_module.o tests/test_mm.o tests/test_util.o Lib/div0.o Lib/opCode.o Lib/syscallFunctions.o
 make[2]: Leaving directory '/root/Userland/shellCodeModule'
 printf "This is shell data." >> 0001-shellDataModule.bin && dd if=/dev/zero bs=1 count=1 >> 0001-shellDataModule.bin
 1+0 records in
 1+0 records out
-1 byte copied, 3.5324e-05 s, 28.3 kB/s
+1 byte copied, 4.232e-05 s, 23.6 kB/s
 make[1]: Leaving directory '/root/Userland'
 cd Image; make all
 make[1]: Entering directory '/root/Image'
