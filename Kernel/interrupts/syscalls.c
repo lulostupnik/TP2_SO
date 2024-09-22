@@ -41,6 +41,8 @@ int64_t sysCallHandler(Registers * regs) {
         case 10: return sys_get_screen_information((ScreenInformation *) regs->rdi); break;
         case 11: return sys_nano_sleep(regs->rdi); break;
         case 12: return sys_get_time((time_struct*)regs->rdi);break;
+        case 13: return sys_malloc(regs->rdi); break;
+        case 14: sys_free((void*)regs->rdi); break;
         default: return NOT_VALID_SYS_ID;
 
     }
@@ -142,5 +144,80 @@ int64_t sys_get_time(time_struct * time){
     time->day = getRTCDayOfMonth();
     time->month = getRTCMonth();
     time->year = getRTCYear();
+    return 0;
+}
+
+
+
+
+//ADDED FOR TP2_SO:
+#include <memory_management.h>
+
+
+void * sys_malloc(uint64_t size){
+    return my_malloc(size);
+}
+void sys_free(void *p){
+    my_free(p);
+}
+
+
+int64_t my_getpid()
+{
+    return 0;
+}
+
+int64_t my_create_process(char *name, uint64_t argc, char *argv[])
+{
+    return 0;
+}
+
+int64_t my_nice(uint64_t pid, uint64_t newPrio)
+{
+    return 0;
+}
+
+int64_t my_kill(uint64_t pid)
+{
+    return 0;
+}
+
+int64_t my_block(uint64_t pid)
+{
+    return 0;
+}
+
+int64_t my_unblock(uint64_t pid)
+{
+    return 0;
+}
+
+int64_t my_sem_open(char *sem_id, uint64_t initialValue)
+{
+    return 0;
+}
+
+int64_t my_sem_wait(char *sem_id)
+{
+    return 0;
+}
+
+int64_t my_sem_post(char *sem_id)
+{
+    return 0;
+}
+
+int64_t my_sem_close(char *sem_id)
+{
+    return 0;
+}
+
+int64_t my_yield()
+{
+    return 0;
+}
+
+int64_t my_wait(int64_t pid)
+{
     return 0;
 }

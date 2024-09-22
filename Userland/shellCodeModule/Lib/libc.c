@@ -411,3 +411,13 @@ void print_register_snapshot() {
     printf("r15: %x\n", snap.r15);
     printf("rIP: %x\n", snap.rip);
 }
+
+//----------------------------- TP2 ---------------------------------- //
+
+void * my_malloc(uint64_t size){
+    return sys_malloc(size);
+}
+
+void my_free(void *p){
+    return sys_free(p);
+}

@@ -11,6 +11,8 @@ GLOBAL sys_set_mode
 GLOBAL sys_get_screen_information
 GLOBAL sys_nano_sleep
 GLOBAL sys_get_time
+GLOBAL sys_free
+GLOBAL sys_malloc
 
 section .text
 
@@ -145,3 +147,9 @@ sys_nano_sleep:
 
 sys_get_time:
     simple_sys_handler 12
+
+sys_malloc:
+    simple_sys_handler 13
+
+sys_free:
+    simple_sys_handler 14

@@ -1,24 +1,12 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include <shell.h>
 
 
 static void help();
 
 static void toUtcMinus3(time_struct * time);
-
-extern void infinite_stack();
-
 
 static uint64_t font_size = 1; // font_size 1 is the default size
 
@@ -33,24 +21,14 @@ static module modules[] = {
     {"dividebyzero", div0},
     {"opcode", op_code},
     {"clear", clear},
-    {"ipod", ipod_menu}
+    {"testmm", start_test_mm},
+    {"ipod", ipod_menu},  
 };
 
 
 
 int main(){
-
-  /*  uint64_t a = 0x1FFFFFFF;
-    uint64_t b;
-    uint64_t c;
-    while(a>0){
-        a--;
-        b++;
-    }
-    c=b;*/
-
-    infinite_stack();
-
+   
     setFontSize(font_size);
 
     puts(WELCOME);
@@ -91,7 +69,8 @@ static void help(){
     puts("- dividebyzero: Genera una excepcion de division por cero.\n");
     puts("- opcode: Genera una excepcion de codigo de operacion invalido.\n");
     puts("- clear: Limpia la pantalla.\n");
-    puts("- ipod: Inicia el reproductor de musica.\n\n");
+    puts("- ipod: Inicia el reproductor de musica.\n");
+    puts("- testmm: Testea el uso del malloc y free.\n\n");
 
 }
 
