@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 // No alinear
 // No gestionar fragmentación
 // No pide tamaño de bloque
@@ -6,14 +9,10 @@
 
 // #include "test_mm.h"
 
-#include <stdlib.h>
-#include "syscall.h"
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
 #include <memory_management.h>
 
+#define NULL 0
 
 typedef struct MM_rq
 {

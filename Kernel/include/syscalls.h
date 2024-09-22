@@ -5,6 +5,11 @@
 #include <stdint.h>
 #include <registerSaver.h>
 #include <stddef.h> // lo necesitamos para size_t
+#include <keyboard.h>
+#include <speaker.h>
+#include <time.h>
+#include <rtc.h>
+
 #define NOT_VALID_SYS_ID -2
 
 

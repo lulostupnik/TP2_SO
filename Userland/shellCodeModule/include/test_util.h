@@ -1,7 +1,8 @@
 
 #ifndef TEST_UTIL_H
 #define TEST_UTIL_H
-
+#include <stdint.h>
+#include <syscall.h>
 #include <stdint.h>
 
 uint32_t GetUint();

@@ -1,16 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-
-#include <stdint.h>
-#include <string.h>
-#include <lib.h>
-#include <moduleLoader.h>
-#include <video.h>
-#include <idtLoader.h>
-#include <syscalls.h>
-#include <keyboard.h>
-#include <memory_management.h>
-
+#include <kernel.h>
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;

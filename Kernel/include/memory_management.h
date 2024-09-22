@@ -1,6 +1,9 @@
 #ifndef MEMORY_MANAGEMENT_H
 #define MEMORY_MANAGEMENT_H
 
+#include "syscall.h"
+#include <stdint.h>
+#include <string.h>
 #include <stdint.h>
 
 void my_mm_init(void *p, uint64_t s);

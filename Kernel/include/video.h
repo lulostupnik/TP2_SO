@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <font.h>
 #include <driversInformation.h>
 #ifndef VIDEODRIVER_H
 #define VIDEODRIVER_H

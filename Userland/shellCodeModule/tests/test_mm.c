@@ -1,7 +1,8 @@
-#include <syscall.h>
-#include <test_util.h>
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
+
 #include <test_mm.h>
-#include <libc.h>
 
 
 #define CANT_OF_LOOPS 10000

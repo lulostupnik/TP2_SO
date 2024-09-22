@@ -4,6 +4,8 @@
 
 #include <stdint.h>
 #include "test_util.h"
+#include <syscall.h>
+#include <libc.h>
 
 #define MAX_BLOCKS 1024
 

@@ -2,7 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 #include <time.h>
-#include <lib.h>
+
 static unsigned long ticks = 0;
 
 void timerHandler() {
