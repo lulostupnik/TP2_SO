@@ -9,6 +9,7 @@
 #include <speaker.h>
 #include <time.h>
 #include <rtc.h>
+#include <memory_management.h>
 
 #define NOT_VALID_SYS_ID -2
 
@@ -31,7 +32,7 @@ typedef struct {
     uint64_t r14;
     uint64_t r15;
     uint64_t rip;
-} Snapshot;
+} snapshot;
 
 
 
@@ -87,7 +88,7 @@ int64_t sys_write(uint64_t fd, const char * buffer, uint64_t amount);
  * @return int64_t Returns 0 if the registers were previously saved and their state has been written into the provided structure.
  *                 Returns -1 if no registers have been saved, in which case the provided structure is not modified.
  */
-int64_t sys_get_register_snapshot(Snapshot * snapshot);
+int64_t sys_get_register_snapshot(snapshot * snapshot);
 
 
 /**
@@ -138,7 +139,7 @@ int64_t sys_clear_screen(void);
  * @return int64_t Returns 0 if the pixel was successfully drawn, or -1 if an error occurred
  *             (for example, if 'x' or 'y' is out of the screen bounds, or 'color' is not a valid color).
  */
-int64_t sys_put_pixel(uint64_t x, uint64_t y, Color * color);
+int64_t sys_put_pixel(uint64_t x, uint64_t y, color * color);
 
 
 
@@ -155,7 +156,7 @@ int64_t sys_put_pixel(uint64_t x, uint64_t y, Color * color);
  * @return int64_t Returns 0 if the rectangle was successfully drawn, or -1 if an error occurred
  *             (for example, if 'x', 'y', 'width', or 'height' is out of the screen bounds, or 'color' is not a valid color).
  */
-int64_t sys_put_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, Color * color);
+int64_t sys_put_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color * color);
 
 
 
@@ -172,7 +173,7 @@ int64_t sys_put_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t heigh
  * @return int Returns 0 if the letter was successfully drawn, or -1 if an error occurred
  *             (for example, if not in video mode, 'x' or 'y' is out of the screen bounds, 'letter' is not a valid character, or 'color' is not a valid color).
  */
-int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, Color * color, uint64_t fontSize);
+int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, color * color, uint64_t fontSize);
 
 
 
@@ -191,10 +192,10 @@ int64_t sys_set_mode(uint64_t mode);
  *
  * The dimensions are written into the 'screen_size' parameter.
  *
- * @param screen_information A pointer to a ScreenInformation structure that will be filled with the screen's dimensions.
+ * @param screen_information A pointer to a screen_information structure that will be filled with the screen's dimensions.
  * @return int64_t Returns 0 if the dimensions were successfully retrieved, or -1 if an error occurred.
  */
-int64_t sys_get_screen_information(ScreenInformation * screen_information);
+int64_t sys_get_screen_information(screen_information * screen_information);
 
 
 

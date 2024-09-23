@@ -24,7 +24,7 @@ typedef struct {
     uint64_t r14;
     uint64_t r15;
     uint64_t rip;
-} Snapshot;
+} snapshot;
 
 /**
  * Structure representing a color
@@ -33,7 +33,7 @@ typedef struct {
     uint8_t r; // Red component
     uint8_t g; // Green component
     uint8_t b; // Blue component
-} Color;
+} color;
 
 
 /**
@@ -42,7 +42,7 @@ typedef struct {
 typedef struct{
     int64_t width;
     int64_t height;
-} ScreenInformation;
+} screen_information;
 
 /**
  * Structure representing current time
@@ -63,7 +63,7 @@ int64_t sys_read(uint64_t fd, uint16_t * buffer, uint64_t amount);
 int64_t sys_write(uint64_t fd, const char * buffer, uint64_t amount);
 
 
-int64_t sys_get_register_snapshot(Snapshot * snapshot);
+int64_t sys_get_register_snapshot(snapshot * snapshot);
 
 
 int64_t sys_beep(uint32_t frequency, uint32_t duration);
@@ -75,19 +75,19 @@ int64_t sys_set_font_size(uint64_t size);
 int64_t sys_clear_screen(void);
 
 
-int64_t sys_put_pixel(uint64_t x, uint64_t y, Color * color);
+int64_t sys_put_pixel(uint64_t x, uint64_t y, color * color);
 
 
-int64_t sys_put_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, Color * color);
+int64_t sys_put_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color * color);
 
 
-int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, Color * color, uint64_t fontSize);
+int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, color * color, uint64_t fontSize);
 
 
 int64_t sys_set_mode(uint64_t mode);
 
 
-int64_t sys_get_screen_information(ScreenInformation * screen_information);
+int64_t sys_get_screen_information(screen_information * screen_information);
 
 
 int64_t sys_nano_sleep(uint32_t ticks);

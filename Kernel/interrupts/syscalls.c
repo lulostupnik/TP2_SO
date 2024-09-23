@@ -1,34 +1,34 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
 
 #include <syscalls.h>
 
 
 typedef struct {
     uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rdi, rbp, rdx, rcx, rbx, rax;
-} Registers;
+} registers;
 
 extern uint64_t regs_shot[17];
 extern uint64_t regs_shot_available;
 
 
-int64_t sysCallHandler(Registers * regs) {
+int64_t sys_call_handler(registers * regs) {
     switch(regs->rax){
         case 0: return sys_read(regs->rdi, (uint16_t *) regs->rsi, regs->rdx); break;
         case 1: return sys_write(regs->rdi, (char *) regs->rsi, regs->rdx); break;
-        case 2: return sys_get_register_snapshot((Snapshot *) regs->rdi); break;
+        case 2: return sys_get_register_snapshot((snapshot *) regs->rdi); break;
         case 3: return sys_beep(regs->rdi, regs->rsi); break;
         case 4: return sys_set_font_size(regs->rdi); break;
         case 5: return sys_clear_screen(); break;
-        case 6: return sys_put_pixel(regs->rdi, regs->rsi, (Color *) regs->rdx); break;
-        case 7: return sys_put_rectangle(regs->rdi, regs->rsi, regs->rdx, regs->rcx, (Color *) regs->r8); break;
-        case 8: return sys_draw_letter(regs->rdi, regs->rsi, (char *) regs->rdx, (Color *) regs->rcx, regs->r8); break;
+        case 6: return sys_put_pixel(regs->rdi, regs->rsi, (color *) regs->rdx); break;
+        case 7: return sys_put_rectangle(regs->rdi, regs->rsi, regs->rdx, regs->rcx, (color *) regs->r8); break;
+        case 8: return sys_draw_letter(regs->rdi, regs->rsi, (char *) regs->rdx, (color *) regs->rcx, regs->r8); break;
         case 9: return sys_set_mode(regs->rdi); break;
-        case 10: return sys_get_screen_information((ScreenInformation *) regs->rdi); break;
+        case 10: return sys_get_screen_information((screen_information *) regs->rdi); break;
         case 11: return sys_nano_sleep(regs->rdi); break;
         case 12: return sys_get_time((time_struct*)regs->rdi);break;
-        case 13: return sys_malloc(regs->rdi); break;
-        case 14: sys_free((void*)regs->rdi); break;
+        case 13: return (int64_t) sys_malloc(regs->rdi); break;
+        case 14: sys_free((void*)regs->rdi); return 0; break;
         default: return NOT_VALID_SYS_ID;
 
     }
@@ -38,20 +38,20 @@ int64_t sysCallHandler(Registers * regs) {
 int64_t sys_read(uint64_t fd, uint16_t * buffer, uint64_t amount){
     uint64_t i = 0;
 
-    while(i < amount && bufferHasNext()){
-        buffer[i] = getCurrent();
+    while(i < amount && buffer_has_next()){
+        buffer[i] = get_current();
         i++;
     }
     return i;
 }
 
 
-//Modo texto:
+//modo texto:
 int64_t sys_write(uint64_t fd, const char * buffer, uint64_t amount){
     return vdriver_text_write(fd, buffer, amount);
 }
 
-//Modo texto:
+//modo texto:
 int64_t sys_set_font_size(uint64_t size){
     return vdriver_text_set_font_size(size);
 }
@@ -61,31 +61,31 @@ int64_t sys_beep(uint32_t freq, uint32_t time){
     return 0;
 }
 
-//Modo video:
-int64_t sys_put_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, Color * color){
+//modo video:
+int64_t sys_put_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color * color){
     return vdriver_video_draw_rectangle(x, y, width, height, *color);
 }
 
-//Modo video:
-int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, Color * color, uint64_t fontSize){
-    return vdriver_video_draw_font(x, y, *letter, *color, fontSize);
+//modo video:
+int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, color * color, uint64_t font_size){
+    return vdriver_video_draw_font(x, y, *letter, *color, font_size);
 }
 
-//Modo video:
-int64_t sys_put_pixel(uint64_t x, uint64_t y, Color * color){
+//modo video:
+int64_t sys_put_pixel(uint64_t x, uint64_t y, color * color){
     return vdriver_video_draw_pixel(x, y, *color);
 }
 
-int64_t sys_get_screen_information(ScreenInformation * screen_information){
+int64_t sys_get_screen_information(screen_information * screen_information){
     return vdriver_get_screen_information(screen_information);
 }
 
 int64_t sys_set_mode(uint64_t mode){
-    return vdriver_set_mode(mode, (Color) {0,0,0});
+    return vdriver_set_mode(mode, (color) {0,0,0});
 }
 
 
-int64_t sys_get_register_snapshot(Snapshot * snapshot){
+int64_t sys_get_register_snapshot(snapshot * snapshot){
 
     if(!regs_shot_available) {
         return -1;
@@ -113,7 +113,7 @@ int64_t sys_get_register_snapshot(Snapshot * snapshot){
 
 
 int64_t sys_clear_screen(){
-    return vdriver_clear_screen((Color) {0,0,0});
+    return vdriver_clear_screen((color) {0,0,0});
 }
 
 int64_t sys_nano_sleep(uint32_t ns){
@@ -124,20 +124,19 @@ int64_t sys_nano_sleep(uint32_t ns){
 
 
 int64_t sys_get_time(time_struct * time){
-    time->seconds = getRTCSeconds();
-    time->minutes =  getRTCMinutes();
-    time->hour =  getRTCHours();
-    time->day = getRTCDayOfMonth();
-    time->month = getRTCMonth();
-    time->year = getRTCYear();
+    time->seconds = get_rtc_seconds();
+    time->minutes =  get_rtc_minutes();
+    time->hour =  get_rtc_hours();
+    time->day = get_rtc_day_of_month();
+    time->month = get_rtc_month();
+    time->year = get_rtc_year();
     return 0;
 }
 
 
 
 
-//ADDED FOR TP2_SO:
-#include <memory_management.h>
+//added for tp2_so:
 
 
 void * sys_malloc(uint64_t size){
@@ -158,7 +157,7 @@ int64_t my_create_process(char *name, uint64_t argc, char *argv[])
     return 0;
 }
 
-int64_t my_nice(uint64_t pid, uint64_t newPrio)
+int64_t my_nice(uint64_t pid, uint64_t new_prio)
 {
     return 0;
 }
@@ -178,7 +177,7 @@ int64_t my_unblock(uint64_t pid)
     return 0;
 }
 
-int64_t my_sem_open(char *sem_id, uint64_t initialValue)
+int64_t my_sem_open(char *sem_id, uint64_t initial_value)
 {
     return 0;
 }

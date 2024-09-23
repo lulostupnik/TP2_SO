@@ -241,7 +241,7 @@ void print_register_snapshot();
  * @param color The color of the pixel.
  * @return int64_t Returns 0 if the pixel was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_pixel(uint64_t x, uint64_t y, Color color);
+int64_t draw_pixel(uint64_t x, uint64_t y, color color);
 
 
 
@@ -255,7 +255,7 @@ int64_t draw_pixel(uint64_t x, uint64_t y, Color color);
  * @param color The color of the rectangle.
  * @return int64_t Returns 0 if the rectangle was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, Color color);
+int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color color);
 
 
 
@@ -269,7 +269,7 @@ int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, 
  * @param fontSize The size of the font.
  * @return int64_t Returns 0 if the letter was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_letter(uint64_t x, uint64_t y, char letter, Color color, uint64_t font_size);
+int64_t draw_letter(uint64_t x, uint64_t y, char letter, color color, uint64_t font_size);
 
 
 
@@ -290,4 +290,11 @@ int64_t enter_text_mode();
 int64_t enter_video_mode();
 
 
-#endif //TPE_ARQUI_LIBC_H
+void * memset(void * destination, int32_t c, uint64_t length);
+
+void * my_malloc(uint64_t size);
+
+void my_free(void *ptr);
+
+
+#endif 

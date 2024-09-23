@@ -49,14 +49,14 @@ typedef enum {
 
 typedef void (*function_key)(void);
 
-void keyboardHandler();
+void keyboard_handler();
 
 /*
  * Key number goes from 1 to 12
  */
-void setFKeyFunction(uint64_t key_number, function_key f);
-uint64_t getCurrent();
-uint64_t bufferHasNext();
+void set_f_key_function(uint64_t key_number, function_key f);
+uint64_t get_current();
+uint64_t buffer_has_next();
 
 
 #endif

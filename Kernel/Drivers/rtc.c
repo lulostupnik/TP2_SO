@@ -1,44 +1,44 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
 
 #include <rtc.h>
 
 extern uint8_t rtc(uint8_t mode);
 
-static uint8_t bcd_decimal(uint8_t BCD) {
-    return (BCD >> 4) * 10 + (BCD & 0x0F);
+static uint8_t bcd_decimal(uint8_t bcd) {
+    return (bcd >> 4) * 10 + (bcd & 0x0f);
 }
 
-static uint8_t getRTC(uint8_t mode) {
+static uint8_t get_rtc(uint8_t mode) {
     return bcd_decimal(rtc(mode));
 }
 
-uint8_t getRTCSeconds() {
-    return getRTC(RTC_SECONDS);
+uint8_t get_rtc_seconds() {
+    return get_rtc(RTC_SECONDS);
 }
 
-uint8_t getRTCMinutes() {
-    return getRTC(RTC_MINUTES);
+uint8_t get_rtc_minutes() {
+    return get_rtc(RTC_MINUTES);
 }
 
-uint8_t getRTCHours() {
-    return getRTC(RTC_HOURS);
+uint8_t get_rtc_hours() {
+    return get_rtc(RTC_HOURS);
 }
 
-uint8_t getRTCDayOfWeek() {
-    return getRTC(RTC_DAY_OF_WEEK);
+uint8_t get_rtc_day_of_week() {
+    return get_rtc(RTC_DAY_OF_WEEK);
 }
 
-uint8_t getRTCDayOfMonth() {
-    return getRTC(RTC_DAY_OF_MONTH);
+uint8_t get_rtc_day_of_month() {
+    return get_rtc(RTC_DAY_OF_MONTH);
 }
 
-uint8_t getRTCMonth() {
-    return getRTC(RTC_MONTH);
+uint8_t get_rtc_month() {
+    return get_rtc(RTC_MONTH);
 }
 
-uint8_t getRTCYear() {
-    return getRTC(RTC_YEAR);
+uint8_t get_rtc_year() {
+    return get_rtc(RTC_YEAR);
 }
 
 

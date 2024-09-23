@@ -15,11 +15,11 @@
 #define MAP_HEIGHT 96
 
 
-#define BLACK (Color){0, 0, 0}
-#define RED (Color){255, 0, 0}
-#define GREEN (Color){0, 255, 0}
-#define BLUE (Color){0, 0, 255}
-#define WHITE (Color){255, 255, 255}
+#define BLACK (color){0, 0, 0}
+#define RED (color){255, 0, 0}
+#define GREEN (color){0, 255, 0}
+#define BLUE (color){0, 0, 255}
+#define WHITE (color){255, 255, 255}
 
 #define PLAYER_1_INIT_X 64
 #define PLAYER_1_INIT_Y 94
@@ -40,7 +40,7 @@ typedef struct position{
 typedef struct player{
     direction dir;
     position pos;
-    Color color;
+    color color;
 } player;
 
 #endif // ELIMINATOR_H

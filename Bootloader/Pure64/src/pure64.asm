@@ -554,7 +554,7 @@ nextIOAPIC:
 	stosd
 	mov eax, [VBEModeInfoBlock.XResolution]		; X and Y resolution (16-bits each)
 	stosd
-	mov al, [VBEModeInfoBlock.BitsPerPixel]		; Color depth
+	mov al, [VBEModeInfoBlock.BitsPerPixel]		; color depth
 	stosb
 
 ; Initialization is now complete... write a message to the screen

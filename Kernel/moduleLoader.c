@@ -1,41 +1,41 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
 #include <stdint.h>
 #include <lib.h>
-#include <moduleLoader.h>
+#include <module_loader.h>
 
-static void loadModule(uint8_t ** module, void * targetModuleAddress);
-static uint32_t readUint32(uint8_t ** address);
+static void load_module(uint8_t ** module, void * target_module_address);
+static uint32_t read_uint32(uint8_t ** address);
 
-void loadModules(void * payloadStart, void ** targetModuleAddress)
+void load_modules(void * payload_start, void ** target_module_address)
 {
 	int i;
-	uint8_t * currentModule = (uint8_t*)payloadStart;
-	uint32_t moduleCount = readUint32(&currentModule);
+	uint8_t * current_module = (uint8_t*)payload_start;
+	uint32_t module_count = read_uint32(&current_module);
 
-	for (i = 0; i < moduleCount; i++)
-		loadModule(&currentModule, targetModuleAddress[i]);
+	for (i = 0; i < module_count; i++)
+		load_module(&current_module, target_module_address[i]);
 }
 
-static void loadModule(uint8_t ** module, void * targetModuleAddress)
+static void load_module(uint8_t ** module, void * target_module_address)
 {
-	uint32_t moduleSize = readUint32(module);
-	memcpy(targetModuleAddress, *module, moduleSize);
-	*module += moduleSize;
+	uint32_t module_size = read_uint32(module);
+	memcpy(target_module_address, *module, module_size);
+	*module += module_size;
 
 }
 
-static uint32_t readUint32(uint8_t ** address)
+static uint32_t read_uint32(uint8_t ** address)
 {
 	uint32_t result = *(uint32_t*)(*address);
 	*address += sizeof(uint32_t);

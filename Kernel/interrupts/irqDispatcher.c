@@ -13,15 +13,15 @@ static void (*irq_routines[2])() = {
     int_21
 };
 
-void irqDispatcher(uint64_t irq) {
+void irq_dispatcher(uint64_t irq) {
     irq_routines[irq]();
 	return;
 }
 
 
 void int_20() {
-    timerHandler();
+    timer_handler();
 }
 void int_21(){
-    keyboardHandler();
+    keyboard_handler();
 }

@@ -27,7 +27,7 @@ void clearBSS(void * bssAddress, uint64_t bssSize)
 	memset(bssAddress, 0, bssSize);
 }
 
-void * getStackBase()
+void * get_stack_base()
 {
 	return (void*)(
 		(uint64_t)&endOfKernel
@@ -42,9 +42,9 @@ void * initializeKernelBinary()
 		shellCodeModuleAddress,
 		shellDataModuleAddress
 	};
-	loadModules(&endOfKernelBinary, moduleAddresses);
+	load_modules(&endOfKernelBinary, moduleAddresses);
 	clearBSS(&bss, &endOfKernel - &bss);
-	return getStackBase();
+	return get_stack_base();
 }
 
 

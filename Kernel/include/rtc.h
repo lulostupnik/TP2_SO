@@ -17,13 +17,13 @@
 #define RTC_MONTH           0x08
 #define RTC_YEAR            0x09
 
-uint8_t getRTCSeconds();
-uint8_t getRTCMinutes();
-uint8_t getRTCHours();
-uint8_t getRTCDayOfWeek();
-uint8_t getRTCDayOfMonth();
-uint8_t getRTCMonth();
-uint8_t getRTCYear();
+uint8_t get_rtc_seconds();
+uint8_t get_rtc_minutes();
+uint8_t get_rtc_hours();
+uint8_t get_rtc_day_of_week();
+uint8_t get_rtc_day_of_month();
+uint8_t get_rtc_month();
+uint8_t get_rtc_year();
 
 
 #endif //TPE_ARQUI_RTC_H

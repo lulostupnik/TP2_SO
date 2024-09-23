@@ -16,7 +16,7 @@ static void multiPlayer();
 
 static void print_centered_string(uint64_t x, uint64_t y, const char* str, uint64_t font_size);
 static void print_string(uint64_t x, uint64_t y, const char* str, uint64_t font_size);
-static void fill_position(uint64_t x, uint64_t y, Color color);
+static void fill_position(uint64_t x, uint64_t y, color color);
 static void initialize_map();
 
 
@@ -283,13 +283,13 @@ static void print_centered_string(uint64_t x, uint64_t y, const char* str, uint6
 
 static void print_string(uint64_t x, uint64_t y, const char* str, uint64_t font_size) {
     for (uint64_t i = 0; str[i] != '\0'; i++) {
-        draw_letter(x + i * CHARACTER_WIDTH * font_size, y, str[i], (Color){0, 255, 0}, font_size);
+        draw_letter(x + i * CHARACTER_WIDTH * font_size, y, str[i], (color){0, 255, 0}, font_size);
     }
 }
 
 
 
-static void fill_position(uint64_t x, uint64_t y, Color color){
+static void fill_position(uint64_t x, uint64_t y, color color){
     if(x >= MAP_WIDTH || y >= MAP_HEIGHT){
         return;
     }

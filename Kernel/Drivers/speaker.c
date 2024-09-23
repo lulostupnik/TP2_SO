@@ -1,25 +1,25 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
 
 
-//Cortesía de https://wiki.osdev.org/PC_Speaker
-//Play sound using built-in speaker
+//cortesía de https://wiki.osdev.org/pc_speaker
+//play sound using built-in speaker
 
 
 #include <speaker.h>
 
 
-static void play_sound(uint32_t nFrequence) {
- 	uint32_t Div;
+static void play_sound(uint32_t n_frequence) {
+ 	uint32_t div;
  	uint8_t tmp;
  
-        //Set the PIT to the desired frequency
- 	Div = 1193180 / nFrequence;
+        //set the pit to the desired frequency
+ 	div = 1193180 / n_frequence;
  	outb(0x43, 0xb6);
- 	outb(0x42, (uint8_t) (Div) );
- 	outb(0x42, (uint8_t) (Div >> 8));
+ 	outb(0x42, (uint8_t) (div) );
+ 	outb(0x42, (uint8_t) (div >> 8));
  
-        //And play the sound using the PC speaker
+        //and play the sound using the pc speaker
  	tmp = inb(0x61);
   	if (tmp != (tmp | 3)) {
  		outb(0x61, tmp | 3);
@@ -28,12 +28,12 @@ static void play_sound(uint32_t nFrequence) {
  
  //make it shut up
  static void nosound() {
- 	uint8_t tmp = inb(0x61) & 0xFC;
+ 	uint8_t tmp = inb(0x61) & 0xfc;
  
  	outb(0x61, tmp);
  }
  
- //Make a beep
+ //make a beep
  void beep(uint32_t freq, int time) {
  	 play_sound(freq);
  	 nano_sleep(time);

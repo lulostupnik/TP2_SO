@@ -49,8 +49,6 @@ uint64_t test_mm(uint64_t argc, char *argv[])
                 total += mm_rqs[rq].size;
                 rq++;
             }
-
-           
         }
       
         // Set
@@ -74,4 +72,5 @@ uint64_t test_mm(uint64_t argc, char *argv[])
                 my_free(mm_rqs[i].address);
     }
     printf("Everything OK\n");
+    return 0;
 }

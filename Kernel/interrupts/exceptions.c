@@ -4,12 +4,11 @@
 #include <exceptions.h>
 
 
-
 #define ZERO_EXCEPTION_ID 0
 #define OPCODE_EXCEPTION_ID 6
 #define CANT_REGS 18
-extern uint64_t exception_regs[CANT_REGS];
 
+extern uint64_t exception_regs[CANT_REGS];
 //Orden: RAX, RBX, RCX, RDX, RSI, RDI, RBP, RSP, R8, R9, R10, R11, R12, R13, R14, R15, RIP, RFLAGS
 
 
@@ -24,9 +23,9 @@ static uint8_t * num_to_string(uint64_t num, uint64_t base) {
     return ptr;
 }
 
-static void printRegs(uint8_t * message, uint8_t cant_chars_message){
-    const char * regs[] = {"RAX", "RBX", "RCX", "RDX", "RSI", "RDI", "RBP", "RSP", "R8", "R9", "R10", "R11", "R12", "R13", "R14", "R15", "RIP", "RFLAGS"};
-    Color col = {255,255,255};
+static void print_regs(uint8_t * message, uint8_t cant_chars_message){
+    const char * regs[] = {"rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rbp", "rsp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rip", "rflags"};
+    color col = {255,255,255};
     vdriver_clear_screen(col);
     vdriver_set_mode(TEXT_MODE, col);
     vdriver_text_set_font_size(2);
@@ -44,7 +43,7 @@ static void printRegs(uint8_t * message, uint8_t cant_chars_message){
 
 
 
-void exceptionDispatcher(uint64_t exception) {
+void exception_dispatcher(uint64_t exception) {
 
     uint8_t * message = (uint8_t*)"";
     uint8_t message_cant_chars = 1;
@@ -58,18 +57,18 @@ void exceptionDispatcher(uint64_t exception) {
         message_cant_chars= 16;
     }
 
-    printRegs(message, message_cant_chars);
+    print_regs(message, message_cant_chars);
     vdriver_text_write(STDERR, "\nPress any key to continue", 30);
     uint16_t buffer;
 
 
 
-    picMasterMask(0xFD);                    //Solo habilito interrupciones de teclado
+    pic_master_mask(0xfd);                    //solo habilito interrupciones de teclado
     _sti();
     while(sys_read(1, &buffer,1) == 0);
     _cli();
-    picMasterMask(DEFAULT_MASTER_MASK);     // restores to default
+    pic_master_mask(DEFAULT_MASTER_MASK);     // restores to default
 
-    Color c = {0, 0, 0};
+    color c = {0, 0, 0};
     vdriver_clear_screen(c);
 }

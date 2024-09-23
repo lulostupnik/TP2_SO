@@ -1,5 +1,5 @@
-GLOBAL cpuVendor
-GLOBAL getKey
+GLOBAL cpu_vendor
+GLOBAL get_key
 GLOBAL inb
 GLOBAL outb
 GLOBAL hlt
@@ -7,7 +7,7 @@ GLOBAL rtc
 
 section .text
 
-cpuVendor:
+cpu_vendor:
 	push rbp
 	mov rbp, rsp
 
@@ -32,8 +32,8 @@ cpuVendor:
 	ret
 
 ;https://wiki.osdev.org/%228042%22_PS/2_Controller
-; uint8_t getKey();
-getKey:
+; uint8_t get_key();
+get_key:
     push rbp
     mov rbp, rsp
 

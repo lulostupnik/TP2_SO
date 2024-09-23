@@ -41,7 +41,7 @@ This memory map shows how physical memory looks after Pure64 is finished.
 | 0x0000000000010000 |0x000000000004FFFF| 256 KiB | PD - Room to map 64 GiB|
 | 0x0000000000050000 |0x000000000009FFFF|320 KiB| Free |
 | 0x00000000000A0000|0x00000000000FFFFF|384 KiB| ROM Area| 
-| | | | VGA mem at 0xA0000 (128 KiB) Color text starts at 0xB8000|
+| | | | VGA mem at 0xA0000 (128 KiB) color text starts at 0xB8000|
 | | | | Video BIOS at 0xC0000 (64 KiB)|
 | | | | Motherboard BIOS at F0000 (64 KiB)|
 |0x0000000000100000|0xFFFFFFFFFFFFFFFF| 1+ MiB | Your software is loaded here|
@@ -75,7 +75,7 @@ The Pure64 information table is located at `0x0000000000005000` and ends at `0x0
 |0x5080|32-bit|VIDEO_BASE|Base memory for video (if graphics mode set)|
 |0x5084|16-bit|VIDEO_X|X resolution|
 |0x5086|16-bit|VIDEO_Y|Y resolution|
-|0x5088|8-bit|VIDEO_DEPTH|Color depth|
+|0x5088|8-bit|VIDEO_DEPTH|color depth|
 |0x5100-|8-bit|APIC_ID |APIC ID's for valid CPU cores (based on CORES_ACTIVE)|
 
 

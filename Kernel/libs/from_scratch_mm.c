@@ -12,7 +12,7 @@
 
 #include <memory_management.h>
 
-#define NULL 0
+
 
 typedef struct MM_rq
 {

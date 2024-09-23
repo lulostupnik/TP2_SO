@@ -1,8 +1,8 @@
 
 GLOBAL _cli
 GLOBAL _sti
-GLOBAL picMasterMask
-GLOBAL picSlaveMask
+GLOBAL pic_master_mask
+GLOBAL pic_slave_mask
 GLOBAL haltcpu
 GLOBAL _hlt
 
@@ -21,11 +21,11 @@ GLOBAL regs_shot
 GLOBAL exception_regs
 GLOBAL regs_shot_available
 
-EXTERN irqDispatcher
-EXTERN exceptionDispatcher
-EXTERN sysCallHandler
+EXTERN irq_dispatcher
+EXTERN exception_dispatcher
+EXTERN sys_call_handler
 EXTERN should_take_reg_shot
-EXTERN getStackBase
+EXTERN get_stack_base
 
 SECTION .text
 
@@ -103,7 +103,7 @@ SECTION .text
 	pushState
 
 	mov rdi, %1 ; pasaje de parametro
-	call irqDispatcher
+	call irq_dispatcher
 
 	; signal pic EOI (End of Interrupt)
 	mov al, 20h
@@ -127,7 +127,7 @@ _sti:
 	sti
 	ret
 
-picMasterMask:
+pic_master_mask:
 	push rbp
     mov rbp, rsp
     mov ax, di
@@ -136,7 +136,7 @@ picMasterMask:
     retn
 
 
-picSlaveMask:
+pic_slave_mask:
 	push    rbp
     mov     rbp, rsp
     mov     ax, di  ; ax = mascara de 16 bits
@@ -154,7 +154,7 @@ _irq01Handler:
     pushState
 
 	mov rdi, 1
-	call irqDispatcher
+	call irq_dispatcher
 
 	call should_take_reg_shot
 	cmp rax, 1
@@ -221,7 +221,7 @@ _irq80Handler:
 	pushState
 	mov rdi, rsp ; Pasaje de Registros
 
-	call sysCallHandler
+	call sys_call_handler
 	
 
 
@@ -260,13 +260,13 @@ _irq80Handler:
 	mov rax, [rsp+17*8]                     ; RFLAGS
 	mov [exception_regs + 8*17], rax
 
-	mov rdi, %1                             ; Parametros para exceptionDispatcher
+	mov rdi, %1                             ; Parametros para exception_dispatcher
 	mov rsi, exception_regs
 
-	call exceptionDispatcher
+	call exception_dispatcher
 
 	popState
-    call getStackBase
+    call get_stack_base
 	mov [rsp+24], rax ; El StackBase
     mov rax, userland
     mov [rsp], rax ; PISO la dirección de retorno

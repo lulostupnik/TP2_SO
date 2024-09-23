@@ -8,6 +8,6 @@
 #include <syscalls.h>
 #include <interrupts.h>
 
-void exceptionDispatcher(uint64_t exception);
+void exception_dispatcher(uint64_t exception);
 
 #endif //TPE_ARQUI_EXCEPTIONS_H

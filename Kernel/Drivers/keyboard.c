@@ -1,14 +1,14 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+// this is a personal academic project. dear pvs-studio, please check it.
+// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
 
 #include <keyboard.h>
 
 
-extern uint8_t getKey();
+extern uint8_t get_key();
 
 
 /*
- * Buffer --> es "circular". Si se llena, pisa lo que primero se puso.
+ * buffer --> es "circular". si se llena, pisa lo que primero se puso.
  */
 
 
@@ -18,24 +18,24 @@ static uint64_t buffer_current = 0;
 static uint8_t reg_shot_flag = 0;
 
 
-extern uint16_t pressedKeyShiftMap[][2];
+extern uint16_t pressed_key_shift_map[][2];
 
-#define CANT_FUNCTION_KEYS 12
+#define cant_function_keys 12
 static void f1key(void);
-static function_key functionKeyFunArray[CANT_FUNCTION_KEYS] = {f1key, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 };
+static function_key function_key_fun_array[cant_function_keys] = {f1key, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ,0 };
 static void f1key(void){
     reg_shot_flag = 1;
 }
 
-void setFKeyFunction(uint64_t key_number, function_key f){
-    if(key_number == 0 || key_number > CANT_FUNCTION_KEYS ){
+void set_f_key_function(uint64_t key_number, function_key f){
+    if(key_number == 0 || key_number > cant_function_keys ){
         return;
     }
     key_number--;
-    functionKeyFunArray[key_number] = f;
+    function_key_fun_array[key_number] = f;
 }
 
-static void functionKeyHandler(uint64_t code){
+static void function_key_handler(uint64_t code){
     int64_t i = -1;
     switch (code) {
         case F1: i= 0;break;
@@ -51,87 +51,87 @@ static void functionKeyHandler(uint64_t code){
         case F11: i=10; break;
         case F12: i =11; break;
     }
-    if(i != -1 && functionKeyFunArray[i] != 0){
-        functionKeyFunArray[i]();
+    if(i != -1 && function_key_fun_array[i] != 0){
+        function_key_fun_array[i]();
     }
 
 }
 
 
-static uint8_t isReleased(uint8_t key){
+static uint8_t is_released(uint8_t key){
     return (key & 0x80);
 }
-static uint8_t isPressed(uint8_t key){
-    return !isReleased(key);
+static uint8_t is_pressed(uint8_t key){
+    return !is_released(key);
 }
 
-#define specialKeyPressedMapIdx(code) ((code) - FIRST_SPECIAL_KEY)
-static uint16_t specialKeyPressedMap[SPECIAL_KEYS_CANT] = {0};
-static int isSpecialKey(uint16_t code){
-    return (code >= FIRST_SPECIAL_KEY) && (code <= LAST_SPECIAL_KEY);
+#define special_key_pressed_map_idx(code) ((code) -FIRST_SPECIAL_KEY)
+static uint16_t special_key_pressed_map[SPECIAL_KEYS_CANT] = {0};
+static int is_special_key(uint16_t code){
+    return (code >=FIRST_SPECIAL_KEY) && (code <= LAST_SPECIAL_KEY);
 }
 
-static int specialKeyPressed(uint16_t code){
-    if(!isSpecialKey(code)){
+static int special_key_pressed(uint16_t code){
+    if(!is_special_key(code)){
         return -1;
     }
-    return specialKeyPressedMap[specialKeyPressedMapIdx(code)];
+    return special_key_pressed_map[special_key_pressed_map_idx(code)];
 }
 
 
-static int capsLockPressed(){
-    return specialKeyPressed(CAPS_LOCK);
+static int caps_lock_pressed(){
+    return special_key_pressed(CAPS_LOCK);
 }
-static int shiftPressed(){
-    return (specialKeyPressed(LEFT_SHIFT) || specialKeyPressed(RIGHT_SHIFT)) ? 1:0;
+static int shift_pressed(){
+    return (special_key_pressed(LEFT_SHIFT) || special_key_pressed(RIGHT_SHIFT)) ? 1:0;
 }
-static int shiftCapsLockPressed(){
-    return (shiftPressed()^capsLockPressed()); //xor
-}
-
-static uint8_t releasedKeyToPressedMask(uint8_t key){
-    return key&0x7F;
+static int shift_caps_lock_pressed(){
+    return (shift_pressed()^caps_lock_pressed()); //xor
 }
 
+static uint8_t released_key_to_pressed_mask(uint8_t key){
+    return key&0x7f;
+}
 
 
-uint64_t bufferHasNext(){
+
+uint64_t buffer_has_next(){
     return ( buffer_dim > 0 ) && ( buffer_current < buffer_dim );
 }
 
-uint64_t getCurrent(){
-    if(bufferHasNext()) {
+uint64_t get_current(){
+    if(buffer_has_next()) {
         return buffer[buffer_current++];
     }
     return 0;
 }
 
-void keyboardHandler(){
+void keyboard_handler(){
     reg_shot_flag = 0;
-    uint8_t key = getKey();
+    uint8_t key = get_key();
 
 
-    uint8_t key_is_pressed = isPressed(key) ? 1:0;
+    uint8_t key_is_pressed = is_pressed(key) ? 1:0;
 
     if( !key_is_pressed){
-        key = releasedKeyToPressedMask(key); //la tabla es para PRESSED !
+        key = released_key_to_pressed_mask(key); //la tabla es para pressed !
     }
 
-    uint16_t code = pressedKeyShiftMap[key][shiftCapsLockPressed()];
+    uint16_t code = pressed_key_shift_map[key][shift_caps_lock_pressed()];
 
 
-    if(isSpecialKey(code)){
+    if(is_special_key(code)){
         if(code != CAPS_LOCK && code != NUM_LOCK && code != SCROLL_LOCK){
-            specialKeyPressedMap[specialKeyPressedMapIdx(code)] = key_is_pressed;
+            special_key_pressed_map[special_key_pressed_map_idx(code)] = key_is_pressed;
         }else if(key_is_pressed) {
-            specialKeyPressedMap[specialKeyPressedMapIdx(code)] = 1 - specialKeyPressedMap[specialKeyPressedMapIdx(code)];
+            special_key_pressed_map[special_key_pressed_map_idx(code)] = 1 - special_key_pressed_map[special_key_pressed_map_idx(code)];
         }
     }
 
     if(!key_is_pressed){
         return;
     }
-    functionKeyHandler(code);
+    function_key_handler(code);
 
 
     buffer[buffer_dim] = code;

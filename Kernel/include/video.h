@@ -59,7 +59,7 @@ typedef struct {
     uint8_t r; // Red component
     uint8_t g; // Green component
     uint8_t b; // Blue component
-} Color;
+} color;
 
 
 /**
@@ -68,32 +68,32 @@ typedef struct {
 typedef struct{
     int64_t width;
     int64_t height;
-} ScreenInformation;
+} screen_information;
 
 
 typedef enum{
     NOT_VALID_ASCII, NOT_VALID_FONT_SIZE
-} tError;
+} t_error;
 
 
 
-typedef struct vbe_mode_info_structure * VBEInfoPtr;
+typedef struct vbe_mode_info_structure * vbe_info_ptr;
 
 
 
 
 int64_t vdriver_text_write(uint64_t fd, const char * buffer, int64_t amount);
 int64_t vdriver_text_set_font_size(uint64_t size);
-void vdriver_set_font_color(Color c);
+void vdriver_set_font_color(color c);
 
-int64_t vdriver_video_draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, Color color);
-int64_t vdriver_video_draw_font(uint64_t x, uint64_t y, uint8_t ascii, Color color, uint64_t fontSize);
-int64_t vdriver_video_draw_pixel(uint64_t x, uint64_t y, Color color);
+int64_t vdriver_video_draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color color);
+int64_t vdriver_video_draw_font(uint64_t x, uint64_t y, uint8_t ascii, color color, uint64_t fontSize);
+int64_t vdriver_video_draw_pixel(uint64_t x, uint64_t y, color color);
 
 
-int64_t vdriver_get_screen_information(ScreenInformation * screen_information);
-int64_t vdriver_set_mode(uint64_t mode, Color c);
-int64_t vdriver_clear_screen(Color color);
+int64_t vdriver_get_screen_information(screen_information * screen_information);
+int64_t vdriver_set_mode(uint64_t mode, color c);
+int64_t vdriver_clear_screen(color color);
 
 
 

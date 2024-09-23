@@ -111,7 +111,7 @@ char * numToString(uint64_t num, uint64_t base) {
     char * ptr = &buffer[63];
     *ptr = '\0';
     do {
-        *--ptr = "0123456789abcdef"[num % base];
+        *--ptr = "0123456789ABCDEF"[num % base];
         num /= base;
     } while(num != 0);
     return ptr;
@@ -338,7 +338,7 @@ int64_t enter_text_mode() {
  * @param color The color of the pixel.
  * @return int64_t Returns 0 if the pixel was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_pixel(uint64_t x, uint64_t y, Color color) {
+int64_t draw_pixel(uint64_t x, uint64_t y, color color) {
     return sys_put_pixel(x, y, &color);
 }
 
@@ -354,7 +354,7 @@ int64_t draw_pixel(uint64_t x, uint64_t y, Color color) {
  * @param color The color of the rectangle.
  * @return int64_t Returns 0 if the rectangle was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, Color color) {
+int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color color) {
     return sys_put_rectangle(x, y, width, height, &color);
 }
 
@@ -369,9 +369,9 @@ int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, 
  * @param fontSize The size of the font.
  * @return int64_t Returns 0 if the letter was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_letter(uint64_t x, uint64_t y, char letter, Color color, uint64_t font_size) {
+int64_t draw_letter(uint64_t x, uint64_t y, char letter, color color, uint64_t font_size) {
     return sys_draw_letter(x, y, &letter, &color, font_size);
-    // int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, Color * color, uint64_t fontSize)
+    // int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, color * color, uint64_t fontSize)
 }
 
 
@@ -386,7 +386,7 @@ int64_t draw_letter(uint64_t x, uint64_t y, char letter, Color color, uint64_t f
  * @return void
  */
 void print_register_snapshot() {
-    Snapshot snap;
+    snapshot snap;
     if(sys_get_register_snapshot(&snap) == -1) {
         fprintf(STDERR, "No register snapshot available. Press F1 to take a snapshot.\n");
         return;
@@ -413,6 +413,19 @@ void print_register_snapshot() {
 }
 
 //----------------------------- TP2 ---------------------------------- //
+
+void * memset(void * destination, int32_t c, uint64_t length)
+{
+	uint8_t chr = (uint8_t)c;
+	char * dst = (char*)destination;
+
+	while(length--)
+		dst[length] = chr;
+
+	return destination;
+}
+
+
 
 void * my_malloc(uint64_t size){
     return sys_malloc(size);
