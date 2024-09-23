@@ -13,40 +13,40 @@
 
 
 typedef enum {
-    LEFT_CONTROL = 256,         // NOTAR: El valor con el que empieza tiene que ser mas grande al ultimo de la tabla ASCII
-    LEFT_SHIFT,
-    RIGHT_SHIFT,
-    KEYPAD_STAR_PRTSC,
-    LEFT_ALT,
-    CAPS_LOCK,
-    F1,
-    F2,
-    F3,
-    F4,
-    F5,
-    F6,
-    F7,
-    F8,
-    F9,
-    F10,
-    NUM_LOCK,
-    SCROLL_LOCK,
-    HOME_KEYPAD,
-    UP_ARROW_KEYPAD,
-    PG_UP_KEYPAD,
-    LEFT_ARROW_KEYPAD,
-    RIGHT_ARROW_KEYPAD,
-    PLUS_KEYPAD,
-    END_KEYPAD,
-    DOWN_ARROW_KEYPAD,
-    PG_DN_KEYPAD,
-    INS_KEYPAD,
-    DEL_KEYPAD,
-    SYS_REQ_AT,
-    NONE1, // no hay tecla de scanCode 0x55
-    NONE2, // no hay tecla de scan code 0x56
-    F11,
-    F12
+	LEFT_CONTROL = 256,         // NOTAR: El valor con el que empieza tiene que ser mas grande al ultimo de la tabla ASCII
+	LEFT_SHIFT,
+	RIGHT_SHIFT,
+	KEYPAD_STAR_PRTSC,
+	LEFT_ALT,
+	CAPS_LOCK,
+	F1,
+	F2,
+	F3,
+	F4,
+	F5,
+	F6,
+	F7,
+	F8,
+	F9,
+	F10,
+	NUM_LOCK,
+	SCROLL_LOCK,
+	HOME_KEYPAD,
+	UP_ARROW_KEYPAD,
+	PG_UP_KEYPAD,
+	LEFT_ARROW_KEYPAD,
+	RIGHT_ARROW_KEYPAD,
+	PLUS_KEYPAD,
+	END_KEYPAD,
+	DOWN_ARROW_KEYPAD,
+	PG_DN_KEYPAD,
+	INS_KEYPAD,
+	DEL_KEYPAD,
+	SYS_REQ_AT,
+	NONE1, // no hay tecla de scanCode 0x55
+	NONE2, // no hay tecla de scan code 0x56
+	F11,
+	F12
 } specialCodes;
 
 
@@ -73,7 +73,7 @@ char getChar();
  *
  * @param c The character to write.
  */
-void put_char(char c);
+void put_char ( char c );
 
 
 
@@ -87,7 +87,7 @@ void put_char(char c);
  * @param duration The duration of the beep sound in milliseconds.
  * @return int64_t Returns 0 if the beep was successfully generated, or -1 if an error occurred.
  */
-int64_t beep(uint64_t frequency, uint64_t duration);
+int64_t beep ( uint64_t frequency, uint64_t duration );
 
 
 
@@ -112,7 +112,7 @@ int64_t clear_screen();
  * @param size The desired font size.
  * @return int64_t Returns 0 if the font size was successfully set, or -1 if an error occurred.
  */
-int64_t setFontSize(uint64_t size);
+int64_t setFontSize ( uint64_t size );
 
 
 
@@ -124,7 +124,7 @@ int64_t setFontSize(uint64_t size);
  * @param str The string whose length is to be calculated.
  * @return size_t Returns the number of characters in the string pointed to by `str`.
  */
-uint64_t strlen(const char *str);
+uint64_t strlen ( const char *str );
 
 
 
@@ -138,7 +138,7 @@ uint64_t strlen(const char *str);
  * @param base The base to use for the conversion. This should be between 2 and 16 inclusive.
  * @return char* Returns a pointer to the string representation of the number. This string is null-terminated.
  */
-char * numToString(uint64_t num, uint64_t base);
+char * numToString ( uint64_t num, uint64_t base );
 
 
 
@@ -151,7 +151,7 @@ char * numToString(uint64_t num, uint64_t base);
  * @param str The string to write.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-int64_t puts(const char * str);
+int64_t puts ( const char * str );
 
 
 
@@ -164,7 +164,7 @@ int64_t puts(const char * str);
  * @param fd The file descriptor to write to.
  * @return int64_t Returns the 0 if the operation was successful, or -1 if an error occurred.
  */
-int64_t fputc(char c, uint64_t fd);
+int64_t fputc ( char c, uint64_t fd );
 
 
 
@@ -176,7 +176,7 @@ int64_t fputc(char c, uint64_t fd);
  * @param ... Variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-int64_t fprintf(uint64_t fd, const char * fmt, ...);
+int64_t fprintf ( uint64_t fd, const char * fmt, ... );
 
 
 
@@ -187,7 +187,7 @@ int64_t fprintf(uint64_t fd, const char * fmt, ...);
  * @param ... Variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-int64_t printf(const char * fmt, ...);
+int64_t printf ( const char * fmt, ... );
 
 
 
@@ -202,7 +202,7 @@ int64_t printf(const char * fmt, ...);
  * @param n The maximum number of characters to read. (the last character will be a null terminator)
  * @return char* Returns a pointer to the buffer.
  */
-char* gets(char* buffer, int n);
+char* gets ( char* buffer, int n );
 
 
 
@@ -216,7 +216,7 @@ char* gets(char* buffer, int n);
  * @param str2 The second string to be compared.
  * @return int Returns an integer less than, equal to, or greater than zero if str1 is found, respectively, to be less than, to match, or be greater than str2.
  */
-int64_t strcmp(const char *str1, const char *str2);
+int64_t strcmp ( const char *str1, const char *str2 );
 
 
 
@@ -241,7 +241,7 @@ void print_register_snapshot();
  * @param color The color of the pixel.
  * @return int64_t Returns 0 if the pixel was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_pixel(uint64_t x, uint64_t y, color color);
+int64_t draw_pixel ( uint64_t x, uint64_t y, color color );
 
 
 
@@ -255,7 +255,7 @@ int64_t draw_pixel(uint64_t x, uint64_t y, color color);
  * @param color The color of the rectangle.
  * @return int64_t Returns 0 if the rectangle was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color color);
+int64_t draw_rectangle ( uint64_t x, uint64_t y, uint64_t width, uint64_t height, color color );
 
 
 
@@ -269,7 +269,7 @@ int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, 
  * @param fontSize The size of the font.
  * @return int64_t Returns 0 if the letter was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_letter(uint64_t x, uint64_t y, char letter, color color, uint64_t font_size);
+int64_t draw_letter ( uint64_t x, uint64_t y, char letter, color color, uint64_t font_size );
 
 
 
@@ -290,11 +290,11 @@ int64_t enter_text_mode();
 int64_t enter_video_mode();
 
 
-void * memset(void * destination, int32_t c, uint64_t length);
+void * memset ( void * destination, int32_t c, uint64_t length );
 
-void * my_malloc(uint64_t size);
+void * my_malloc ( uint64_t size );
 
-void my_free(void *ptr);
+void my_free ( void *ptr );
 
 
-#endif 
+#endif

@@ -31,16 +31,16 @@ enum direction {UP, DOWN, LEFT, RIGHT};
 
 typedef enum direction direction;
 
-typedef struct position{
-    int x;
-    int y;
+typedef struct position {
+	int x;
+	int y;
 } position;
 
 
-typedef struct player{
-    direction dir;
-    position pos;
-    color color;
+typedef struct player {
+	direction dir;
+	position pos;
+	color color;
 } player;
 
 #endif // ELIMINATOR_H

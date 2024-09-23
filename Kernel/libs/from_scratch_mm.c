@@ -14,10 +14,9 @@
 
 
 
-typedef struct MM_rq
-{
-    void *address;
-    uint32_t size;
+typedef struct MM_rq {
+	void *address;
+	uint32_t size;
 } mm_rq;
 
 void *start;
@@ -25,30 +24,28 @@ int size;
 int current;
 void *free_ptrs[BLOCK_COUNT]; // [10, 20, 30, 40, 50] --> [20, 30, 40, 50] --> [30, 40, 50]
 
-void my_mm_init(void *p, uint64_t s)
+void my_mm_init ( void *p, uint64_t s )
 {
-    start = p;
-    size = s;
+	start = p;
+	size = s;
 
-    for (int i = 0; i < BLOCK_COUNT; i++)
-    {
-        free_ptrs[i] = start + i * BLOCK_SIZE;
-    }
+	for ( int i = 0; i < BLOCK_COUNT; i++ ) {
+		free_ptrs[i] = start + i * BLOCK_SIZE;
+	}
 
-    current = 0;
+	current = 0;
 }
 
-void *my_malloc(uint64_t size)
+void *my_malloc ( uint64_t size )
 {
-    if (size > BLOCK_SIZE || current >= BLOCK_COUNT)
-    {
-        return NULL;
-    }
-    return free_ptrs[current++];
+	if ( size > BLOCK_SIZE || current >= BLOCK_COUNT ) {
+		return NULL;
+	}
+	return free_ptrs[current++];
 }
 
-void my_free(void *p)
+void my_free ( void *p )
 {
-    free_ptrs[--current] = p;
+	free_ptrs[--current] = p;
 }
 

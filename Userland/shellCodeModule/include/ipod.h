@@ -9,14 +9,14 @@
 #define SONG_AMOUNT 3
 
 typedef struct {
-    uint32_t frequency;
-    int duration; // duration in ms
+	uint32_t frequency;
+	int duration; // duration in ms
 } Note;
 
 typedef struct {
-    uint64_t note_count;
-    Note* notes;
-    char* name;
+	uint64_t note_count;
+	Note* notes;
+	char* name;
 } Song;
 
 extern Song* my_songs[SONG_AMOUNT];
@@ -24,7 +24,7 @@ extern Song* my_songs[SONG_AMOUNT];
 
 void initialize_songs();
 void ipod_menu();
-void play_song(Song* song);
+void play_song ( Song* song );
 
 
 #endif

@@ -5,6 +5,6 @@
 #include <keyboard.h>
 #include <stdint.h>
 
-void irqDispatcher(uint64_t irq);
+void irqDispatcher ( uint64_t irq );
 
 #endif

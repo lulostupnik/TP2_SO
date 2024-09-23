@@ -18,9 +18,10 @@
 #define MIN_FONT_SIZE 1
 
 //Type Definitions
-typedef struct module {
-    char *name;
-    void (*function)();
+typedef struct module
+{
+	char *name;
+	void ( *function ) ();
 } module;
 
 

@@ -12,10 +12,11 @@
  *
  * @return int64_t Returns the value of the read character.
  */
-char getChar(){
-    uint16_t c;
-    while( sys_read(STDIN, &c, 1) == 0 || c > 255 );
-    return (char) c;
+char getChar()
+{
+	uint16_t c;
+	while ( sys_read ( STDIN, &c, 1 ) == 0 || c > 255 );
+	return ( char ) c;
 }
 
 
@@ -28,8 +29,9 @@ char getChar(){
  *
  * @param c The character to write.
  */
-void put_char(char c) {
-    sys_write(STDOUT, &c, 1);
+void put_char ( char c )
+{
+	sys_write ( STDOUT, &c, 1 );
 }
 
 
@@ -44,8 +46,9 @@ void put_char(char c) {
  * @param duration The duration of the beep sound in milliseconds.
  * @return int64_t Returns 0 if the beep was successfully generated, or -1 if an error occurred.
  */
-int64_t beep(uint64_t frequency, uint64_t duration) {
-    return sys_beep(frequency, duration);
+int64_t beep ( uint64_t frequency, uint64_t duration )
+{
+	return sys_beep ( frequency, duration );
 }
 
 
@@ -58,8 +61,9 @@ int64_t beep(uint64_t frequency, uint64_t duration) {
  *
  * @return int64_t Returns 0 if the screen was successfully cleared, or -1 if an error occurred.
  */
-int64_t clear_screen() {
-    return sys_clear_screen();
+int64_t clear_screen()
+{
+	return sys_clear_screen();
 }
 
 
@@ -73,8 +77,9 @@ int64_t clear_screen() {
  * @param size The desired font size.
  * @return int64_t Returns 0 if the font size was successfully set, or -1 if an error occurred.
  */
-int64_t setFontSize(uint64_t size) {
-    return sys_set_font_size(size);
+int64_t setFontSize ( uint64_t size )
+{
+	return sys_set_font_size ( size );
 }
 
 
@@ -87,11 +92,12 @@ int64_t setFontSize(uint64_t size) {
  * @param str The string whose length is to be calculated.
  * @return size_t Returns the number of characters in the string pointed to by `str`.
  */
-uint64_t strlen(const char *str) {
-    const char *s = str;
-    while (*s)
-        ++s;
-    return s - str;
+uint64_t strlen ( const char *str )
+{
+	const char *s = str;
+	while ( *s )
+		++s;
+	return s - str;
 }
 
 
@@ -106,15 +112,16 @@ uint64_t strlen(const char *str) {
  * @param base The base to use for the conversion. This should be between 2 and 16 inclusive.
  * @return char* Returns a pointer to the string representation of the number. This string is null-terminated.
  */
-char * numToString(uint64_t num, uint64_t base) {
-    static char buffer[64];
-    char * ptr = &buffer[63];
-    *ptr = '\0';
-    do {
-        *--ptr = "0123456789ABCDEF"[num % base];
-        num /= base;
-    } while(num != 0);
-    return ptr;
+char * numToString ( uint64_t num, uint64_t base )
+{
+	static char buffer[64];
+	char * ptr = &buffer[63];
+	*ptr = '\0';
+	do {
+		*--ptr = "0123456789ABCDEF"[num % base];
+		num /= base;
+	} while ( num != 0 );
+	return ptr;
 }
 
 
@@ -129,8 +136,9 @@ char * numToString(uint64_t num, uint64_t base) {
  * @param str The string to write.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-int64_t puts(const char * str) {
-    return sys_write(STDOUT, str, strlen(str));
+int64_t puts ( const char * str )
+{
+	return sys_write ( STDOUT, str, strlen ( str ) );
 }
 
 
@@ -144,8 +152,9 @@ int64_t puts(const char * str) {
  * @param fd The file descriptor to write to.
  * @return int64_t Returns the 0 if the operation was successful, or -1 if an error occurred.
  */
-int64_t fputc(char c, uint64_t fd) {
-    return sys_write(fd, &c, 1) == -1 ? -1 : 0;
+int64_t fputc ( char c, uint64_t fd )
+{
+	return sys_write ( fd, &c, 1 ) == -1 ? -1 : 0;
 }
 
 
@@ -161,55 +170,51 @@ int64_t fputc(char c, uint64_t fd) {
  * @param args A variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-static int64_t vfprintf(uint64_t fd, const char *fmt, va_list args)
+static int64_t vfprintf ( uint64_t fd, const char *fmt, va_list args )
 {
-    uint64_t flag = 0;
-    uint64_t written = 0;
+	uint64_t flag = 0;
+	uint64_t written = 0;
 
-    for (uint64_t i = 0; fmt[i] != '\0'; i++)
-    {
-        if (fmt[i] == '%' && !flag)
-        {
-            flag = 1;
-            i++;
-        }
+	for ( uint64_t i = 0; fmt[i] != '\0'; i++ ) {
+		if ( fmt[i] == '%' && !flag ) {
+			flag = 1;
+			i++;
+		}
 
-        if (!flag)
-        {
-            fputc(fmt[i], fd);
-            flag = 0;
-            written++;
-            continue;
-        }
+		if ( !flag ) {
+			fputc ( fmt[i], fd );
+			flag = 0;
+			written++;
+			continue;
+		}
 
-        switch (fmt[i])
-        {
-            case 'c':
-                fputc(va_arg(args, int), fd);
-                written++;
-                break;
-            case 'd':
-                written += vfprintf(fd, numToString(va_arg(args, uint64_t), 10), args);
-                break;
-            case 'x':
-                written += vfprintf(fd, "0x", args);
-                written += vfprintf(fd, numToString(va_arg(args, uint64_t), 16), args);
-                break;
-            case 's':
-                written += vfprintf(fd, va_arg(args, char *), args);
-                break;
-            case '%':
-                fputc('%', fd);
-                written++;
-                break;
-            default:
-                return -1;
-        }
+		switch ( fmt[i] ) {
+		case 'c':
+			fputc ( va_arg ( args, int ), fd );
+			written++;
+			break;
+		case 'd':
+			written += vfprintf ( fd, numToString ( va_arg ( args, uint64_t ), 10 ), args );
+			break;
+		case 'x':
+			written += vfprintf ( fd, "0x", args );
+			written += vfprintf ( fd, numToString ( va_arg ( args, uint64_t ), 16 ), args );
+			break;
+		case 's':
+			written += vfprintf ( fd, va_arg ( args, char * ), args );
+			break;
+		case '%':
+			fputc ( '%', fd );
+			written++;
+			break;
+		default:
+			return -1;
+		}
 
-        flag = 0;
-    }
+		flag = 0;
+	}
 
-    return written;
+	return written;
 }
 
 
@@ -224,14 +229,15 @@ static int64_t vfprintf(uint64_t fd, const char *fmt, va_list args)
  * @param ... Variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-int64_t fprintf(uint64_t fd, const char * fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
+int64_t fprintf ( uint64_t fd, const char * fmt, ... )
+{
+	va_list args;
+	va_start ( args, fmt );
 
-    int64_t out = vfprintf(fd, fmt, args);
+	int64_t out = vfprintf ( fd, fmt, args );
 
-    va_end(args);
-    return out;
+	va_end ( args );
+	return out;
 }
 
 
@@ -243,14 +249,15 @@ int64_t fprintf(uint64_t fd, const char * fmt, ...) {
  * @param ... Variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-int64_t printf(const char * fmt, ...) {
-    va_list args;
-    va_start(args, fmt);
+int64_t printf ( const char * fmt, ... )
+{
+	va_list args;
+	va_start ( args, fmt );
 
-    int64_t out = vfprintf(STDOUT, fmt, args);
+	int64_t out = vfprintf ( STDOUT, fmt, args );
 
-    va_end(args);
-    return out;
+	va_end ( args );
+	return out;
 }
 
 
@@ -266,24 +273,25 @@ int64_t printf(const char * fmt, ...) {
  * @param n The maximum number of characters to read. (the last character will be a null terminator)
  * @return char* Returns a pointer to the buffer.
  */
-char* gets(char* buffer, int n) {
-    int c;
-    int i = 0;
+char* gets ( char* buffer, int n )
+{
+	int c;
+	int i = 0;
 
-    while ((c = getChar()) != '\n') {
-        if (c == '\b' && i > 0) {
-            put_char(c);
-            i--;
-        }
-        if (c != '\b' && i < n - 1) {
-            put_char(c);
-            buffer[i++] = (char)c;
-        }
-    }
-    put_char('\n');
-    buffer[i] = '\0';
+	while ( ( c = getChar() ) != '\n' ) {
+		if ( c == '\b' && i > 0 ) {
+			put_char ( c );
+			i--;
+		}
+		if ( c != '\b' && i < n - 1 ) {
+			put_char ( c );
+			buffer[i++] = ( char ) c;
+		}
+	}
+	put_char ( '\n' );
+	buffer[i] = '\0';
 
-    return buffer;
+	return buffer;
 }
 
 
@@ -298,12 +306,13 @@ char* gets(char* buffer, int n) {
  * @param str2 The second string to be compared.
  * @return int Returns an integer less than, equal to, or greater than zero if str1 is found, respectively, to be less than, to match, or be greater than str2.
  */
-int64_t strcmp(const char *str1, const char *str2) {
-    while (*str1 && (*str1 == *str2)) {
-        str1++;
-        str2++;
-    }
-    return *(unsigned char *)str1 - *(unsigned char *)str2;
+int64_t strcmp ( const char *str1, const char *str2 )
+{
+	while ( *str1 && ( *str1 == *str2 ) ) {
+		str1++;
+		str2++;
+	}
+	return * ( unsigned char * ) str1 - * ( unsigned char * ) str2;
 }
 
 
@@ -313,8 +322,9 @@ int64_t strcmp(const char *str1, const char *str2) {
  *
  * @return int64_t Returns 0 if the mode was successfully set, or -1 if an error occurred.
  */
-int64_t enter_video_mode() {
-    return sys_set_mode(VIDEO_MODE);
+int64_t enter_video_mode()
+{
+	return sys_set_mode ( VIDEO_MODE );
 }
 
 
@@ -324,8 +334,9 @@ int64_t enter_video_mode() {
  *
  * @return int64_t Returns 0 if the mode was successfully set, or -1 if an error occurred.
  */
-int64_t enter_text_mode() {
-    return sys_set_mode(TEXT_MODE);
+int64_t enter_text_mode()
+{
+	return sys_set_mode ( TEXT_MODE );
 }
 
 
@@ -338,8 +349,9 @@ int64_t enter_text_mode() {
  * @param color The color of the pixel.
  * @return int64_t Returns 0 if the pixel was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_pixel(uint64_t x, uint64_t y, color color) {
-    return sys_put_pixel(x, y, &color);
+int64_t draw_pixel ( uint64_t x, uint64_t y, color color )
+{
+	return sys_put_pixel ( x, y, &color );
 }
 
 
@@ -354,8 +366,9 @@ int64_t draw_pixel(uint64_t x, uint64_t y, color color) {
  * @param color The color of the rectangle.
  * @return int64_t Returns 0 if the rectangle was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, color color) {
-    return sys_put_rectangle(x, y, width, height, &color);
+int64_t draw_rectangle ( uint64_t x, uint64_t y, uint64_t width, uint64_t height, color color )
+{
+	return sys_put_rectangle ( x, y, width, height, &color );
 }
 
 
@@ -369,9 +382,10 @@ int64_t draw_rectangle(uint64_t x, uint64_t y, uint64_t width, uint64_t height, 
  * @param fontSize The size of the font.
  * @return int64_t Returns 0 if the letter was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_letter(uint64_t x, uint64_t y, char letter, color color, uint64_t font_size) {
-    return sys_draw_letter(x, y, &letter, &color, font_size);
-    // int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, color * color, uint64_t fontSize)
+int64_t draw_letter ( uint64_t x, uint64_t y, char letter, color color, uint64_t font_size )
+{
+	return sys_draw_letter ( x, y, &letter, &color, font_size );
+	// int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, color * color, uint64_t fontSize)
 }
 
 
@@ -385,41 +399,42 @@ int64_t draw_letter(uint64_t x, uint64_t y, char letter, color color, uint64_t f
  *
  * @return void
  */
-void print_register_snapshot() {
-    snapshot snap;
-    if(sys_get_register_snapshot(&snap) == -1) {
-        fprintf(STDERR, "No register snapshot available. Press F1 to take a snapshot.\n");
-        return;
-    }
+void print_register_snapshot()
+{
+	snapshot snap;
+	if ( sys_get_register_snapshot ( &snap ) == -1 ) {
+		fprintf ( STDERR, "No register snapshot available. Press F1 to take a snapshot.\n" );
+		return;
+	}
 
-    puts("Register snapshot:\n");
-    printf("rax: %x\n", snap.rax);
-    printf("rbx: %x\n", snap.rbx);
-    printf("rcx: %x\n", snap.rcx);
-    printf("rdx: %x\n", snap.rdx);
-    printf("rsi: %x\n", snap.rsi);
-    printf("rdi: %x\n", snap.rdi);
-    printf("rbp: %x\n", snap.rbp);
-    printf("rsp: %x\n", snap.rsp);
-    printf("r8:  %x\n", snap.r8 );
-    printf("r9:  %x\n", snap.r9 );
-    printf("r10: %x\n", snap.r10);
-    printf("r11: %x\n", snap.r11);
-    printf("r12: %x\n", snap.r12);
-    printf("r13: %x\n", snap.r13);
-    printf("r14: %x\n", snap.r14);
-    printf("r15: %x\n", snap.r15);
-    printf("rIP: %x\n", snap.rip);
+	puts ( "Register snapshot:\n" );
+	printf ( "rax: %x\n", snap.rax );
+	printf ( "rbx: %x\n", snap.rbx );
+	printf ( "rcx: %x\n", snap.rcx );
+	printf ( "rdx: %x\n", snap.rdx );
+	printf ( "rsi: %x\n", snap.rsi );
+	printf ( "rdi: %x\n", snap.rdi );
+	printf ( "rbp: %x\n", snap.rbp );
+	printf ( "rsp: %x\n", snap.rsp );
+	printf ( "r8:  %x\n", snap.r8 );
+	printf ( "r9:  %x\n", snap.r9 );
+	printf ( "r10: %x\n", snap.r10 );
+	printf ( "r11: %x\n", snap.r11 );
+	printf ( "r12: %x\n", snap.r12 );
+	printf ( "r13: %x\n", snap.r13 );
+	printf ( "r14: %x\n", snap.r14 );
+	printf ( "r15: %x\n", snap.r15 );
+	printf ( "rIP: %x\n", snap.rip );
 }
 
 //----------------------------- TP2 ---------------------------------- //
 
-void * memset(void * destination, int32_t c, uint64_t length)
+void * memset ( void * destination, int32_t c, uint64_t length )
 {
-	uint8_t chr = (uint8_t)c;
-	char * dst = (char*)destination;
+	uint8_t chr = ( uint8_t ) c;
+	char * dst = ( char* ) destination;
 
-	while(length--)
+	while ( length-- )
 		dst[length] = chr;
 
 	return destination;
@@ -427,10 +442,12 @@ void * memset(void * destination, int32_t c, uint64_t length)
 
 
 
-void * my_malloc(uint64_t size){
-    return sys_malloc(size);
+void * my_malloc ( uint64_t size )
+{
+	return sys_malloc ( size );
 }
 
-void my_free(void *p){
-    return sys_free(p);
+void my_free ( void *p )
+{
+	return sys_free ( p );
 }
