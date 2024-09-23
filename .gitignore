@@ -1,0 +1,28 @@
+#Binary Files
+*.bin
+*.sys
+
+#The images
+*.img
+*.qcow2
+*.vmdk
+
+#Object files
+*.o
+
+#idea 
+.idea
+*.idea
+runWin.sh
+runWin.sh
+CMakeLists.txt
+./CMakeLists.txt
+cmake-build-debug
+.gdb_history
+.tgdbinit
+.tgdbinit.save
+make_out.txt
+.gdb_history
+compile_out.txt
+.bash_history
+.report.task
