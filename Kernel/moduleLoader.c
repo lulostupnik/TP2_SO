@@ -1,15 +1,6 @@
 // this is a personal academic project. dear pvs-studio, please check it.
 // pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
-// this is a personal academic project. dear pvs-studio, please check it.
-// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
-// this is a personal academic project. dear pvs-studio, please check it.
-// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
-// this is a personal academic project. dear pvs-studio, please check it.
-// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
-// this is a personal academic project. dear pvs-studio, please check it.
-// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
-// this is a personal academic project. dear pvs-studio, please check it.
-// pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
+
 #include <stdint.h>
 #include <lib.h>
 #include <module_loader.h>

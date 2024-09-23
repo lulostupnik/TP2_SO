@@ -4,10 +4,7 @@
 // No alinear
 // No gestionar fragmentación
 // No pide tamaño de bloque
-
 // Si liberar memoria
-
-// #include "test_mm.h"
 
 
 #include <memory_management.h>
