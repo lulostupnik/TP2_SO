@@ -5,7 +5,6 @@
 #include <test_mm.h>
 
 
-#define CANT_OF_LOOPS 10000
 typedef struct MM_rq {
 	void *address;
 	uint64_t size;
@@ -31,9 +30,8 @@ uint64_t test_mm ( uint64_t argc, char *argv[] )
 	}
 
 
-	int i = CANT_OF_LOOPS;
 	printf ( "Running test....\n" );
-	while ( i-- ) {
+	while (1) {
 		rq = 0;
 		total = 0;
 
