@@ -27,3 +27,5 @@ compile_out.txt
 .bash_history
 .report.task
 complie_out_toolchain.txt
+.cache
+./cache
