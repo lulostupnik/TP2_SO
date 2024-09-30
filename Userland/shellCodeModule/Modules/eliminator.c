@@ -77,7 +77,6 @@ static void singlePlayer()
 	initialize_map();
 	uint64_t p1x = PLAYER_1_INIT_X;
 	uint64_t p1y = PLAYER_1_INIT_Y - 10;
-	uint64_t p1_lost = 0;
 	int64_t direction[2] = {0, -1}; // al principio va hacía arriba
 	uint16_t buffer[10];
 	uint64_t buffer_size = 0;
@@ -95,7 +94,6 @@ static void singlePlayer()
 		p1x += direction[0];
 		p1y += direction[1];
 		if ( map[p1y][p1x] == 1 ) {
-			p1_lost = 1;
 			break;
 		}
 		fill_position ( p1x, p1y, RED );
