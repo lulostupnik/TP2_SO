@@ -14,7 +14,7 @@
 //@TODO podria ser un elemType sin puntero y el get y esos devuelven el puntero
 
 typedef struct listCDT * listADT;
-typedef int * elemTypePtr;
+typedef int * PCB;
 
 /*
 *  < 0 si e1 debe estar antes que e2 (aka e1< e2, en caso ascendente)

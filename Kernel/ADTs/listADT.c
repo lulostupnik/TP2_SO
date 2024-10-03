@@ -119,7 +119,7 @@ elemTypePtr get(const listADT list, size_t idx) {
     }
     return getRec(list->first, idx);
 }
-
+//1744
 // Set the list iterator to the beginning
 int toBegin(listADT list) {
     if(list == NULL){

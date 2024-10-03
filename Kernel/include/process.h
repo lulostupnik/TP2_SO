@@ -18,6 +18,7 @@
 //        BLOCKED,
 //        ZOMBIE,
 //        FREE
+//        TERMINATED
 //        // RUNNING??
 //    }
 
