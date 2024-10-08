@@ -1,4 +1,3 @@
-
 #include <listADT.h>
 
 
@@ -186,5 +185,4 @@ int deleteList(listADT list, elemTypePtr elem) {
     }
     putchar('}');
     putchar('\n');
-}
-*/
+}*/

@@ -8,13 +8,13 @@
 #include <stddef.h>
 #include <assert.h>
 #include <memory_management.h>
-
+#include <process.h>
 //ElemType must be a pointer
 
 //@TODO podria ser un elemType sin puntero y el get y esos devuelven el puntero
 
 typedef struct listCDT * listADT;
-typedef int * PCB;
+typedef PCB * elemTypePtr;
 
 /*
 *  < 0 si e1 debe estar antes que e2 (aka e1< e2, en caso ascendente)

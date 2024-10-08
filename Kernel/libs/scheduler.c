@@ -1,5 +1,5 @@
-/*#include "listADT.h"
-#include "process.h"
+#include <listADT.h>
+#include <process.h>
 uint_8 initialized = 0;
 
 static listADT ready_list;
@@ -7,40 +7,7 @@ static listADT blocked_list;
 static PCB * running = NULL;
 
 int compare_elements(elemTypePtr e1, elemTypePtr e2) {
-    return e1->pid - e2->pid; 
-}
-
-void context_switch(PCB old_process, PCB new_process) {
-    //~TODO Implementar Funciones
-    //save_context(old_process);
-
-    //load_context(new_process);
-    return;
-}
-
-uint8_t find_first_ready(listADT list, PCB * next_process){
-    uint8_t found = 0;
-
-    while (hasNext(ready_list) && !found) {
-        PCB *process = next(ready_list);
-        if (process->status == READY) {
-            *next_process = process;  
-            found = 1;
-        }
-    }
-
-    if (!found) {
-        toBegin(ready_list);
-        while (hasNext(ready_list) && !found) {
-            PCB *process = next(ready_list);
-            if (process->status == READY) {
-                *next_process = process;
-                found = 1;
-            }
-        }
-    }
-
-    return found; 
+    return e1 - e2; 
 }
 
 void initialize_scheduler(){
@@ -51,13 +18,36 @@ void initialize_scheduler(){
     return;
 }
 
-void scheduler(){
-    if(!initialized){
-        initialize_scheduler();
-    }
+void ready(PCB * process){
+    process->status = READY;
+    addList(ready_list, process);
+    deleteList(blocked_list, process);
 
+}   
+
+void block(PCB * process){
+    process->status = BLOCKED;
+    deleteList(ready_list, process);
+    addList(blocked_list, process);
+
+}
+
+uint64_t scheduler(uint64_t current_rsp){
+    uint64_t new_rsp;
+    if(running!=NULL){
+        running->rsp = current_rsp;
+    }
+    new_rsp=next(ready_list)->rsp;
+    
+    return new_rsp;
+}
+
+
+
+    /*
     if(isEmptyList(ready_list)){
-        return;
+        //while(1){_hlt();}
+        return; 
     }
     if(running==NULL){
         listADT(toBegin(ready_list));
@@ -65,23 +55,19 @@ void scheduler(){
         running->status = RUNNING;
         return;
     }
-    else{
-        if(running->status == RUNNING){
-            running->status = READY;
-            addList(ready_list, running);
-        }
-        else if(running->status == BLOCKED){
-            deleteList(ready_list, running);
-            addList(blocked_list, running);
-        }
+    
+    if(running->status == RUNNING){
+        running->status = READY;
+        addList(ready_list, running);
+    }
+    else if(running->status == BLOCKED){
+        deleteList(ready_list, running);
+        addList(blocked_list, running);
     }
 
     PCB * next_process = NULL;
 
-    if(find_first_ready(ready_list, &next_process)){
-        deleteList(ready_list, next_process);
-        next_process->status = RUNNING;
-        context_switch(running, next_process);
-        running=next_process;
-    }
-}*/
+    deleteList(ready_list, next_process);
+    next_process->status = RUNNING;
+    context_switch(running, next_process);
+    running=next_process;*/
