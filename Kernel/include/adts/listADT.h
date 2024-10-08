@@ -1,20 +1,19 @@
 
 //listas ordenadas sin repetidos de cualquier tipo
 
-#ifndef _LISTADT_H
-#define LIST_ADT_H
+#ifndef _LISTADT_H_
+#define _LISTADT_H_
 
 #include <stdio.h>
 #include <stddef.h>
 #include <assert.h>
 #include <memory_management.h>
 #include <process.h>
-//ElemType must be a pointer
+//elem_type must be a pointer
 
-//@TODO podria ser un elemType sin puntero y el get y esos devuelven el puntero
 
-typedef struct listCDT * listADT;
-typedef PCB * elemTypePtr;
+typedef struct list_cdt * list_adt;
+typedef PCB * elem_type_ptr;
 
 /*
 *  < 0 si e1 debe estar antes que e2 (aka e1< e2, en caso ascendente)
@@ -22,35 +21,23 @@ typedef PCB * elemTypePtr;
 *  0 si son "iguales" 
 */
 
-typedef int (*tCompare)(elemTypePtr e1, elemTypePtr e2);
 
-listADT newList(tCompare cmp);
+typedef int (*t_compare)(elem_type_ptr e1, elem_type_ptr e2);
 
-void freeList(listADT list);
+list_adt new_list(t_compare cmp);
 
-int addList(listADT list, elemTypePtr elem); // retorna 1 si lo inserto, 0 si no.
+void free_list(list_adt list);
 
-int deleteList(listADT list, elemTypePtr elem);
+int add_list(list_adt list, elem_type_ptr elem); // retorna 1 si lo inserto, 0 si no.
 
-int sizeList(const listADT list);
+int delete_list(list_adt list, elem_type_ptr elem);
 
+int size_list(const list_adt list);
 
-int isEmptyList(const listADT list);
+int is_empty_list(const list_adt list);
 
-int belongsList(const listADT list, elemTypePtr elem);
+elem_type_ptr next(list_adt list);
 
-elemTypePtr get(const listADT list, size_t idx);
-
-//void printList(listADT list);
-
-//Le avisamos que vamos a recorrer la lista desde el primero
-int toBegin(listADT list); 
-
-//Retorna true si hay pendientes que recorrer
-int hasNext(const listADT list);
-
-//Me devuelve el siguiente. Precondicion, hasNext debe devolver true
-elemTypePtr next(listADT list);
 
 
 #endif

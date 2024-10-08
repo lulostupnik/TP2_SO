@@ -1,34 +1,33 @@
-#include <listADT.h>
-#include <process.h>
+#include <scheduler.h>
 uint8_t initialized = 0;
 
-static listADT ready_list;
-static listADT blocked_list;
+static list_adt ready_list;
+static list_adt blocked_list;
 static PCB * running = NULL;
 
-int compare_elements(elemTypePtr e1, elemTypePtr e2) {
+int compare_elements(elem_type_ptr e1, elem_type_ptr e2) {
     return e1 - e2; 
 }
 
 void initialize_scheduler(){
-    tCompare cmp = compare_elements;
-    ready_list = newList(cmp);
-    blocked_list = newList(cmp);
+    t_compare cmp = compare_elements;
+    ready_list = new_list(cmp);
+    blocked_list = new_list(cmp);
     initialized = 1;
     return;
 }
 
 void ready(PCB * process){
     process->status = READY;
-    addList(ready_list, process);
-    deleteList(blocked_list, process);
+    add_list(ready_list, process);
+    delete_list(blocked_list, process);
 
 }   
 
 void block(PCB * process){
     process->status = BLOCKED;
-    deleteList(ready_list, process);
-    addList(blocked_list, process);
+    delete_list(ready_list, process);
+    add_list(blocked_list, process);
 
 }
 
@@ -36,7 +35,7 @@ uint64_t scheduler(uint64_t current_rsp){
     return current_rsp;
 
     /*uint64_t new_rsp;
-    if(running!=NULL){
+    if(running!=null){
         running->rsp = current_rsp;
     }
     new_rsp=next(ready_list)->rsp;
@@ -47,29 +46,29 @@ uint64_t scheduler(uint64_t current_rsp){
 
 
     /*
-    if(isEmptyList(ready_list)){
+    if(is_empty_list(ready_list)){
         //while(1){_hlt();}
         return; 
     }
-    if(running==NULL){
-        listADT(toBegin(ready_list));
+    if(running==null){
+        list_adt(to_begin(ready_list));
         running = next(ready_list);
-        running->status = RUNNING;
+        running->status = running;
         return;
     }
     
-    if(running->status == RUNNING){
-        running->status = READY;
-        addList(ready_list, running);
+    if(running->status == running){
+        running->status = ready;
+        add_list(ready_list, running);
     }
-    else if(running->status == BLOCKED){
-        deleteList(ready_list, running);
-        addList(blocked_list, running);
+    else if(running->status == blocked){
+        delete_list(ready_list, running);
+        add_list(blocked_list, running);
     }
 
-    PCB * next_process = NULL;
+    pcb * next_process = null;
 
-    deleteList(ready_list, next_process);
-    next_process->status = RUNNING;
+    delete_list(ready_list, next_process);
+    next_process->status = running;
     context_switch(running, next_process);
     running=next_process;*/
