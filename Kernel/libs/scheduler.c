@@ -1,6 +1,6 @@
 #include <listADT.h>
 #include <process.h>
-uint_8 initialized = 0;
+uint8_t initialized = 0;
 
 static listADT ready_list;
 static listADT blocked_list;
@@ -33,13 +33,15 @@ void block(PCB * process){
 }
 
 uint64_t scheduler(uint64_t current_rsp){
-    uint64_t new_rsp;
+    return current_rsp;
+
+    /*uint64_t new_rsp;
     if(running!=NULL){
         running->rsp = current_rsp;
     }
     new_rsp=next(ready_list)->rsp;
-    
-    return new_rsp;
+
+    return new_rsp;*/
 }
 
 

@@ -9,7 +9,6 @@
 #define FREE 0
 #define READY 1
 #define BLOCKED 2
-#define READY 3
 
 // el status puede ser: READY, BLOCKED, ZOMBIE, FREE, (¿RUNNING? -> por ahora no)
 

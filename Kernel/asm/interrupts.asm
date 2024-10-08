@@ -26,6 +26,7 @@ EXTERN exception_dispatcher
 EXTERN sys_call_handler
 EXTERN should_take_reg_shot
 EXTERN get_stack_base
+EXTERN scheduler
 
 SECTION .text
 
