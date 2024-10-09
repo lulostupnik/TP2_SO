@@ -90,6 +90,7 @@ void idle_process(){
 //@TODO hacer que los stacks no usen malloc (arreglo de stacks)
 //@TODO hacer que la lista del scheduler no use malloc si queremos
 //@TODO el arreglo del PCB va ahi?
+//@TODO poner el PCB.h en PROCESS.h (preguntar a fede si me acuerdo)
 //cosas que estan en en el tp pdf
 
 //#include <video.h>
