@@ -17,6 +17,8 @@ void initialize_scheduler(){
     return;
 }
 
+
+
 void ready(PCB * process){
     process->status = READY;
     add_list(ready_list, process);
@@ -31,16 +33,18 @@ void block(PCB * process){
 
 }
 
+
+
 uint64_t scheduler(uint64_t current_rsp){
-    return current_rsp;
-
-    /*uint64_t new_rsp;
-    if(running!=null){
-        running->rsp = current_rsp;
+    if(is_empty_list(ready_list) || running == NULL){
+        
+        //idle
+        return current_rsp; // CAMBIAR
     }
-    new_rsp=next(ready_list)->rsp;
 
-    return new_rsp;*/
+    running->rsp = current_rsp;
+    PCB * next_pcb = next(ready_list);
+    return next_pcb->rsp;
 }
 
 

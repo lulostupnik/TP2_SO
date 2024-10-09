@@ -2438,6 +2438,27 @@ define hookpost-break
 dashboard
 end
 
+python
+import gdb
+
+class PrintStack(gdb.Command):
+    """Print stack from RSP to RBP."""
+
+    def __init__(self):
+        super(PrintStack, self).__init__("print_stack", gdb.COMMAND_USER)
+
+    def invoke(self, arg, from_tty):
+        # Get the stack pointer (RSP) and base pointer (RBP)
+        rsp = int(gdb.parse_and_eval("$rsp"))
+        rbp = int(gdb.parse_and_eval("$rbp"))
+
+        # Loop through memory from RSP to RBP, print one 64-bit word at a time
+        for addr in range(rsp, rbp+8, 8):
+            print(gdb.execute("x/gx 0x%x" % addr, to_string=True))
+
+# Register the command with GDB
+PrintStack()
+end
 
 # File variables ---------------------------------------------------------------
 

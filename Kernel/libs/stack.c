@@ -1,6 +1,10 @@
 #include <stack.h>
 
-
+// void process_wrapper(main_function code, /*int argc*/ ,char **args) {
+//     int len = string_array_len(args);
+//     int ret_value = code(len, args);
+//     kill_current_process(ret_value);
+// }
 
 uint64_t load_stack(uint64_t rip, uint64_t rsp)
 {
