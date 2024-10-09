@@ -6,11 +6,18 @@
 #include <stack.h>
 #include <stdint.h>
 #include <scheduler.h>
-#include <PCB.h>
+#include <pcb.h>
 
-#define FREE 0
+
 #define READY 1
 #define BLOCKED 2
+#define FREE 0  //@todo esto deberia estar en pcb.h pero no compila. Igualmente pcb.h deberia estar aca pero tampoco compila. 
+#define ZOMBIE 3
+
+// typedef enum {
+// 	READY,BLOCKED,FREE
+// } status_t;
+
 
 // el status puede ser: READY, BLOCKED, ZOMBIE, FREE, (¿RUNNING? -> por ahora no)
 
@@ -22,6 +29,7 @@
 //        TERMINATED
 //        // RUNNING??
 //    }
+
 
 // queue/lista de PIDs libres
 typedef enum { LOW, MEDIUM, HIGH } priority_t;

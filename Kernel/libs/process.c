@@ -74,5 +74,15 @@ PCB * get_pcb(int64_t pid){
 
 
 
+int64_t kill_process(int64_t pid){
+    if(pid >= PCB_AMOUNT || pid < 0 || pcb_array[pid].status == FREE){
+        return -1;
+    }
+    unschedule(&pcb_array[pid]);
+    pcb_array[pid].status = ZOMBIE;
+}
+
+
+
 // IDEAS FUTURO:
 // freePIDList o arreglo o lo que sea

@@ -2,7 +2,7 @@
 #ifndef _SCHEDULER_H_
 #define _SCHEDULER_H_
 #include <listADT.h>
-#include <PCB.h>
+#include <pcb.h>
 
 
 void initialize_scheduler(int64_t idle_process_pid);

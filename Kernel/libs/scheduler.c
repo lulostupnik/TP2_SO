@@ -39,6 +39,14 @@ void block(PCB * process){
 
 }
 
+void unschedule(PCB * process){
+    if(process->status == READY){
+        delete_list(ready_list, process);
+    }else if(process->status == BLOCKED){
+        delete_list(blocked_list, process);
+    }
+   
+}
 
 
 

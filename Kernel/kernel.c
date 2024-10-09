@@ -47,24 +47,46 @@ void * initializeKernelBinary()
 	return get_stack_base();
 }
 
+// void kill_rec(){
+// 	uint64_t i=0, x;
+// 	for(; i<100000000;i++){
+// 			i--;
+// 			i++;
+// 			x = i;
+	
+// 	}
+// 	kill_process(2);
+// 	while(1);
+	
+// }
 
 // void rec(){
-// 	color c = {100,10,10};
-// 	color c2 = {100,100,100};
+// 	color c = {0,0,0};
+// 	int x, y =0;
+// 	char buff[] = "Hola manola\n";
 // 	while(1){
-// 		vdriver_set_mode(VIDEO_MODE, c);
-//     	vdriver_video_draw_rectangle(10,10,20,20, c2);
-// 		vdriver_set_mode(TEXT_MODE, c);
+
+// 		vdriver_text_write ( 0, buff, 13 );
+// 		for(int i=0; i<10000000;i++){
+// 			i--;
+// 			i++;
+// 			x = i;
+// 		}
 // 	}
 // }
 
 void idle_process(){
     while(1){
         _hlt();
-		//rec();
     }
 }
 
+
+
+//@TODO implementar wrapper
+//@TODO implementar pasaje de parametros
+//@TODO implementar exit (para implementar wrapper)
+//cosas que estan en en el tp pdf
 
 //#include <video.h>
 int main()
@@ -74,10 +96,10 @@ int main()
 	
 	
 	initialize_scheduler(new_process((uint64_t) idle_process, LOW));
-	   
 	//( ( EntryPoint ) shellCodeModuleAddress ) ();
 	new_process((uint64_t) shellCodeModuleAddress, HIGH);
-	//new_process((uint64_t) rec, HIGH);
+	// int64_t pid = new_process((uint64_t) rec, HIGH);
+	// new_process((uint64_t) kill_rec, HIGH);
 	
 	__asm__("int $0x20");
 	return 0;
