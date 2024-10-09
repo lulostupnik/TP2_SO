@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <memory_management.h>
 #include <process.h>
+#include <PCB.h>
 //elem_type must be a pointer
 
 

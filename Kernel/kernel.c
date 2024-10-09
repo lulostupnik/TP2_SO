@@ -48,10 +48,37 @@ void * initializeKernelBinary()
 }
 
 
+// void rec(){
+// 	color c = {100,10,10};
+// 	color c2 = {100,100,100};
+// 	while(1){
+// 		vdriver_set_mode(VIDEO_MODE, c);
+//     	vdriver_video_draw_rectangle(10,10,20,20, c2);
+// 		vdriver_set_mode(TEXT_MODE, c);
+// 	}
+// }
+
+void idle_process(){
+    while(1){
+        _hlt();
+		//rec();
+    }
+}
+
+
+//#include <video.h>
 int main()
 {
 	load_idt();
 	my_mm_init ( heap, HEAP_SIZE );
-	( ( EntryPoint ) shellCodeModuleAddress ) ();
+	
+	
+	initialize_scheduler(new_process((uint64_t) idle_process, LOW));
+	   
+	//( ( EntryPoint ) shellCodeModuleAddress ) ();
+	new_process((uint64_t) shellCodeModuleAddress, HIGH);
+	//new_process((uint64_t) rec, HIGH);
+	
+	__asm__("int $0x20");
 	return 0;
 }

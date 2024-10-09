@@ -1,18 +1,24 @@
 #include <scheduler.h>
-uint8_t initialized = 0;
 
 static list_adt ready_list;
 static list_adt blocked_list;
 static PCB * running = NULL;
+static PCB * idle_pcb;
+static int initialized = 0;
 
 int compare_elements(elem_type_ptr e1, elem_type_ptr e2) {
     return e1 - e2; 
 }
 
-void initialize_scheduler(){
+
+
+
+void initialize_scheduler(int64_t idle_process_pid){
     t_compare cmp = compare_elements;
     ready_list = new_list(cmp);
     blocked_list = new_list(cmp);
+    idle_pcb = get_pcb(idle_process_pid);
+    delete_list(ready_list, idle_pcb);
     initialized = 1;
     return;
 }
@@ -35,15 +41,20 @@ void block(PCB * process){
 
 
 
-uint64_t scheduler(uint64_t current_rsp){
-    if(is_empty_list(ready_list) || running == NULL){
-        
-        //idle
-        return current_rsp; // CAMBIAR
-    }
 
-    running->rsp = current_rsp;
+uint64_t scheduler(uint64_t current_rsp){
+    if(!initialized){
+        return current_rsp;
+    }
+    if(running != NULL){
+        running->rsp = current_rsp;
+    }
+    if(is_empty_list(ready_list)){
+        running = idle_pcb;   
+        return idle_pcb->rsp; 
+    }
     PCB * next_pcb = next(ready_list);
+    running = next_pcb;
     return next_pcb->rsp;
 }
 
