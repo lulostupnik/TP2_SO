@@ -29,3 +29,6 @@ compile_out.txt
 complie_out_toolchain.txt
 .cache
 ./cache
+.gdbinit_old
+.tmux.conf
+tgdb
