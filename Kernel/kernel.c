@@ -86,6 +86,10 @@ void idle_process(){
 //@TODO implementar wrapper
 //@TODO implementar pasaje de parametros
 //@TODO implementar exit (para implementar wrapper)
+//@TODO prioridad
+//@TODO hacer que los stacks no usen malloc (arreglo de stacks)
+//@TODO hacer que la lista del scheduler no use malloc si queremos
+//@TODO el arreglo del PCB va ahi?
 //cosas que estan en en el tp pdf
 
 //#include <video.h>
