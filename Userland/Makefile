@@ -13,6 +13,7 @@ shellDataModule:
 clean:
 	cd shellCodeModule; make clean
 	rm -rf *.bin
+	rm -rf *.elf
 
 
 .PHONY: shellCodeModule all clean

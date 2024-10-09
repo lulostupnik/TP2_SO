@@ -29,3 +29,13 @@ compile_out.txt
 complie_out_toolchain.txt
 .cache
 ./cache
+.gdbinit
+.gdbinit_old
+.tgdbinit
+.tmux.conf
+tgdb
+.gdb_history
+gdbinit
+gdbinit_old
+tgdbinit
+tmux.conf

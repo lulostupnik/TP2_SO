@@ -1,6 +1,6 @@
 include ../Makefile.inc
 
-MODULE=0000-shellCodeModule.bin
+MODULE=0000-shellCodeModule
 SOURCES=$(wildcard */*.c)
 SOURCES_ASM=$(wildcard */*.asm)
 OBJECTS=$(SOURCES:.c=.o)
@@ -11,7 +11,8 @@ LOADEROBJECT=$(LOADERSRC:.c=.o)
 all: $(MODULE)
 
 $(MODULE):$(OBJECTS) $(OBJECTS_ASM) $(LOADEROBJECT)
-	$(LD) $(LDFLAGS) -T shellCodeModule.ld -o ../$(MODULE) $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM)
+	$(LD) $(LDFLAGS) -T shellCodeModule.ld -o ../$(MODULE).bin $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM)
+	$(LD) $(LDFLAGS) -T shellCodeModule.ld --oformat=elf64-x86-64 -o ../$(MODULE).elf $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM)
 
 %.o: %.c
 	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@
@@ -25,5 +26,6 @@ $(LOADEROBJECT):
 
 clean:
 	rm -rf */*.o *.o *.bin
+	rm -rf *.elf
 
 .PHONY: all clean print
