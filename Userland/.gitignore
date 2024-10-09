@@ -25,3 +25,17 @@ make_out.txt
 .gdb_history
 compile_out.txt
 .bash_history
+.report.task
+complie_out_toolchain.txt
+.cache
+./cache
+.gdbinit
+.gdbinit_old
+.tgdbinit
+.tmux.conf
+tgdb
+.gdb_history
+gdbinit
+gdbinit_old
+tgdbinit
+tmux.conf
