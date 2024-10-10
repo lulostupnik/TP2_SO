@@ -103,7 +103,7 @@ int main()
 	initialize_scheduler(new_process((uint64_t) idle_process, LOW));
 	//( ( EntryPoint ) shellCodeModuleAddress ) ();
 	new_process((uint64_t) shellCodeModuleAddress, HIGH);
-	// int64_t pid = new_process((uint64_t) rec, HIGH);
+	int64_t pid = new_process((uint64_t) rec, HIGH);
 	// new_process((uint64_t) kill_rec, HIGH);
 	
 	__asm__("int $0x20");

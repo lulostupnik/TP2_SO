@@ -14,7 +14,7 @@ static int64_t find_free_pcb();
 
 
 
-int64_t new_process(uint64_t rip, priority_t priority){
+int64_t new_process(uint64_t rip, priority_t priority, char ** argv){
 
     
     // uint64_t rsp = (uint64_t) my_malloc(STACK_SIZE);
@@ -42,6 +42,8 @@ int64_t new_process(uint64_t rip, priority_t priority){
    // pcb_array[pid].ppid = running->pid;
     pcb_array[pid].rsp = rsp;
     pcb_array[pid].status = READY;
+
+    for()
 
     ready(&pcb_array[pid]);
     // ready_queue.push((void *)pcb_array + pid * sizeof(PCB));
