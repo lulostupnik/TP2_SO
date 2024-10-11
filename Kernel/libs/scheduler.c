@@ -2,8 +2,8 @@
 
 static list_adt ready_list;
 static list_adt blocked_list;
-static my_PCB * running = NULL;
-static my_PCB * idle_pcb;
+static PCB * running = NULL;
+static PCB * idle_pcb;
 static int initialized = 0;
 
 int compare_elements(elem_type_ptr e1, elem_type_ptr e2) {
@@ -25,21 +25,21 @@ void initialize_scheduler(int64_t idle_process_pid){
 
 
 
-void ready(my_PCB * process){
+void ready(PCB * process){
     process->status = READY;
     add_list(ready_list, process);
     delete_list(blocked_list, process);
 
 }   
 
-void block(my_PCB * process){
+void block(PCB * process){
     process->status = BLOCKED;
     delete_list(ready_list, process);
     add_list(blocked_list, process);
 
 }
 
-void unschedule(my_PCB * process){
+void unschedule(PCB * process){
     if(process->status == READY){
         delete_list(ready_list, process);
     }else if(process->status == BLOCKED){
@@ -61,7 +61,7 @@ uint64_t scheduler(uint64_t current_rsp){
         running = idle_pcb;   
         return idle_pcb->rsp; 
     }
-    my_PCB * next_pcb = next(ready_list);
+    PCB * next_pcb = next(ready_list);
     running = next_pcb;
     return next_pcb->rsp;
 }

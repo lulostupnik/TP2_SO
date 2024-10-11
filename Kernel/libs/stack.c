@@ -6,13 +6,20 @@
 //     kill_current_process(ret_value);
 // }
 
-uint64_t load_stack(uint64_t rip, uint64_t rsp)
+void process_wrapper(main_function rip, char **argv, uint64_t argc) {
+	int ret = rip(argv, argc);
+    while(1);
+//	killCurrentProcess(retValue);
+}
+
+uint64_t load_stack(uint64_t rip, uint64_t rsp, char ** argv, uint64_t argc)
 {
     stack * my_stack = (stack *) (rsp - sizeof(stack));
     for(int i = 0; i < GPR_QTY; i++){
         my_stack->gpr[i] = 0;
     }
-    my_stack->rip = rip;
+    //my_stack->rip = rip;
+    my_stack->rip = &process_wrapper;
     my_stack->cs = 0x8;
     my_stack->rflags = 0x202;
     my_stack->rsp = rsp;

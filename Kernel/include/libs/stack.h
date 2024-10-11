@@ -7,6 +7,7 @@
 #define STACK_H
 
 #include <stdint.h>
+#include <process.h>
 
 #define GPR_QTY 15 // son los registros que usamos en pushState y popState
 
@@ -20,6 +21,8 @@ typedef struct stack
     uint64_t ss;            // 0x0
 } stack;
 
-uint64_t load_stack(uint64_t rip, uint64_t rsp);
+//uint64_t load_stack(uint64_t rip, uint64_t rsp);
+
+uint64_t load_stack(uint64_t rip, uint64_t rsp, char ** argv, uint64_t argc);
 
 #endif

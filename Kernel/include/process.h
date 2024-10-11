@@ -6,7 +6,7 @@
 #include <stack.h>
 #include <stdint.h>
 #include <scheduler.h>
-#include <my_PCB.h>
+#include <PCB.h>
 
 
 #define READY 1
@@ -18,34 +18,14 @@
 // 	READY,BLOCKED,FREE
 // } status_t;
 
-
-// el status puede ser: READY, BLOCKED, ZOMBIE, FREE, (¿RUNNING? -> por ahora no)
-
-//    enum State{
-//        READY,
-//        BLOCKED,
-//        ZOMBIE,
-//        FREE
-//        TERMINATED
-//        // RUNNING??
-//    }
-
-
-// queue/lista de PIDs libres
 typedef enum { LOW, MEDIUM, HIGH } priority_t;
 
-// typedef struct my_PCB{
-//     int64_t pid, ppid; // buscar de donde sacar el pid_t o usar uint
-//     uint64_t rsp;
-//     uint8_t status; // todo -> definir // podríamos llegar a sacarlo
-//     // priority
-// }my_PCB;
+typedef int (*main_function)(char ** argv, uint64_t argc);
 
 
 
-
-int64_t new_process(uint64_t rip, priority_t priority, char ** argv, uint64_t argc);
-my_PCB * get_pcb(int64_t pid);
+int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64_t argc);
+PCB * get_pcb(int64_t pid);
 
 
 #endif

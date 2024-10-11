@@ -7,14 +7,15 @@
 
 
 
-my_PCB pcb_array[PCB_AMOUNT] = {0}; //@todo va aca?
+PCB pcb_array[PCB_AMOUNT] = {0}; //@todo va aca?
 
 
 static int64_t find_free_pcb();
-static int copy_argv(uint64_t pid, char ** argv, uint64_t argc);
+// static int copy_argv(uint64_t pid, char ** argv, uint64_t argc);
+static char ** copy_argv(uint64_t pid, char ** argv, uint64_t argc);
 
 //extern uint64_t strlen ( const char *str );
-static uint64_t my_strlen ( const char *str )  //@todo capaz esta en otro archivo
+static uint64_t my_strlen ( const char *str )  //@todo poner en otro archivo
 {
 	const char *s = str;
 	while ( *s )
@@ -23,23 +24,23 @@ static uint64_t my_strlen ( const char *str )  //@todo capaz esta en otro archiv
 }
 
 
-static int copy_argv(uint64_t pid, char ** argv, uint64_t argc){
+static char ** copy_argv(uint64_t pid, char ** argv, uint64_t argc){
    
-    if( argc < 0 || (argc == 0 && argv != NULL) || (argc>0 && argv==NULL)){ //@todo check
-        return -1;
+    if( (argc == 0 && argv != NULL) || (argc>0 && argv==NULL)){ //@todo check
+        return NULL;
     }
 
-    pcb_array[pid].argc = argc;
+   /// pcb_array[pid].argc = argc;
     
     if(argc == 0){
-        pcb_array[pid].argv == NULL;
-        return 0;
+       // pcb_array[pid].argv == NULL;
+        return NULL;
     }
     
-    pcb_array[pid].argv = my_malloc(sizeof(char *) * (argc+1));
+    char ** ans = my_malloc(sizeof(char *) * (argc+1));
 
-    if(pcb_array[pid].argv == NULL){
-        return -1;
+    if(ans == NULL){
+        return NULL;
     }
 
     for(uint64_t i=0; i<argc;i++){
@@ -47,19 +48,19 @@ static int copy_argv(uint64_t pid, char ** argv, uint64_t argc){
         char * p = my_malloc(len);
         if(p == NULL){ //@TODO check y modularizar
             for(uint64_t j=0; j<i;j++){
-                my_free(pcb_array[pid].argv[j]);
+                my_free(ans[j]);
             }
-          
-            return -1;
+            my_free(ans);
+            return NULL;
         }
         memcpy(p, argv[i], len);
-        pcb_array[pid].argv[i] = p;
+        ans[i] = p;
     }
-    return 0;
+    return ans;
 }
 
 
-int64_t new_process(uint64_t rip, priority_t priority, char ** argv, uint64_t argc){
+int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64_t argc){
 
    
     
@@ -68,7 +69,11 @@ int64_t new_process(uint64_t rip, priority_t priority, char ** argv, uint64_t ar
     //     return -1;
     // }
     // rsp += STACK_SIZE;
-    
+    int64_t pid = find_free_pcb();
+    if(pid == -1){
+        return -1;
+    }
+
     uint64_t rsp_malloc = (uint64_t) my_malloc(STACK_SIZE*4) ;  //@TODO No hacerlo dinamico. Definir zona de STACKS y hacer un arreglo
     uint64_t rsp = rsp_malloc + STACK_SIZE*4;
 
@@ -77,32 +82,29 @@ int64_t new_process(uint64_t rip, priority_t priority, char ** argv, uint64_t ar
     }
 
     // todo -> cambiar el BLOCK_SIZE en el memory manager para que entre el stack
-    rsp = load_stack(rip, rsp);
-    
-    int64_t pid = find_free_pcb();
-    if(pid == -1){
+    char ** args_cpy = copy_argv(pid, argv, argc);
+    if(args_cpy == NULL){
+        my_free((void *)rsp_malloc); 
+        pcb_array[pid].status = FREE;
         return -1;
     }
+
+
+    
+    rsp = load_stack(rip, rsp, args_cpy, argc);
+    
+   
 
     
     pcb_array[pid].pid = pid;
    // pcb_array[pid].ppid = running->pid;
     pcb_array[pid].rsp = rsp;
     pcb_array[pid].status = READY;
-    if(copy_argv(pid, argv, argc) != 0){
-        my_free((void *)rsp_malloc); 
-        pcb_array[pid].status = FREE;
-        return -1;
-    }
-    pcb_array[pid].argc = 1;
-
-    
-    
-    
-
+    pcb_array[pid].argv = args_cpy;
+    pcb_array[pid].argc = argc;
 
     ready(&pcb_array[pid]);
-    // ready_queue.push((void *)pcb_array + pid * sizeof(my_PCB));
+    // ready_queue.push((void *)pcb_array + pid * sizeof(PCB));
    
 
     return pid;
@@ -123,7 +125,7 @@ static int64_t find_free_pcb(){
     return to_return;
 }
 
-my_PCB * get_pcb(int64_t pid){
+PCB * get_pcb(int64_t pid){
     if(pid >= PCB_AMOUNT || pid < 0){
         return NULL;
     }

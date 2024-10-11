@@ -9,12 +9,12 @@
 #include <assert.h>
 #include <memory_management.h>
 #include <process.h>
-#include <my_PCB.h>
+#include <PCB.h>
 //elem_type must be a pointer
 
 
 typedef struct list_cdt * list_adt;
-typedef my_PCB * elem_type_ptr;
+typedef PCB * elem_type_ptr;
 
 /*
 *  < 0 si e1 debe estar antes que e2 (aka e1< e2, en caso ascendente)
