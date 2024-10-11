@@ -167,10 +167,10 @@ int64_t fputc ( char c, uint64_t fd )
  *
  * @param fd The file descriptor to write to.
  * @param fmt The format string that specifies how subsequent arguments are converted for output.
- * @param args A variable argument list.
+ * @param argv A variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-static int64_t vfprintf ( uint64_t fd, const char *fmt, va_list args )
+static int64_t vfprintf ( uint64_t fd, const char *fmt, va_list argv )
 {
 	uint64_t flag = 0;
 	uint64_t written = 0;
@@ -190,18 +190,18 @@ static int64_t vfprintf ( uint64_t fd, const char *fmt, va_list args )
 
 		switch ( fmt[i] ) {
 		case 'c':
-			fputc ( va_arg ( args, int ), fd );
+			fputc ( va_arg ( argv, int ), fd );
 			written++;
 			break;
 		case 'd':
-			written += vfprintf ( fd, numToString ( va_arg ( args, uint64_t ), 10 ), args );
+			written += vfprintf ( fd, numToString ( va_arg ( argv, uint64_t ), 10 ), argv );
 			break;
 		case 'x':
-			written += vfprintf ( fd, "0x", args );
-			written += vfprintf ( fd, numToString ( va_arg ( args, uint64_t ), 16 ), args );
+			written += vfprintf ( fd, "0x", argv );
+			written += vfprintf ( fd, numToString ( va_arg ( argv, uint64_t ), 16 ), argv );
 			break;
 		case 's':
-			written += vfprintf ( fd, va_arg ( args, char * ), args );
+			written += vfprintf ( fd, va_arg ( argv, char * ), argv );
 			break;
 		case '%':
 			fputc ( '%', fd );
@@ -231,12 +231,12 @@ static int64_t vfprintf ( uint64_t fd, const char *fmt, va_list args )
  */
 int64_t fprintf ( uint64_t fd, const char * fmt, ... )
 {
-	va_list args;
-	va_start ( args, fmt );
+	va_list argv;
+	va_start ( argv, fmt );
 
-	int64_t out = vfprintf ( fd, fmt, args );
+	int64_t out = vfprintf ( fd, fmt, argv );
 
-	va_end ( args );
+	va_end ( argv );
 	return out;
 }
 
@@ -251,12 +251,12 @@ int64_t fprintf ( uint64_t fd, const char * fmt, ... )
  */
 int64_t printf ( const char * fmt, ... )
 {
-	va_list args;
-	va_start ( args, fmt );
+	va_list argv;
+	va_start ( argv, fmt );
 
-	int64_t out = vfprintf ( STDOUT, fmt, args );
+	int64_t out = vfprintf ( STDOUT, fmt, argv );
 
-	va_end ( args );
+	va_end ( argv );
 	return out;
 }
 

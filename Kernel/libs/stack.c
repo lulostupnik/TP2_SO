@@ -1,8 +1,8 @@
 #include <stack.h>
 
-// void process_wrapper(main_function code, /*int argc*/ ,char **args) {
-//     int len = string_array_len(args);
-//     int ret_value = code(len, args);
+// void process_wrapper(main_function code, /*int argc*/ ,char **argv) {
+//     int len = string_array_len(argv);
+//     int ret_value = code(len, argv);
 //     kill_current_process(ret_value);
 // }
 

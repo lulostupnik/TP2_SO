@@ -2475,14 +2475,14 @@ class PrintMemory(gdb.Command):
 
     def invoke(self, arg, from_tty):
         # Split the arguments (expected: start and end addresses)
-        args = gdb.string_to_argv(arg)
-        if len(args) != 2:
+        argv = gdb.string_to_argv(arg)
+        if len(argv) != 2:
             print("Usage: print_mem <start_address> <end_address>")
             return
 
         # Convert the addresses from string to integers (support hex notation)
-        start_addr = int(gdb.parse_and_eval(args[0]), 16)
-        end_addr = int(gdb.parse_and_eval(args[1]), 16)
+        start_addr = int(gdb.parse_and_eval(argv[0]), 16)
+        end_addr = int(gdb.parse_and_eval(argv[1]), 16)
 
         # Loop through memory from start to end, print one 64-bit word at a time
         for addr in range(start_addr, end_addr + 8, 8):

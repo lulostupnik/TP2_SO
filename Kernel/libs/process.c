@@ -23,37 +23,37 @@ static uint64_t my_strlen ( const char *str )  //@todo capaz esta en otro archiv
 }
 
 
-static int copy_argv(uint64_t pid, char ** argv_, uint64_t argc_){
+static int copy_argv(uint64_t pid, char ** argv, uint64_t argc){
    
-    if( argc_ < 0 || (argc_ == 0 && argv_ != NULL) || (argc_>0 && argv_==NULL)){ //@todo check
+    if( argc < 0 || (argc == 0 && argv != NULL) || (argc>0 && argv==NULL)){ //@todo check
         return -1;
     }
 
-    pcb_array[pid].cant = argc_;
+    pcb_array[pid].argc = argc;
     
-    if(argc_ == 0){
-        pcb_array[pid].args == NULL;
+    if(argc == 0){
+        pcb_array[pid].argv == NULL;
         return 0;
     }
     
-    pcb_array[pid].args = my_malloc(sizeof(char *) * (argc_+1));
+    pcb_array[pid].argv = my_malloc(sizeof(char *) * (argc+1));
 
-    if(pcb_array[pid].args == NULL){
+    if(pcb_array[pid].argv == NULL){
         return -1;
     }
 
-    for(uint64_t i=0; i<argc_;i++){
-        uint64_t len = my_strlen(argv_[i])+1;
+    for(uint64_t i=0; i<argc;i++){
+        uint64_t len = my_strlen(argv[i])+1;
         char * p = my_malloc(len);
         if(p == NULL){ //@TODO check y modularizar
             for(uint64_t j=0; j<i;j++){
-                my_free(pcb_array[pid].args[j]);
+                my_free(pcb_array[pid].argv[j]);
             }
           
             return -1;
         }
-        memcpy(p, argv_[i], len);
-        pcb_array[pid].args[i] = p;
+        memcpy(p, argv[i], len);
+        pcb_array[pid].argv[i] = p;
     }
     return 0;
 }
@@ -94,7 +94,7 @@ int64_t new_process(uint64_t rip, priority_t priority, char ** argv, uint64_t ar
         pcb_array[pid].status = FREE;
         return -1;
     }
-    pcb_array[pid].cant = 1;
+    pcb_array[pid].argc = 1;
 
     
     

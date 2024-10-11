@@ -22,7 +22,7 @@ typedef struct {
 
 /* Used by main to communicate with parse_opt. */
 struct arguments {
-	char *args[MAX_FILES];
+	char *argv[MAX_FILES];
 	int silent, verbose;
 	char *output_file;
 	int count;
