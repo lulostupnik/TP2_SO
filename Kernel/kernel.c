@@ -89,8 +89,8 @@ void idle_process(){
 //@TODO prioridad
 //@TODO hacer que los stacks no usen malloc (arreglo de stacks)
 //@TODO hacer que la lista del scheduler no use malloc si queremos
-//@TODO el arreglo del PCB va ahi?
-//@TODO poner el PCB.h en PROCESS.h (preguntar a fede si me acuerdo)
+//@TODO el arreglo del my_PCB va ahi?
+//@TODO poner el my_PCB.h en PROCESS.h (preguntar a fede si me acuerdo)
 //cosas que estan en en el tp pdf
 
 //#include <video.h>
@@ -100,10 +100,10 @@ int main()
 	my_mm_init ( heap, HEAP_SIZE );
 	
 	
-	initialize_scheduler(new_process((uint64_t) idle_process, LOW));
+	initialize_scheduler(new_process((uint64_t) idle_process, LOW, NULL, 0));
 	//( ( EntryPoint ) shellCodeModuleAddress ) ();
-	new_process((uint64_t) shellCodeModuleAddress, HIGH);
-	int64_t pid = new_process((uint64_t) rec, HIGH);
+	new_process((uint64_t) shellCodeModuleAddress, HIGH, NULL, 0);
+	//int64_t pid = new_process((uint64_t) rec, HIGH);
 	// new_process((uint64_t) kill_rec, HIGH);
 	
 	__asm__("int $0x20");

@@ -6,7 +6,7 @@
 #include <stack.h>
 #include <stdint.h>
 #include <scheduler.h>
-#include <pcb.h>
+#include <my_PCB.h>
 
 
 #define READY 1
@@ -34,16 +34,18 @@
 // queue/lista de PIDs libres
 typedef enum { LOW, MEDIUM, HIGH } priority_t;
 
-// typedef struct PCB{
+// typedef struct my_PCB{
 //     int64_t pid, ppid; // buscar de donde sacar el pid_t o usar uint
 //     uint64_t rsp;
 //     uint8_t status; // todo -> definir // podríamos llegar a sacarlo
 //     // priority
-// }PCB;
+// }my_PCB;
 
 
-int64_t new_process(uint64_t rip, priority_t priority);
-PCB * get_pcb(int64_t pid);
+
+
+int64_t new_process(uint64_t rip, priority_t priority, char ** argv, uint64_t argc);
+my_PCB * get_pcb(int64_t pid);
 
 
 #endif
