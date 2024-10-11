@@ -60,20 +60,22 @@ void * initializeKernelBinary()
 	
 // }
 
-// void rec(){
-// 	color c = {0,0,0};
-// 	int x, y =0;
-// 	char buff[] = "Hola manola\n";
-// 	while(1){
 
-// 		vdriver_text_write ( 0, buff, 13 );
-// 		for(int i=0; i<10000000;i++){
-// 			i--;
-// 			i++;
-// 			x = i;
-// 		}
-// 	}
-// }
+
+void write_arg(char ** argv, uint64_t argc){
+	if(argc != 1 ){
+		return;
+	}
+	int x = 0;
+	while(1){
+		vdriver_text_write ( 0, argv[0], 5 );
+		for(int i=0; i<10000000;i++){
+			i--;
+			i++;
+			x = i;
+		}
+	}
+}
 
 void idle_process(){
     while(1){
@@ -104,10 +106,14 @@ int main()
 	
 	initialize_scheduler(new_process((main_function) idle_process, LOW, NULL, 0));
 	//( ( EntryPoint ) shellCodeModuleAddress ) ();
+
 	new_process((main_function) shellCodeModuleAddress, HIGH, NULL, 0);
+	
+	// char arg[] = "test";
+	// char * argv[] = {arg};
+	// new_process((main_function) write_arg, HIGH, argv, 1);
 	//int64_t pid = new_process((uint64_t) rec, HIGH);
 	// new_process((uint64_t) kill_rec, HIGH);
-	
 	__asm__("int $0x20");
 	return 0;
 }

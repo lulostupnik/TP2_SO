@@ -61,7 +61,7 @@ static char ** copy_argv(uint64_t pid, char ** argv, uint64_t argc){
 
 
 int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64_t argc){
-
+  
    
     
     // uint64_t rsp = (uint64_t) my_malloc(STACK_SIZE);
@@ -83,7 +83,7 @@ int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64
 
     // todo -> cambiar el BLOCK_SIZE en el memory manager para que entre el stack
     char ** args_cpy = copy_argv(pid, argv, argc);
-    if(args_cpy == NULL){
+    if(argc>0 && args_cpy == NULL){
         my_free((void *)rsp_malloc); 
         pcb_array[pid].status = FREE;
         return -1;
