@@ -112,8 +112,7 @@ int main()
 	// char arg[] = "test";
 	// char * argv[] = {arg};
 	// new_process((main_function) write_arg, HIGH, argv, 1);
-	//int64_t pid = new_process((uint64_t) rec, HIGH);
-	// new_process((uint64_t) kill_rec, HIGH);
+	
 	__asm__("int $0x20");
 	return 0;
 }

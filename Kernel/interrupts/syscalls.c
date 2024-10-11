@@ -4,15 +4,15 @@
 #include <syscalls.h>
 
 
-typedef struct {
-	uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rdi, rbp, rdx, rcx, rbx, rax;
-} registers;
+// typedef struct {
+// 	uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rdi, rbp, rdx, rcx, rbx, rax;
+// } registers;
 
 extern uint64_t regs_shot[17];
 extern uint64_t regs_shot_available;
 
 
-int64_t sys_call_handler ( registers * regs )
+int64_t sys_call_handler ( stack_registers * regs )
 {
 	switch ( regs->rax ) {
 	case 0:

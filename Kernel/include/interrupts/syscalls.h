@@ -10,6 +10,7 @@
 #include <time.h>
 #include <rtc.h>
 #include <memory_management.h>
+#include <stack_registers.h>
 
 #define NOT_VALID_SYS_ID -2
 
