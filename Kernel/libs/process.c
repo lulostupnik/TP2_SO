@@ -8,6 +8,7 @@
 
 
 PCB pcb_array[PCB_AMOUNT] = {0}; //@todo va aca?
+// todo: agregar cantidad de procesos. Es decir, "cantidad de lugares ocupados"
 
 
 static int64_t find_free_pcb();
