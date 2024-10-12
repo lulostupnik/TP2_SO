@@ -91,8 +91,7 @@ void * initializeKernelBinary()
 // 		}
 // 	}
 // }
-
-
+/*
 void a(){
 	int x;
 		while(1){
@@ -125,7 +124,7 @@ void c(){
 			i++;
 			x = i;
 		}
-}}
+}}*/
 
 
 void idle_process(){
@@ -153,13 +152,13 @@ int main()
 	
 
 	initialize_scheduler(new_process((main_function) idle_process, LOW, NULL, 0));
-	//( ( EntryPoint ) shellCodeModuleAddress ) ();
+	( ( EntryPoint ) shellCodeModuleAddress ) ();
 
-	//new_process((main_function) shellCodeModuleAddress, HIGH, NULL, 0);
+	new_process((main_function) shellCodeModuleAddress, HIGH, NULL, 0);
 	
-	new_process((main_function) a, HIGH, NULL, 0);
-	new_process((main_function) b, MEDIUM, NULL, 0);
-	new_process((main_function) c, LOW, NULL, 0);
+	//new_process((main_function) a, HIGH, NULL, 0);
+	//new_process((main_function) b, MEDIUM, NULL, 0);
+	//new_process((main_function) c, LOW, NULL, 0);
 
 
 	// char arg[] = "Dont kill me #<\n";

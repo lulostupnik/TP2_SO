@@ -135,7 +135,6 @@ PCB * get_pcb(int64_t pid){
     return &pcb_array[pid];
 }
 
-
 // int64_t kill_process_ret(int64_t pid, int64_t ret){
 //     if(pid >= PCB_AMOUNT || pid < 0 || pcb_array[pid].status == FREE){
 //         return -1;
@@ -159,3 +158,15 @@ int64_t kill_process(int64_t pid){
 
 // IDEAS FUTURO:
 // freePIDList o arreglo o lo que sea
+
+void list_processes(){
+    vdriver_text_write("---------------------------------------------------------\n");
+    vdriver_text_write("| %-5s | %-8s | %-18s |\n", "PID", "Priority", "Stack Pointer");
+    vdriver_text_write("---------------------------------------------------------\n");
+    for (int i = 0; i < PCB_AMOUNT; i++) {
+        if (pcb_array[i].status != FREE) {
+            vdriver_text_write("| %-5d | %-8d | %-18p |\n", pcb_array[i].pid, pcb_array[i].priority, (void *)pcb_array[i].rsp); // @TODO: Agregarle nombre, base pointer y foreground
+        }
+    }
+    vdriver_text_write("---------------------------------------------------------\n");
+}

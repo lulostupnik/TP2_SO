@@ -61,6 +61,12 @@ int64_t sys_call_handler ( stack_registers * regs )
 		sys_free ( ( void* ) regs->rdi );
 		return 0;
 		break;
+	case 15:
+		return my_getpid();
+		break;
+	case 16:
+		return my_create_process ( ( main_function ) regs->rdi, ( priority_t ) regs->rsi, ( char ** ) regs->rdx, regs->rcx );
+		break;
 	default:
 		return NOT_VALID_SYS_ID;
 
@@ -201,12 +207,12 @@ void sys_free ( void *p )
 
 int64_t my_getpid()
 {
-	return 0;
+	return get_pid();
 }
 
-int64_t my_create_process ( char *name, uint64_t argc, char *argv[] )
+int64_t my_create_process (main_function rip, priority_t priority, char ** argv, uint64_t argc)
 {
-	return 0;
+	return (int64_t) new_process ( rip, priority, argv, argc );
 }
 
 int64_t my_nice ( uint64_t pid, uint64_t new_prio )

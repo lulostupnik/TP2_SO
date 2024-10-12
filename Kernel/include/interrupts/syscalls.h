@@ -9,6 +9,8 @@
 #include <speaker.h>
 #include <time.h>
 #include <rtc.h>
+#include <process.h>
+#include <scheduler.h>
 #include <memory_management.h>
 #include <stack_registers.h>
 
@@ -230,7 +232,7 @@ void sys_free ( void *p );
 
 
 int64_t my_getpid();
-int64_t my_create_process ( char *name, uint64_t argc, char *argv[] );
+int64_t my_create_process ( main_function rip, priority_t priority, char ** argv, uint64_t argc );
 int64_t my_nice ( uint64_t pid, uint64_t newPrio );
 int64_t my_kill ( uint64_t pid );
 int64_t my_block ( uint64_t pid );
