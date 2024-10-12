@@ -23,6 +23,7 @@ typedef struct PCB{
     uint8_t status; // todo -> definir // podríamos llegar a sacarlo
     char ** argv;
     uint64_t argc;
+    int64_t ret;
     //uint8_t priority;
 }PCB;
 

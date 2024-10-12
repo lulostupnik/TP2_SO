@@ -60,22 +60,37 @@ void * initializeKernelBinary()
 	
 // }
 
+// void kill_p(){
+// 	int i=0;
+// 	// while(i++ < 10000){
+// 	// 	int x =0;
+// 	// 	for(int i=0; i<10000000;i++){
+// 	// 		i--;
+// 	// 		i++;
+// 	// 		x = i;
+// 	// 	}
+// 	// 	vdriver_text_write ( 0, "waiting...\n", 17);
+// 	// }
+// 	vdriver_text_write ( 0, "Haha im a killer\n", 17);
+// 	while(!kill_process(2)){
+// 		vdriver_text_write ( 0, "Could not kill\n", 16 );
+// 	}
+// }
 
-
-void write_arg(char ** argv, uint64_t argc){
-	if(argc != 1 ){
-		return;
-	}
-	int x = 0;
-	while(1){
-		vdriver_text_write ( 0, argv[0], 5 );
-		for(int i=0; i<10000000;i++){
-			i--;
-			i++;
-			x = i;
-		}
-	}
-}
+// void write_arg(char ** argv, uint64_t argc){
+// 	if(argc != 1 ){
+// 		return;
+// 	}
+// 	int x = 0;
+// 	while(1){
+// 		vdriver_text_write ( 0, argv[0], 13);
+// 		for(int i=0; i<10000000;i++){
+// 			i--;
+// 			i++;
+// 			x = i;
+// 		}
+// 	}
+// }
 
 void idle_process(){
     while(1){
@@ -103,16 +118,18 @@ int main()
 	load_idt();
 	my_mm_init ( heap, HEAP_SIZE );
 	
-	
+
 	initialize_scheduler(new_process((main_function) idle_process, LOW, NULL, 0));
 	//( ( EntryPoint ) shellCodeModuleAddress ) ();
 
 	new_process((main_function) shellCodeModuleAddress, HIGH, NULL, 0);
 	
-	// char arg[] = "test";
-	// char * argv[] = {arg};
-	// new_process((main_function) write_arg, HIGH, argv, 1);
-	
+	char arg[] = "Dont kill me #<\n";
+	char * argv[] = {arg};
+	uint64_t pid = new_process((main_function) write_arg, HIGH, argv, 1);
+
+	new_process((main_function) kill_p, HIGH, NULL, 0);
+
 	__asm__("int $0x20");
 	return 0;
 }

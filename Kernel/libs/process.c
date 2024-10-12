@@ -91,7 +91,7 @@ int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64
 
 
     
-    rsp = load_stack(rip, rsp, args_cpy, argc);
+    rsp = load_stack(rip, rsp, args_cpy, argc, pid);
     
    
 
@@ -131,6 +131,16 @@ PCB * get_pcb(int64_t pid){
     }
     return &pcb_array[pid];
 }
+
+
+// int64_t kill_process_ret(int64_t pid, int64_t ret){
+//     if(pid >= PCB_AMOUNT || pid < 0 || pcb_array[pid].status == FREE){
+//         return -1;
+//     }
+//     unschedule(&pcb_array[pid]);
+//     pcb_array[pid].status = ZOMBIE;
+//      pcb_array[pid].status = ret;
+// }
 
 
 
