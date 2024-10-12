@@ -6,7 +6,6 @@
 
 typedef struct node {
     elem_type_ptr head;
-    // int times_to_run;
     // int has_runned_times; //no admite repetidos
     struct node *tail;
 } t_node;

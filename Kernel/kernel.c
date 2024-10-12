@@ -92,6 +92,42 @@ void * initializeKernelBinary()
 // 	}
 // }
 
+
+void a(){
+	int x;
+		while(1){
+		vdriver_text_write ( 0, "A\n", 1);
+		for(int i=0; i<10000000;i++){
+			i--;
+			i++;
+			x = i;
+		}
+}}
+
+
+void b(){
+	int x;
+		while(1){
+		vdriver_text_write ( 0, "b\n", 1);
+		for(int i=0; i<10000000;i++){
+			i--;
+			i++;
+			x = i;
+		}
+}}
+
+void c(){
+	int x;
+		while(1){
+		vdriver_text_write ( 0, "c\n", 1);
+		for(int i=0; i<10000000;i++){
+			i--;
+			i++;
+			x = i;
+		}
+}}
+
+
 void idle_process(){
     while(1){
         _hlt();
@@ -99,9 +135,6 @@ void idle_process(){
 }
 
 
-
-//@TODO implementar wrapper
-//@TODO implementar pasaje de parametros
 //@TODO implementar exit (para implementar wrapper)
 //@TODO prioridad
 //@TODO hacer que los stacks no usen malloc (arreglo de stacks)
@@ -122,14 +155,19 @@ int main()
 	initialize_scheduler(new_process((main_function) idle_process, LOW, NULL, 0));
 	//( ( EntryPoint ) shellCodeModuleAddress ) ();
 
-	new_process((main_function) shellCodeModuleAddress, HIGH, NULL, 0);
+	//new_process((main_function) shellCodeModuleAddress, HIGH, NULL, 0);
 	
-	char arg[] = "Dont kill me #<\n";
-	char * argv[] = {arg};
-	uint64_t pid = new_process((main_function) write_arg, HIGH, argv, 1);
+	new_process((main_function) a, HIGH, NULL, 0);
+	new_process((main_function) b, MEDIUM, NULL, 0);
+	new_process((main_function) c, LOW, NULL, 0);
 
-	new_process((main_function) kill_p, HIGH, NULL, 0);
 
-	__asm__("int $0x20");
+	// char arg[] = "Dont kill me #<\n";
+	// char * argv[] = {arg};
+	// uint64_t pid = new_process((main_function) write_arg, HIGH, argv, 1);
+
+	// new_process((main_function) kill_p, HIGH, NULL, 0);
+	timer_tick();
+	//__asm__("int $0x20");
 	return 0;
 }

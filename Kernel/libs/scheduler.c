@@ -2,15 +2,16 @@
 
 static list_adt ready_list;
 static list_adt blocked_list;
+
 static PCB * running = NULL;
+static uint64_t times_ran = 0;
+
 static PCB * idle_pcb;
 static int initialized = 0;
 
 int compare_elements(elem_type_ptr e1, elem_type_ptr e2) {
     return e1 - e2; 
 }
-
-
 
 
 void initialize_scheduler(int64_t idle_process_pid){
@@ -61,9 +62,14 @@ uint64_t scheduler(uint64_t current_rsp){
         running = idle_pcb;   
         return idle_pcb->rsp; 
     }
-    PCB * next_pcb = next(ready_list);
-    running = next_pcb;
-    return next_pcb->rsp;
+    if(times_ran >= running->priority){
+        PCB * next_pcb = next(ready_list);
+        times_ran = 0;
+        running = next_pcb;
+        return next_pcb->rsp;
+    }
+    times_ran++;
+    return current_rsp;
 }
 
 

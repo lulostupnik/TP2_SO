@@ -18,7 +18,7 @@
 // 	READY,BLOCKED,FREE
 // } status_t;
 
-typedef enum { LOW, MEDIUM, HIGH } priority_t;
+
 
 typedef int (*main_function)(char ** argv, uint64_t argc);
 

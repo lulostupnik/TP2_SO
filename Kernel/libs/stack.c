@@ -10,7 +10,7 @@ void process_wrapper(main_function rip, char **argv, uint64_t argc, uint64_t pid
     }
     pcb->ret = ret;  //@TODO esto podria estar en kill_process
     kill_process(pid);
-    __asm__("int $0x20"); //@todo cambiar 
+   // __asm__("int $0x20"); //@todo cambiar 
 //	killCurrentProcess(retValue);
 }
 

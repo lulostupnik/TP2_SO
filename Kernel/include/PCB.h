@@ -13,18 +13,20 @@
 //     // priority
 // }PCB;
 
-
-
+typedef enum { LOW=1, MEDIUM, HIGH } priority_t;
 
 typedef struct PCB{
  
     uint64_t pid, ppid; // buscar de donde sacar el pid_t o usar uint
     uint64_t rsp;
+    // uint64_t base_pointer;
+    // uint8_t is_foreground;
     uint8_t status; // todo -> definir // podríamos llegar a sacarlo
     char ** argv;
     uint64_t argc;
     int64_t ret;
-    //uint8_t priority;
+
+    priority_t priority;
 }PCB;
 
 

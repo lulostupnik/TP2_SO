@@ -4,6 +4,7 @@ GLOBAL inb
 GLOBAL outb
 GLOBAL hlt
 GLOBAL rtc
+GLOBAL timer_tick
 
 section .text
 
@@ -82,3 +83,6 @@ hlt:
 	hlt
 	ret
 
+timer_tick:
+    int 0x20
+    ret

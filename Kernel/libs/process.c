@@ -62,7 +62,9 @@ static char ** copy_argv(uint64_t pid, char ** argv, uint64_t argc){
 
 int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64_t argc){
   
-   
+    if(!((priority != LOW) || (priority != MEDIUM) || (priority != HIGH))){
+        return -1;
+    }
     
     // uint64_t rsp = (uint64_t) my_malloc(STACK_SIZE);
     // if(rsp == NULL){
@@ -102,6 +104,7 @@ int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64
     pcb_array[pid].status = READY;
     pcb_array[pid].argv = args_cpy;
     pcb_array[pid].argc = argc;
+    pcb_array[pid].priority = priority;
 
     ready(&pcb_array[pid]);
     // ready_queue.push((void *)pcb_array + pid * sizeof(PCB));
