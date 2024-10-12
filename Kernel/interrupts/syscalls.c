@@ -67,6 +67,14 @@ int64_t sys_call_handler ( stack_registers * regs )
 	case 16:
 		return my_create_process ( ( main_function ) regs->rdi, ( priority_t ) regs->rsi, ( char ** ) regs->rdx, regs->rcx );
 		break;
+	case 17:
+		return my_block ( regs->rdi );
+		break;
+	case 18:
+		return my_unblock ( regs->rdi );
+	case 19:
+		return my_yield();
+		break;	
 	default:
 		return NOT_VALID_SYS_ID;
 
@@ -232,7 +240,7 @@ int64_t my_block ( uint64_t pid )
 
 int64_t my_unblock ( uint64_t pid )
 {
-	return 0;
+	return unblock_arbitrary ( pid );
 }
 
 int64_t my_sem_open ( char *sem_id, uint64_t initial_value )
@@ -257,7 +265,7 @@ int64_t my_sem_close ( char *sem_id )
 
 int64_t my_yield()
 {
-	return 0;
+	return yield();
 }
 
 int64_t my_wait ( int64_t pid )

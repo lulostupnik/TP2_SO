@@ -152,7 +152,7 @@ int main()
 	
 
 	initialize_scheduler(new_process((main_function) idle_process, LOW, NULL, 0));
-	( ( EntryPoint ) shellCodeModuleAddress ) ();
+	//( ( EntryPoint ) shellCodeModuleAddress ) ();
 
 	new_process((main_function) shellCodeModuleAddress, HIGH, NULL, 0);
 	
