@@ -31,4 +31,6 @@ void haltcpu ( void );
 
 void timer_tick( void ); //@TODO crear un .h poara libasm.h y refacctor los q estan aca
 
+void yield( void );
+
 #endif

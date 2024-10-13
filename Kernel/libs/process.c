@@ -8,6 +8,8 @@
 
 
 PCB pcb_array[PCB_AMOUNT] = {0}; //@todo va aca?
+uint64_t amount_of_processes = 0;
+
 // todo: agregar cantidad de procesos. Es decir, "cantidad de lugares ocupados"
 
 
@@ -110,7 +112,7 @@ int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64
     ready(&pcb_array[pid]);
     // ready_queue.push((void *)pcb_array + pid * sizeof(PCB));
    
-
+    amount_of_processes++;
     return pid;
 
 }
@@ -145,18 +147,49 @@ PCB * get_pcb(int64_t pid){
 //      pcb_array[pid].status = ret;
 // }
 
-
-
 int64_t kill_process(int64_t pid){
     if(pid >= PCB_AMOUNT || pid < 0 || pcb_array[pid].status == FREE){
         return -1;
     }
     unschedule(&pcb_array[pid]);
     pcb_array[pid].status = ZOMBIE;
+    // llamar a int20 si es el proceso que está corriendo?
 }
 
+void get_process_info(PCB * pcb, process_info * process){
+    process->pid = pcb->pid;
+    process->ppid = pcb->ppid;
+    process->priority = pcb->priority;
+    // process->base_pointer = pcb->rbp;
+    // todo BASE POINTER !!
+    process->stack_pointer = pcb->rsp;
+    // process->foreground = pcb->foreground;
+}
 
+uint64_t ps(){
+    process_info_list * process_list = my_malloc(sizeof(process_info_list));
+    if(process_list == 0){
+        return 0; // todo NULL
+    }
+    process_list->amount_of_processes = amount_of_processes;
+    process_info * processes = my_malloc(amount_of_processes * sizeof(process_info));
+    if(processes == 0){
+        my_free((void *) process_list);
+        return 0; // todo NULL
+    }
 
+    for(int i = 0, found = 0; i < PCB_AMOUNT && found < amount_of_processes; i++){
+        if(pcb_array[i].status != FREE){
+            get_process_info(&pcb_array[i], &processes[found]);
+            found++;
+        }
+    }
+    // if(found != amount_of_processes){/*ERROR*/}
+    
+    process_list->processes = processes;
+    return (uint64_t) process_list;
+
+}
 // IDEAS FUTURO:
 // freePIDList o arreglo o lo que sea
 

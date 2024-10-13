@@ -48,6 +48,7 @@ void unschedule(PCB * process){
     }
    
 }
+/*
 uint64_t yield(){
     PCB * next_pcb = next(ready_list);
     times_ran = 0;
@@ -57,6 +58,7 @@ uint64_t yield(){
     }
     return 1;
 }
+*/
 
 uint64_t get_pid(){
     return running->pid;

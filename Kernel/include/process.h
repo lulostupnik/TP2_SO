@@ -18,7 +18,19 @@
 // 	READY,BLOCKED,FREE
 // } status_t;
 
+typedef struct process_info{
+    uint64_t pid;
+    uint64_t ppid;
+    uint64_t priority;
+    uint64_t base_pointer;
+    uint64_t stack_pointer;
+    // uint64_t foreground;
+}process_info;
 
+typedef struct process_info_list{
+    uint64_t amount_of_processes;
+    process_info * processes;
+}process_info_list;
 
 typedef int (*main_function)(char ** argv, uint64_t argc);
 
