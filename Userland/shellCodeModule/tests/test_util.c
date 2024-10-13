@@ -73,16 +73,22 @@ void endless_loop()
 }
 
 
+void endless_loop_print_main(char ** argv, uint64_t argc){
+	if(argv == NULL || argc != 1){
+		fprintf ( STDERR, "Wrong parameters\n" );
+		return;
+	}
 
+	uint64_t wait = satoi(argv[0]); //@todo satoi es con signo, wait es uint64_t...
+	endless_loop_print(wait);
+}
 
-// void endless_loop_print(uint64_t wait)
-// {
-//     int64_t pid = my_getpid();
-
-//     while (1)
-//     {
-
-//         printf("%d ", pid);
-//         bussy_wait(wait);
-//     }
-// }
+void endless_loop_print(uint64_t wait)
+{
+    int64_t pid = my_getpid();
+    while (1)
+    {
+        printf("%d ", pid);
+        bussy_wait(wait);
+    }
+}

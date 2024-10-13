@@ -12,17 +12,19 @@ static uint64_t font_size = 1; // font_size 1 is the default size
 
 
 static module modules[] = {
-{"help", help},
-{"time", showcurrentTime},
-{"eliminator", eliminator},
-{"zoomin", zoomIn},
-{"zoomout", zoomOut},
-{"getregs", getRegs},
-{"dividebyzero", div0},
-{"opcode", op_code},
-{"clear", clear},
-{"testmm", start_test_mm},
-{"ipod", ipod_menu},
+{"help", help, 0, NULL, 0, 0},
+{"time", showcurrentTime, 0, NULL, 0, 0},
+{"eliminator", eliminator, 0, NULL, 0, 0},
+{"zoomin", zoomIn, 0, NULL, 0, 0},
+{"zoomout", zoomOut, 0, NULL, 0, 0},
+{"getregs", getRegs, 0, NULL, 0, 0},
+{"dividebyzero", div0, 0, NULL, 0, 0},
+{"opcode", op_code, 0, NULL, 0, 0},
+{"clear", clear, 0, NULL, 0, 0},
+{"ipod", ipod_menu, 0, NULL, 0, 0},
+{"testmm", start_test_mm, 0, NULL, 0, 0},
+{"testprio",test_prio, 1, NULL, 0, 0}
+
 };
 
 
@@ -40,6 +42,18 @@ int main()
 	}
 
 }
+
+void call_function_process(module m){
+	if(m.is_built_in){
+		m.function();
+		return;
+	}
+	int64_t ans = sys_create_process(m.function, m.priority, m.argv, m.argc); //@todo le agregamos checkeo??
+	if(ans != 0){
+		fprintf ( STDERR, "Could not create process\n" );
+	}
+}
+
 void interpret()
 {
 	puts ( PROMPT );
@@ -51,6 +65,7 @@ void interpret()
 	for ( int i = 0; i < MAX_MODULES; i++ ) {
 		if ( strcmp ( shellBuffer, modules[i].name ) == 0 ) {
 			modules[i].function();
+			call_function_process(modules[i]);
 			return;
 		}
 	}
@@ -71,6 +86,7 @@ static void help()
 	puts ( "- opcode: Genera una excepcion de codigo de operacion invalido.\n" );
 	puts ( "- clear: Limpia la pantalla.\n" );
 	puts ( "- ipod: Inicia el reproductor de musica.\n" );
+	puts ( "- testprio: Testea las prioridades del scheduler.\n" );
 	puts ( "- testmm: Testea el uso del malloc y free.\n\n" );
 
 }

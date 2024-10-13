@@ -452,6 +452,12 @@ void my_free ( void *p )
 	return sys_free ( p );
 }
 
+//@TODO change prioroty
+int64_t my_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc){
+	return sys_create_process(rip, priority,argv, argc);
+}
+
+
 /*
 void ps(){
 	(process_info_list *) process_list = sys_ps();

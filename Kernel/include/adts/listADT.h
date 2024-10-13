@@ -4,7 +4,7 @@
 #ifndef _LISTADT_H_
 #define _LISTADT_H_
 
-#include <stdio.h>
+
 #include <stddef.h>
 #include <assert.h>
 #include <memory_management.h>

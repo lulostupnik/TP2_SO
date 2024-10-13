@@ -13,6 +13,8 @@ GLOBAL sys_nano_sleep
 GLOBAL sys_get_time
 GLOBAL sys_free
 GLOBAL sys_malloc
+GLOBAL sys_get_pid
+GLOBAL sys_create_process
 
 section .text
 
@@ -153,6 +155,12 @@ sys_malloc:
 
 sys_free:
     simple_sys_handler 14
+
+sys_get_pid:
+    simple_sys_handler 15
+
+sys_create_process:
+    simple_sys_handler 16
 
 ;sys_ps:
 ;    simple_sys_handler 20

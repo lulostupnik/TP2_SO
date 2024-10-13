@@ -56,6 +56,8 @@ typedef struct time {
 	uint8_t seconds;
 } time_struct;
 
+typedef int (*main_function)(char ** argv, uint64_t argc);
+
 
 int64_t sys_read ( uint64_t fd, uint16_t * buffer, uint64_t amount );
 
@@ -98,5 +100,9 @@ int64_t sys_get_time ( time_struct * time );
 void * sys_malloc ( uint64_t size );
 
 void sys_free ( void *p );
+
+//@todo change priority
+int64_t sys_create_process ( main_function rip, uint64_t priority, char ** argv, uint64_t argc );
+
 
 #endif
