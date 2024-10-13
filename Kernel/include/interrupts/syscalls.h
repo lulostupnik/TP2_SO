@@ -231,12 +231,13 @@ void * sys_malloc ( uint64_t size );
 void sys_free ( void *p );
 
 
-int64_t sys_getpid();
+int64_t sys_get_pid();
 int64_t sys_create_process ( main_function rip, priority_t priority, char ** argv, uint64_t argc );
-int64_t sys_nice ( uint64_t pid, uint64_t newPrio );
-int64_t sys_kill ( uint64_t pid );
-int64_t sys_block ( uint64_t pid );
-int64_t sys_unblock ( uint64_t pid );
+
+int64_t sys_nice ( int64_t pid, uint64_t newPrio );
+int64_t sys_kill ( int64_t pid );
+int64_t sys_block ( int64_t pid );
+int64_t sys_unblock ( int64_t pid );
 int64_t sys_sem_open ( char *sem_id, uint64_t initialValue );
 int64_t sys_sem_wait ( char *sem_id );
 int64_t sys_sem_post ( char *sem_id );

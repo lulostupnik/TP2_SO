@@ -440,8 +440,6 @@ void * memset ( void * destination, int32_t c, uint64_t length )
 	return destination;
 }
 
-
-
 void * my_malloc ( uint64_t size )
 {
 	return sys_malloc ( size );
@@ -456,6 +454,25 @@ void my_free ( void *p )
 int64_t my_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc){
 	return sys_create_process(rip, priority,argv, argc);
 }
+
+int64_t my_get_pid(){
+	return sys_get_pid();
+}
+
+int64_t my_kill ( int64_t pid ){
+	sys_kill(pid);
+}
+int64_t my_block ( int64_t pid ){
+	sys_block(pid);
+}
+int64_t my_nice(int64_t pid, uint64_t newPrio ){
+	return sys_nice(pid, newPrio);
+}
+
+int64_t my_yield(){
+	sys_yield();
+}
+
 
 
 /*

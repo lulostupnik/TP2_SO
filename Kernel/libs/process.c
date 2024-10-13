@@ -15,7 +15,7 @@ uint64_t amount_of_processes = 0;
 
 static int64_t find_free_pcb();
 // static int copy_argv(uint64_t pid, char ** argv, uint64_t argc);
-static char ** copy_argv(uint64_t pid, char ** argv, uint64_t argc);
+static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc);
 
 //extern uint64_t strlen ( const char *str );
 static uint64_t my_strlen ( const char *str )  //@todo poner en otro archivo
@@ -27,7 +27,7 @@ static uint64_t my_strlen ( const char *str )  //@todo poner en otro archivo
 }
 
 
-static char ** copy_argv(uint64_t pid, char ** argv, uint64_t argc){
+static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc){
    
     if( (argc == 0 && argv != NULL) || (argc>0 && argv==NULL)){ //@todo check
         return NULL;
@@ -153,6 +153,7 @@ int64_t kill_process(int64_t pid){
     }
     unschedule(&pcb_array[pid]);
     pcb_array[pid].status = ZOMBIE;
+    return 0;
     // llamar a int20 si es el proceso que está corriendo?
 }
 

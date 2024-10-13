@@ -62,7 +62,7 @@ int64_t sys_call_handler ( stack_registers * regs )
 		return 0;
 		break;
 	case 15:
-		return sys_getpid();
+		return sys_get_pid();
 		break;
 	case 16:
 		return sys_create_process ( ( main_function ) regs->rdi, ( priority_t ) regs->rsi, ( char ** ) regs->rdx, regs->rcx );
@@ -75,8 +75,14 @@ int64_t sys_call_handler ( stack_registers * regs )
 	case 19:
 		return sys_yield();
 		break;	
-	/*
 	case 20:
+		return sys_nice( (int64_t) regs->rdi, regs->rsi);
+		break;
+	case 21:
+		return sys_kill( (int64_t) regs->rdi );
+		break;
+	/*
+	case 21:
 		return ps(); // (int64_t) ?
 	*/
 	default:
@@ -223,26 +229,27 @@ int64_t sys_create_process (main_function rip, priority_t priority, char ** argv
 	return (int64_t) new_process( rip, priority, argv, argc );
 }
 
-int64_t sys_getpid()
+int64_t sys_get_pid()
 {
-	return 0;
-}
-int64_t sys_nice ( uint64_t pid, uint64_t new_prio )
-{
-	return 0;
+	return get_pid();
 }
 
-int64_t sys_kill ( uint64_t pid )
+int64_t sys_nice ( int64_t pid, uint64_t new_prio )
 {
-	return 0;
+	return nice(pid, new_prio);
 }
 
-int64_t sys_block ( uint64_t pid )
+int64_t sys_kill ( int64_t pid )
+{
+	return kill_process(pid);
+}
+
+int64_t sys_block ( int64_t pid )
 {
 	return block_arbitrary ( pid );
 }
 
-int64_t sys_unblock ( uint64_t pid )
+int64_t sys_unblock ( int64_t pid )
 {
 	return unblock_arbitrary ( pid );
 }

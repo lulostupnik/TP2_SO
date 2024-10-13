@@ -15,6 +15,11 @@ GLOBAL sys_free
 GLOBAL sys_malloc
 GLOBAL sys_get_pid
 GLOBAL sys_create_process
+GLOBAL sys_block
+GLOBAL sys_yield
+GLOBAL sys_unblock
+GLOBAL sys_nice
+GLOBAL sys_kill
 
 section .text
 
@@ -162,5 +167,20 @@ sys_get_pid:
 sys_create_process:
     simple_sys_handler 16
 
+sys_block:
+    simple_sys_handler 17
+
+sys_unblock:
+    simple_sys_handler 18
+
+sys_yield:
+    simple_sys_handler 19
+
+sys_nice:
+    simple_sys_handler 20
+
+sys_kill:
+    simple_sys_handler 21
+
 ;sys_ps:
-;    simple_sys_handler 20
+;    simple_sys_handler 21

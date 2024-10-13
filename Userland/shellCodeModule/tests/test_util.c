@@ -85,7 +85,7 @@ void endless_loop_print_main(char ** argv, uint64_t argc){
 
 void endless_loop_print(uint64_t wait)
 {
-    int64_t pid = my_getpid();
+    int64_t pid = my_get_pid();
     while (1)
     {
         printf("%d ", pid);

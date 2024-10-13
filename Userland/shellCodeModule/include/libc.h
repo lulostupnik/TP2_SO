@@ -298,4 +298,14 @@ void my_free ( void *ptr );
 
 int64_t my_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc);
 
+int64_t my_get_pid();
+
+int64_t my_nice ( int64_t pid, uint64_t newPrio );
+
+int64_t my_yield();
+
+int64_t my_kill ( int64_t pid );
+
+int64_t my_block ( int64_t pid );
+
 #endif

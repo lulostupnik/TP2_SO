@@ -13,11 +13,11 @@
 //     // priority
 // }PCB;
 
-typedef enum { LOW=1, MEDIUM, HIGH } priority_t;
+typedef enum { LOW=0, MEDIUM, HIGH } priority_t;
 
 typedef struct PCB{
  
-    uint64_t pid, ppid; // buscar de donde sacar el pid_t o usar uint
+    int64_t pid, ppid; // buscar de donde sacar el pid_t o usar uint
     uint64_t rsp;
     // uint64_t base_pointer;
     // uint8_t is_foreground;

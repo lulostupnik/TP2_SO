@@ -73,9 +73,11 @@ void endless_loop()
 void endless_loop_print ( uint64_t wait )
 {
 	int64_t pid = my_getpid();
-
+	if(pid < 0){
+		fprintf ( STDERR, "Error in endless_loop_print\n");
+	}
 	while ( 1 ) {
-		printf ( "%ld ", pid );
+		printf ( "%d ", pid );
 		bussy_wait ( wait );
 	}
 }

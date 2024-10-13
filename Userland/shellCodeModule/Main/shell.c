@@ -10,21 +10,21 @@ static void toUtcMinus3 ( time_struct * time );
 
 static uint64_t font_size = 1; // font_size 1 is the default size
 
+#define BUILT_IN 1
 
 static module modules[] = {
-{"help", help, 0, NULL, 0, 0},
-{"time", showcurrentTime, 0, NULL, 0, 0},
-{"eliminator", eliminator, 0, NULL, 0, 0},
-{"zoomin", zoomIn, 0, NULL, 0, 0},
-{"zoomout", zoomOut, 0, NULL, 0, 0},
-{"getregs", getRegs, 0, NULL, 0, 0},
-{"dividebyzero", div0, 0, NULL, 0, 0},
-{"opcode", op_code, 0, NULL, 0, 0},
-{"clear", clear, 0, NULL, 0, 0},
-{"ipod", ipod_menu, 0, NULL, 0, 0},
-{"testmm", start_test_mm, 0, NULL, 0, 0},
-{"testprio",test_prio, 1, NULL, 0, 0}
-
+{"help", help, BUILT_IN, NULL, 0 , 0},
+{"time", showcurrentTime, BUILT_IN, NULL, 0, 0},
+{"eliminator", eliminator, BUILT_IN, NULL, 0, 0},
+{"zoomin", zoomIn, BUILT_IN, NULL, 0, 0},
+{"zoomout", zoomOut, BUILT_IN, NULL, 0, 0},
+{"getregs", getRegs, BUILT_IN, NULL, 0, 0},
+{"dividebyzero", div0, BUILT_IN, NULL, 0, 0},
+{"opcode", op_code, BUILT_IN, NULL, 0, 0},
+{"clear", clear, BUILT_IN, NULL, 0, 0},
+{"ipod", ipod_menu, BUILT_IN, NULL, 0, 0},
+{"testmm", start_test_mm, BUILT_IN, NULL, 0, 0},
+{"testprio",test_prio, !BUILT_IN, NULL, 0, 0}
 };
 
 
@@ -49,9 +49,10 @@ void call_function_process(module m){
 		return;
 	}
 	int64_t ans = sys_create_process(m.function, m.priority, m.argv, m.argc); //@todo le agregamos checkeo??
-	if(ans != 0){
+	if(ans < 0){
 		fprintf ( STDERR, "Could not create process\n" );
 	}
+	return;
 }
 
 void interpret()
@@ -64,9 +65,9 @@ void interpret()
 	}
 	for ( int i = 0; i < MAX_MODULES; i++ ) {
 		if ( strcmp ( shellBuffer, modules[i].name ) == 0 ) {
-			modules[i].function();
+			//modules[i].function();
 			call_function_process(modules[i]);
-			return;
+			return;	
 		}
 	}
 	fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );

@@ -19,8 +19,8 @@
 // } status_t;
 
 typedef struct process_info{
-    uint64_t pid;
-    uint64_t ppid;
+    int64_t pid;
+    int64_t ppid;
     priority_t priority;
     uint64_t base_pointer;
     uint64_t stack_pointer;

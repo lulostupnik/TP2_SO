@@ -70,11 +70,11 @@ void scheduler_yield(){
 }
 
 
-uint64_t get_pid(){
+int64_t get_pid(){
     return running->pid;
 }
 
-uint64_t block_arbitrary(uint64_t pid){
+uint64_t block_arbitrary(int64_t pid){
     PCB * process = get_pcb(pid);
     if (process==NULL){
         return -1;
@@ -83,7 +83,7 @@ uint64_t block_arbitrary(uint64_t pid){
     return 0;
 }
 
-uint64_t unblock_arbitrary(uint64_t pid){
+uint64_t unblock_arbitrary(int64_t pid){
     PCB * process = get_pcb(pid);
         if (process==NULL){
         return -1;
@@ -113,6 +113,16 @@ uint64_t scheduler(uint64_t current_rsp){
     times_ran++;
     return current_rsp;
 }
+
+int64_t nice ( int64_t pid, uint64_t new_prio ){
+    PCB * process = get_pcb(pid);
+    if (process==NULL){
+        return -1;
+    }
+    process->priority = new_prio;
+    return 0;
+}
+
 
 
 
