@@ -60,6 +60,16 @@ uint64_t yield(){
 }
 */
 
+
+void scheduler_yield(){
+    if(running == NULL || is_empty_list(ready_list)){
+        return;
+    }
+    times_ran = running->priority;
+    timer_tick();
+}
+
+
 uint64_t get_pid(){
     return running->pid;
 }

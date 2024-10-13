@@ -265,7 +265,7 @@ int64_t my_sem_close ( char *sem_id )
 
 int64_t my_yield()
 {
-	__asm__("int $0x20");
+	scheduler_yield();
 	return 0;
 }
 
