@@ -21,10 +21,12 @@
 typedef struct process_info{
     uint64_t pid;
     uint64_t ppid;
-    uint64_t priority;
+    priority_t priority;
     uint64_t base_pointer;
     uint64_t stack_pointer;
-    // uint64_t foreground;
+    uint8_t status;
+
+    // uint8_t is_foreground;
 }process_info;
 
 typedef struct process_info_list{

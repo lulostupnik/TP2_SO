@@ -163,6 +163,7 @@ void get_process_info(PCB * pcb, process_info * process){
     // process->base_pointer = pcb->rbp;
     // todo BASE POINTER !!
     process->stack_pointer = pcb->rsp;
+    process->status = pcb->status;
     // process->foreground = pcb->foreground;
 }
 
