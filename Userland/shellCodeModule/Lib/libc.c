@@ -451,3 +451,17 @@ void my_free ( void *p )
 {
 	return sys_free ( p );
 }
+
+/*
+void ps(){
+	(process_info_list *) process_list = sys_ps();
+	if(process_list == NULL){
+		printf("Error while getting process list\n");
+		return;
+	}
+	printf("PID\tPPID\tPriority\tBase Pointer\tStack Pointer\tStatus\n");
+	for(int i = 0; i < process_list->amount_of_processes; i++){
+		printf("%d\t%d\t%d\t%d\t%d\t%d\n", process_list->processes[i].pid, process_list->processes[i].ppid, process_list->processes[i].priority, process_list->processes[i].base_pointer, process_list->processes[i].stack_pointer, process_list->processes[i].status);
+	}
+}
+*/

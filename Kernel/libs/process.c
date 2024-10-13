@@ -167,7 +167,7 @@ void get_process_info(PCB * pcb, process_info * process){
     // process->foreground = pcb->foreground;
 }
 
-uint64_t ps(){
+process_info_list * ps(){
     process_info_list * process_list = my_malloc(sizeof(process_info_list));
     if(process_list == 0){
         return 0; // todo NULL
@@ -188,7 +188,7 @@ uint64_t ps(){
     // if(found != amount_of_processes){/*ERROR*/}
     
     process_list->processes = processes;
-    return (uint64_t) process_list;
+    return process_list;
 
 }
 // IDEAS FUTURO:

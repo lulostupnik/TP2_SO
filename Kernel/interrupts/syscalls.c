@@ -75,6 +75,10 @@ int64_t sys_call_handler ( stack_registers * regs )
 	case 19:
 		return my_yield();
 		break;	
+	/*
+	case 20:
+		return ps(); // (int64_t) ?
+	*/
 	default:
 		return NOT_VALID_SYS_ID;
 

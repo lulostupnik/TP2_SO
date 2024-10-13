@@ -153,3 +153,6 @@ sys_malloc:
 
 sys_free:
     simple_sys_handler 14
+
+;sys_ps:
+;    simple_sys_handler 20
