@@ -25,10 +25,10 @@ int64_t test_processes( char *argv[], uint64_t argc) {
   if ((max_processes = satoi(argv[0])) <= 0){
     return -1;}
 
-  printf("\n%d max processes\n", max_processes);
-  printf("%d argv\n", argv);
-  printf("%s argv[0]\n", *argv );
-  printf("%d argc\n", argc);
+  // printf("\n%d max processes\n", max_processes);
+  // printf("%d argv\n", argv);
+  // printf("%s argv[0]\n", *argv );
+  // printf("%d argc\n", argc);
   p_rq p_rqs[max_processes];
 
   while (1) {
