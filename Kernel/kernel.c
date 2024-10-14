@@ -148,13 +148,13 @@ void idle_process(){
 int main()
 {
 	load_idt();
-	_cli();
+	//_cli();
 	my_mm_init ( heap, HEAP_SIZE );
 	initialize_scheduler(new_process((main_function) idle_process, LOW, NULL, 0));
 	//( ( EntryPoint ) shellCodeModuleAddress ) ();
 
 	new_process((main_function) shellCodeModuleAddress, HIGH, NULL, 0);
-	_sti();
+	//_sti();
 	//finish_init();
 	//new_process((main_function) a, HIGH, NULL, 0);
 	//new_process((main_function) b, MEDIUM, NULL, 0);

@@ -109,7 +109,7 @@ int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64
     pcb_array[pid].argv = args_cpy;
     pcb_array[pid].argc = argc;
     pcb_array[pid].priority = priority;
-    //pcb_array[pid].base_pointer = rsp_malloc;
+    pcb_array[pid].base_pointer = rsp_malloc;
 
     ready(&pcb_array[pid]);
     // ready_queue.push((void *)pcb_array + pid * sizeof(PCB));
@@ -153,7 +153,7 @@ void set_free_pcb(int64_t pid){
     if(process == NULL){
         return;
     }
-    //my_free(process->base_pointer);
+    my_free(process->base_pointer);
     if(process->argv == NULL){
         process->status  = FREE;
         return;

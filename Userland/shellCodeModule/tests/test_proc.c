@@ -15,7 +15,7 @@ int64_t test_processes( char *argv[], uint64_t argc) {
   uint64_t alive = 0;
   uint64_t action;
   uint64_t max_processes;
-  uint64_t iteration = 0;
+//  uint64_t iteration = 0;
   char *argvAux[] = {0};
 
   if (argc != 1){
@@ -32,14 +32,14 @@ int64_t test_processes( char *argv[], uint64_t argc) {
   p_rq p_rqs[max_processes];
 
   while (1) {
-    iteration++;
-    printf("Iter num %d\n", iteration);
+    //iteration++;
+    //printf("Iter num %d\n", iteration);
     for (rq = 0; rq < max_processes; rq++) {
       //p_rqs[rq].pid = my_create_process("endless_loop", 0, argvAux);
       p_rqs[rq].pid = my_create_process(endless_loop, 0, NULL, 0);
-      if(rq == 0){
-        printf("Min pid %d\n",p_rqs[rq].pid );
-      }
+      // if(rq == 0){
+      //   printf("Min pid %d\n",p_rqs[rq].pid );
+      // }
       //printf("Created process number %d\n", p_rqs[rq].pid);
       if (p_rqs[rq].pid < 0) {
         printf("test_processes: ERROR creating process\n");
@@ -49,7 +49,7 @@ int64_t test_processes( char *argv[], uint64_t argc) {
         alive++;
       }
     }
-    printf("Max PID %d \n", p_rqs[rq-1].pid);
+    //printf("Max PID %d \n", p_rqs[rq-1].pid);
 
     while (alive > 0) {
 
@@ -61,7 +61,7 @@ int64_t test_processes( char *argv[], uint64_t argc) {
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
               if (my_kill(p_rqs[rq].pid) == -1) {
                 printf("test_processes: ERROR killing process\n");
-                printf("Last pid was %d\n",p_rqs[rq-1].pid );
+                //printf("Last pid was %d\n",p_rqs[rq-1].pid );
                 return -1;
               }
               p_rqs[rq].state = KILLED;
