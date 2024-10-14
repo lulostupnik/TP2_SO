@@ -173,6 +173,7 @@ int64_t kill_process(int64_t pid){
     }
     unschedule(&pcb_array[pid]);
     set_free_pcb(pid);
+    amount_of_processes--;
     //pcb_array[pid].status = ZOMBIE;
     return 0;
     // llamar a int20 si es el proceso que está corriendo?

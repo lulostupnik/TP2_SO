@@ -19,11 +19,14 @@ void initialize_scheduler(int64_t idle_process_pid){
     ready_list = new_list(cmp);
     blocked_list = new_list(cmp);
     idle_pcb = get_pcb(idle_process_pid);
-    delete_list(ready_list, idle_pcb);
+   // delete_list(ready_list, idle_pcb);
     initialized = 1;
     return;
 }
 
+// void finish_init(){
+//     initialized = 1;
+// }
 
 
 void ready(PCB * process){
@@ -85,7 +88,7 @@ uint64_t block_arbitrary(int64_t pid){
 
 uint64_t unblock_arbitrary(int64_t pid){
     PCB * process = get_pcb(pid);
-        if (process==NULL){
+    if (process==NULL){
         return -1;
     }
     ready(process);
@@ -103,6 +106,10 @@ uint64_t scheduler(uint64_t current_rsp){
     if(is_empty_list(ready_list)){
         running = idle_pcb;   
         return idle_pcb->rsp; 
+    }
+    if(running == NULL){ // Running is null but list is not empty
+        running = next(ready_list);
+        return running->rsp;
     }
     if(times_ran >= running->priority){
         PCB * next_pcb = next(ready_list);

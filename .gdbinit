@@ -2480,16 +2480,17 @@ class PrintMemory(gdb.Command):
             print("Usage: print_mem <start_address> <end_address>")
             return
 
-        # Convert the addresses from string to integers (support hex notation)
-        start_addr = int(gdb.parse_and_eval(argv[0]), 16)
-        end_addr = int(gdb.parse_and_eval(argv[1]), 16)
+        # Parse the addresses from string to gdb.Value
+        start_addr = gdb.parse_and_eval(argv[0])
+        end_addr = gdb.parse_and_eval(argv[1])
 
         # Loop through memory from start to end, print one 64-bit word at a time
-        for addr in range(start_addr, end_addr + 8, 8):
+        for addr in range(int(start_addr), int(end_addr) + 8, 8):
             print(gdb.execute("x/gx 0x%x" % addr, to_string=True))
 
 # Register the command with GDB
 PrintMemory()
+
 end
 
 define plist
