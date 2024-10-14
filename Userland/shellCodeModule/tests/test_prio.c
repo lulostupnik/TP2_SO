@@ -9,7 +9,7 @@ void test_prio() {
   char * str = WAIT_STRING;
   char *argv[] = {str};
   uint64_t i;
-   printf("\n");
+
   for (i = 0; i < TOTAL_PROCESSES; i++){
     pids[i] = my_create_process(endless_loop_print_main,0, argv, 1);
     if(pids[i] < 0){
