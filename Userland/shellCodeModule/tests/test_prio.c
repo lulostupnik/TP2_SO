@@ -10,6 +10,7 @@ void test_prio() {
   char *argv[] = {str};
   uint64_t i;
 
+  printf("\n");
   for (i = 0; i < TOTAL_PROCESSES; i++){
     pids[i] = my_create_process(endless_loop_print_main,0, argv, 1);
     if(pids[i] < 0){
@@ -27,24 +28,24 @@ void test_prio() {
   printf("\nBLOCKING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++){
-    sys_block(pids[i]);
+    my_block(pids[i]);
   }
 
   printf("CHANGING PRIORITIES WHILE BLOCKED (TO MEDIUM)...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++){
-    sys_nice(pids[i], MEDIUM);
+    my_nice(pids[i], MEDIUM);
   }
   printf("UNBLOCKING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++){
-    sys_unblock(pids[i]);
+    my_unblock(pids[i]);
   }
   bussy_wait(WAIT);
   printf("\nKILLING...\n");
 
   for (i = 0; i < TOTAL_PROCESSES; i++){
-    sys_kill(pids[i]);
+    my_kill(pids[i]);
   }
   return;
 }

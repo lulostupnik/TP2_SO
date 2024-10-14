@@ -46,6 +46,7 @@ static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc){
         return NULL;
     }
 
+
     for(uint64_t i=0; i<argc;i++){
         uint64_t len = my_strlen(argv[i])+1;
         char * p = my_malloc(len);
@@ -108,6 +109,7 @@ int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64
     pcb_array[pid].argv = args_cpy;
     pcb_array[pid].argc = argc;
     pcb_array[pid].priority = priority;
+    //pcb_array[pid].base_pointer = rsp_malloc;
 
     ready(&pcb_array[pid]);
     // ready_queue.push((void *)pcb_array + pid * sizeof(PCB));
@@ -146,13 +148,32 @@ PCB * get_pcb(int64_t pid){
 //     pcb_array[pid].status = ZOMBIE;
 //      pcb_array[pid].status = ret;
 // }
+void set_free_pcb(int64_t pid){
+    PCB * process = get_pcb(pid);
+    if(process == NULL){
+        return;
+    }
+    //my_free(process->base_pointer);
+    if(process->argv == NULL){
+        process->status  = FREE;
+        return;
+    }
+    for(uint64_t i=0; i<process->argc ; i++){
+        my_free(process->argv[i]);
+    }
+    my_free(process->argv);
+    process->status = FREE;
+    
+}
+
 
 int64_t kill_process(int64_t pid){
     if(pid >= PCB_AMOUNT || pid < 0 || pcb_array[pid].status == FREE){
         return -1;
     }
     unschedule(&pcb_array[pid]);
-    pcb_array[pid].status = ZOMBIE;
+    set_free_pcb(pid);
+    //pcb_array[pid].status = ZOMBIE;
     return 0;
     // llamar a int20 si es el proceso que está corriendo?
 }
@@ -195,14 +216,14 @@ process_info_list * ps(){
 // IDEAS FUTURO:
 // freePIDList o arreglo o lo que sea
 
-void list_processes(){
-    vdriver_text_write("---------------------------------------------------------\n");
-    vdriver_text_write("| %-5s | %-8s | %-18s |\n", "PID", "Priority", "Stack Pointer");
-    vdriver_text_write("---------------------------------------------------------\n");
-    for (int i = 0; i < PCB_AMOUNT; i++) {
-        if (pcb_array[i].status != FREE) {
-            vdriver_text_write("| %-5d | %-8d | %-18p |\n", pcb_array[i].pid, pcb_array[i].priority, (void *)pcb_array[i].rsp); // @TODO: Agregarle nombre, base pointer y foreground
-        }
-    }
-    vdriver_text_write("---------------------------------------------------------\n");
-}
+// void list_processes(){
+//     vdriver_text_write("---------------------------------------------------------\n");
+//     vdriver_text_write("| %-5s | %-8s | %-18s |\n", "PID", "Priority", "Stack Pointer");
+//     vdriver_text_write("---------------------------------------------------------\n");
+//     for (int i = 0; i < PCB_AMOUNT; i++) {
+//         if (pcb_array[i].status != FREE) {
+//             vdriver_text_write("| %-5d | %-8d | %-18p |\n", pcb_array[i].pid, pcb_array[i].priority, (void *)pcb_array[i].rsp); // @TODO: Agregarle nombre, base pointer y foreground
+//         }
+//     }
+//     vdriver_text_write("---------------------------------------------------------\n");
+// }

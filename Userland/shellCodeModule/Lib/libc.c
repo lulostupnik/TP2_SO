@@ -472,6 +472,9 @@ int64_t my_nice(int64_t pid, uint64_t newPrio ){
 int64_t my_yield(){
 	sys_yield();
 }
+int64_t my_unblock ( int64_t pid ){
+	return sys_unblock(pid);
+}
 
 
 

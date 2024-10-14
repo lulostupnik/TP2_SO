@@ -308,4 +308,5 @@ int64_t my_kill ( int64_t pid );
 
 int64_t my_block ( int64_t pid );
 
+int64_t my_unblock ( int64_t pid );
 #endif

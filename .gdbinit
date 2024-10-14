@@ -2492,6 +2492,16 @@ class PrintMemory(gdb.Command):
 PrintMemory()
 end
 
+define plist
+  set var $n = $arg0->size
+  set var $current = $arg0->pre_next
+  while $n
+    p *(PCB*) $current->head
+    set var $current = $current->tail
+    set var $n = $n - 1
+  end
+end
+
 
 
 # File variables ---------------------------------------------------------------

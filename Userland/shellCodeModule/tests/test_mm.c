@@ -64,6 +64,5 @@ uint64_t test_mm ( uint64_t argc, char *argv[] )
 			if ( mm_rqs[i].address )
 				my_free ( mm_rqs[i].address );
 	}
-	printf ( "Everything OK\n" );
 	return 0;
 }

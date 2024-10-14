@@ -12,6 +12,9 @@ static uint64_t font_size = 1; // font_size 1 is the default size
 
 #define BUILT_IN 1
 
+static const char test_process_arg_1[]="97";
+static char * test_process_argv[]={test_process_arg_1};
+
 static module modules[] = {
 {"help", help, BUILT_IN, NULL, 0 , 0},
 {"time", showcurrentTime, BUILT_IN, NULL, 0, 0},
@@ -24,7 +27,8 @@ static module modules[] = {
 {"clear", clear, BUILT_IN, NULL, 0, 0},
 {"ipod", ipod_menu, BUILT_IN, NULL, 0, 0},
 {"testmm", start_test_mm, BUILT_IN, NULL, 0, 0},
-{"testprio",test_prio, !BUILT_IN, NULL, 0, 0}
+{"testprio",test_prio, !BUILT_IN, NULL, 0, 0},
+{"testproc",test_processes, !BUILT_IN, test_process_argv, 1, 0}
 };
 
 
@@ -88,6 +92,7 @@ static void help()
 	puts ( "- clear: Limpia la pantalla.\n" );
 	puts ( "- ipod: Inicia el reproductor de musica.\n" );
 	puts ( "- testprio: Testea las prioridades del scheduler.\n" );
+	puts ( "- testproc: Testea la creacion de procesos.\n" );
 	puts ( "- testmm: Testea el uso del malloc y free.\n\n" );
 
 }
