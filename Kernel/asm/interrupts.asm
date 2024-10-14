@@ -16,6 +16,7 @@ GLOBAL _irq80Handler
 
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
+GLOBAL _exception13Handler
 
 GLOBAL regs_shot
 GLOBAL exception_regs
@@ -298,6 +299,10 @@ _exception0Handler:
 ;Invalid operation code exception
 _exception6Handler:
 	exceptionHandler 6
+
+_exception13Handler:
+	exceptionHandler 13
+
 
 
 haltcpu:

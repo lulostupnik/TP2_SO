@@ -2493,6 +2493,81 @@ PrintMemory()
 
 end
 
+python 
+import gdb
+
+class PrintNonZeroMemory(gdb.Command):
+    """Print memory from a specific start address to an end address, 
+    but only if the memory is not 0x0000000000000000.
+
+    Usage:
+      print_non_zero_mem <start_address> <end_address>
+    """
+
+    def __init__(self):
+        super(PrintNonZeroMemory, self).__init__("print_non_zero_mem", gdb.COMMAND_USER)
+
+    def invoke(self, arg, from_tty):
+        # Split the arguments (expected: start and end addresses)
+        argv = gdb.string_to_argv(arg)
+        if len(argv) != 2:
+            print("Usage: print_non_zero_mem <start_address> <end_address>")
+            return
+
+        # Parse the addresses from string to gdb.Value
+        start_addr = gdb.parse_and_eval(argv[0])
+        end_addr = gdb.parse_and_eval(argv[1])
+
+        # Loop through memory from start to end, check and print if not 0x0000000000000000
+        for addr in range(int(start_addr), int(end_addr) + 8, 8):
+            mem_value = gdb.execute("x/gx 0x%x" % addr, to_string=True)
+
+            # Convert the value to an integer and compare with 0x0000000000000000
+            # The memory value string typically starts with the address and the value comes after
+            value_part = mem_value.split(":")[1].strip()
+            if value_part != "0x0000000000000000":
+                print(mem_value)
+
+# Register the command with GDB
+PrintNonZeroMemory()
+
+end
+
+python 
+import gdb
+class WatchMemoryRange(gdb.Command):
+    """Set watchpoints on a range of memory addresses.
+    
+    Usage:
+      watch_mem_range <start_address> <end_address>
+    """
+    
+    def __init__(self):
+        super(WatchMemoryRange, self).__init__("watch_mem_range", gdb.COMMAND_USER)
+
+    def invoke(self, arg, from_tty):
+        # Split the arguments (expected: start and end addresses)
+        argv = gdb.string_to_argv(arg)
+        if len(argv) != 2:
+            print("Usage: watch_mem_range <start_address> <end_address>")
+            return
+
+        # Parse the addresses from string to gdb.Value
+        start_addr = int(gdb.parse_and_eval(argv[0]))
+        end_addr = int(gdb.parse_and_eval(argv[1]))
+
+        # Loop through the range and set a watchpoint for each 8-byte word (8-byte alignment)
+        for addr in range(start_addr, end_addr, 8):  # Adjust alignment if needed
+            gdb.execute(f"watch *(uint64_t*)0x{addr:x}")
+            print(f"Watchpoint set at address: 0x{addr:x}")
+
+# Register the command with GDB
+WatchMemoryRange()
+
+
+end
+
+
 define plist
   set var $n = $arg0->size
   set var $current = $arg0->pre_next

@@ -11,8 +11,8 @@ void *my_malloc ( uint64_t size );
 void my_free ( void *p );
 
 
-#define BLOCK_SIZE 0x400                       // 1024 bytes
-#define HEAP_SIZE 0x100000                     // 1MB
-#define BLOCK_COUNT (HEAP_SIZE / BLOCK_SIZE)   // 1024 
+#define BLOCK_SIZE 0x1000                       // 4k
+#define HEAP_SIZE 0x1000000                     // 16MB
+#define BLOCK_COUNT (HEAP_SIZE / BLOCK_SIZE)    // 4096
 
 #endif

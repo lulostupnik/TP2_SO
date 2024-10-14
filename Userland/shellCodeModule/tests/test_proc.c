@@ -4,7 +4,7 @@ enum State { RUNNING,
              BLOCKED,
              KILLED };
 
-typedef struct P_rq {
+typedef struct p_rq {
   int32_t pid;
   enum State state;
 } p_rq;

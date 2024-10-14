@@ -6,6 +6,7 @@
 
 #define ZERO_EXCEPTION_ID 0
 #define OPCODE_EXCEPTION_ID 6
+#define GENERAL_PROTECTION 13
 #define CANT_REGS 18
 
 extern uint64_t exception_regs[CANT_REGS];
@@ -59,6 +60,12 @@ void exception_dispatcher ( uint64_t exception )
 		message = ( uint8_t* ) "Invalid opcode\n\n";
 		message_cant_chars = 16;
 	}
+	if ( exception == GENERAL_PROTECTION ) {
+		message = ( uint8_t* ) "General Protection\n\n";
+		message_cant_chars = 20;
+	}
+	
+
 
 	print_regs ( message, message_cant_chars );
 	vdriver_text_write ( STDERR, "\nPress any key to continue", 30 );

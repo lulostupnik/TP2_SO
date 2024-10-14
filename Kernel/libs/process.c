@@ -1,19 +1,18 @@
 
 #include <process.h>
 
-#define STACK_SIZE 256
+#define STACK_SIZE 0x0FFF
 #define PCB_AMOUNT 100
 
 
 
-PCB pcb_array[PCB_AMOUNT] = {0}; //@todo va aca?
+PCB pcb_array[PCB_AMOUNT] = {0}; 
 uint64_t amount_of_processes = 0;
 
 // todo: agregar cantidad de procesos. Es decir, "cantidad de lugares ocupados"
 
 
 static int64_t find_free_pcb();
-// static int copy_argv(uint64_t pid, char ** argv, uint64_t argc);
 static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc);
 
 //extern uint64_t strlen ( const char *str );
@@ -79,8 +78,8 @@ int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64
         return -1;
     }
 
-    uint64_t rsp_malloc = (uint64_t) my_malloc(STACK_SIZE*4) ;  //@TODO No hacerlo dinamico. Definir zona de STACKS y hacer un arreglo
-    uint64_t rsp = rsp_malloc + STACK_SIZE*4;
+    uint64_t rsp_malloc = (uint64_t) my_malloc(STACK_SIZE) ;  //@TODO No hacerlo dinamico. Definir zona de STACKS y hacer un arreglo
+    uint64_t rsp = rsp_malloc + STACK_SIZE;
 
     if(rsp_malloc == NULL){  //Este checkeo con la zona estatica no lo tendriamos que hacer
         return -1;

@@ -7,10 +7,8 @@
 #include <syscall.h>
 #include <libc.h>
 
-#define MAX_BLOCKS 1024
-
+#define MAX_BLOCKS 100
 uint64_t test_mm ( char *argv[],  uint64_t argc );
-
 
 
 #endif
