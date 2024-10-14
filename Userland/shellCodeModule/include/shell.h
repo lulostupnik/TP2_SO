@@ -5,6 +5,7 @@
 #include <test_mm_module.h>
 #include <test_prio.h>
 #include <test_proc.h>
+#include <test_mm.h>
 
 #ifndef CMD_INTERPRETER_H
 #define CMD_INTERPRETER_H
@@ -12,6 +13,8 @@
 #define MAX_ZOOM 3
 #define MIN_ZOOM 1
 #define MAX_MODULES 13
+#define MAX_ARGS 10
+#define MAX_ARGS_SIZE 20
 //Constants for the shell
 
 #define WELCOME "Bienvenido a BarriOS!\n"
@@ -25,8 +28,6 @@ typedef struct module
 	char *name;
 	void ( *function ) ();
 	uint8_t is_built_in;
-	char ** argv;
-	uint64_t argc;
 	uint64_t priority; //@todo cambiar por el enum
 } module;
 

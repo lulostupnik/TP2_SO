@@ -12,23 +12,21 @@ static uint64_t font_size = 1; // font_size 1 is the default size
 
 #define BUILT_IN 1
 
-static const char test_process_arg_1[]="20";
-static char * test_process_argv[]={test_process_arg_1};
 
 static module modules[] = {
-{"help", help, BUILT_IN, NULL, 0 , 0},
-{"time", showcurrentTime, BUILT_IN, NULL, 0, 0},
-{"eliminator", eliminator, BUILT_IN, NULL, 0, 0},
-{"zoomin", zoomIn, BUILT_IN, NULL, 0, 0},
-{"zoomout", zoomOut, BUILT_IN, NULL, 0, 0},
-{"getregs", getRegs, BUILT_IN, NULL, 0, 0},
-{"dividebyzero", div0, BUILT_IN, NULL, 0, 0},
-{"opcode", op_code, BUILT_IN, NULL, 0, 0},
-{"clear", clear, BUILT_IN, NULL, 0, 0},
-{"ipod", ipod_menu, BUILT_IN, NULL, 0, 0},
-{"testmm", start_test_mm, BUILT_IN, NULL, 0, 0}, //@todo cambiar
-{"testprio",test_prio, !BUILT_IN, NULL, 0, 0},
-{"testproc",test_processes, !BUILT_IN, test_process_argv, 1, 0}
+{"help", help, BUILT_IN, 0},
+{"time", showcurrentTime, BUILT_IN, 0},
+{"eliminator", eliminator, BUILT_IN, 0},
+{"zoomin", zoomIn, BUILT_IN, 0},
+{"zoomout", zoomOut, BUILT_IN, 0},
+{"getregs", getRegs, BUILT_IN, 0},
+{"dividebyzero", div0, BUILT_IN, 0},
+{"opcode", op_code, BUILT_IN, 0},
+{"clear", clear, BUILT_IN, 0},
+{"ipod", ipod_menu, BUILT_IN, 0},
+{"testmm", test_mm, !BUILT_IN,  0}, 
+{"testprio",test_prio, !BUILT_IN, 0},
+{"testproc",test_processes, !BUILT_IN, 0}
 };
 
 
@@ -47,17 +45,122 @@ int main()
 
 }
 
-void call_function_process(module m){
+void call_function_process(module m, char** args, uint64_t argc)
+{
 	if(m.is_built_in){
 		m.function();
 		return;
 	}
-	int64_t ans = sys_create_process(m.function, m.priority, m.argv, m.argc); //@todo le agregamos checkeo??
+
+	int64_t ans = sys_create_process(m.function, m.priority, args, argc); //@todo le agregamos checkeo??
 	if(ans < 0){
 		fprintf ( STDERR, "Could not create process\n" );
 	}
+	
+	for(int i = 0; i < argc; i++){
+		my_free(args[i]);
+	}
+
+	my_free(args);
 	return;
 }
+
+char ** command_parse(char shellBuffer[], uint64_t * argc)
+{
+	char ** args = my_malloc(MAX_ARGS * sizeof(char *));
+	if(args == NULL){
+		*argc = -1;
+		return NULL;
+	}
+	uint64_t args_count = 0;
+
+	for (int i = 0; shellBuffer[i] != '\0';) {
+		if(shellBuffer[i] == ' '){
+			i++;
+			continue;
+		}
+
+        args[args_count] = my_malloc(MAX_ARGS_SIZE * sizeof(char));
+
+		if(args[args_count] == NULL){
+			for(int n = 0; n < args_count; n++){
+				my_free(args[n]);
+			}
+			my_free(args);
+			*argc = -1;
+			return NULL;
+		}
+
+		int j;
+		for(j = 0; shellBuffer[i] != ' ' && shellBuffer[i] != '\0'; i++, j++){
+			args[args_count][j] = shellBuffer[i];
+		}
+		
+        args[args_count][j] = '\0';
+        args_count++;
+    }
+
+	*argc = args_count;
+
+	if(args_count == 0){
+		my_free(args);
+		args = NULL;
+	}
+	
+	return args;
+}
+
+	/*
+
+    // Parse the commandBuffer
+    for (int i = 0; commandBuffer[i] != '\0';) {
+
+        // Skip spaces
+        while (commandBuffer[i] == ' ') {
+            i++;
+        }
+
+        // If we reached the end of the string, break
+        if (commandBuffer[i] == '\0') {
+            break;
+        }
+
+        // If we found an argument, copy it to a new array
+        args[argsDim] = sysmalloc(MAX_ARG_SIZE * sizeof(char));
+        int j = 0;
+        while (commandBuffer[i] != ' ' && commandBuffer[i] != '\0') {
+            args[argsDim][j] = commandBuffer[i];
+            i++;
+            j++;
+        }
+        args[argsDim][j] = '\0';
+        args[argsDim] = sysrealloc(args[argsDim], (j + 1) * sizeof(char));
+        argsDim++;
+    }
+
+    // If the last argument is an ampersand, remove it and set flag
+    if (strcmp(args[argsDim - 1], "&") == 0) {
+        sysfree(args[argsDim - 1]);
+        args[argsDim - 1] = NULL;
+        argsDim--;
+        *isBackground = TRUE;
+    } else {
+        *isBackground = FALSE;
+    }
+
+    // If we found no arguments, free the array
+    // Else reallocate the array to the correct size
+    if (argsDim == 0) {
+        sysfree(args);
+        args = NULL;
+    } else {
+        args = sysrealloc(args, argsDim * sizeof(char *));
+    }
+
+    *argc = argsDim;
+    return args;
+}
+*/
 
 void interpret()
 {
@@ -67,13 +170,22 @@ void interpret()
 	if ( strlen ( shellBuffer ) == 0 ) {
 		return;
 	}
-	for ( int i = 0; i < MAX_MODULES; i++ ) {
-		if ( strcmp ( shellBuffer, modules[i].name ) == 0 ) {
+	char ** args;
+	uint64_t argc;
+	args = command_parse(shellBuffer, &argc);
+
+	if(argc == -1){
+		fprintf ( STDERR, "Not enough memory to create process\n" );
+	}
+
+	for ( int i = 0; i < MAX_MODULES && ((args != NULL) || (argc != 0)); i++ ) {
+		if ( strcmp (args[0], modules[i].name ) == 0 ) {
 			//modules[i].function();
-			call_function_process(modules[i]);
+			call_function_process(modules[i], args, argc);
 			return;	
 		}
 	}
+	
 	fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
 
 }
