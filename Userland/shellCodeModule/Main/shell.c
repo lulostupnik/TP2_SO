@@ -12,7 +12,7 @@ static uint64_t font_size = 1; // font_size 1 is the default size
 
 #define BUILT_IN 1
 
-static const char test_process_arg_1[]="97";
+static const char test_process_arg_1[]="20";
 static char * test_process_argv[]={test_process_arg_1};
 
 static module modules[] = {
@@ -26,7 +26,7 @@ static module modules[] = {
 {"opcode", op_code, BUILT_IN, NULL, 0, 0},
 {"clear", clear, BUILT_IN, NULL, 0, 0},
 {"ipod", ipod_menu, BUILT_IN, NULL, 0, 0},
-{"testmm", start_test_mm, BUILT_IN, NULL, 0, 0},
+{"testmm", start_test_mm, BUILT_IN, NULL, 0, 0}, //@todo cambiar
 {"testprio",test_prio, !BUILT_IN, NULL, 0, 0},
 {"testproc",test_processes, !BUILT_IN, test_process_argv, 1, 0}
 };
