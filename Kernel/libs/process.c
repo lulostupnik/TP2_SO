@@ -155,6 +155,7 @@ int64_t kill_process(int64_t pid)
 	return 0;
 }
 
+/*
 void get_process_info(PCB * pcb, process_info * process)
 {
 	process->pid = pcb->pid;
@@ -163,6 +164,7 @@ void get_process_info(PCB * pcb, process_info * process)
 	process->stack_pointer = pcb->rsp;
 	process->status = pcb->status;
 }
+
 
 process_info_list * ps()
 {
@@ -187,4 +189,4 @@ process_info_list * ps()
 	process_list->processes = processes;
 	return process_list;
 
-}
+}*/
