@@ -6,6 +6,8 @@
 
 static void help();
 
+static void kill_pid(char ** argv, uint64_t argc);
+
 static void toUtcMinus3 ( time_struct * time );
 
 static uint64_t font_size = 1; // font_size 1 is the default size
@@ -13,20 +15,22 @@ static uint64_t font_size = 1; // font_size 1 is the default size
 #define BUILT_IN 1
 
 
+
 static module modules[] = {
-{"help", help, BUILT_IN, 0},
-{"time", showcurrentTime, BUILT_IN, 0},
-{"eliminator", eliminator, BUILT_IN, 0},
-{"zoomin", zoomIn, BUILT_IN, 0},
-{"zoomout", zoomOut, BUILT_IN, 0},
-{"getregs", getRegs, BUILT_IN, 0},
-{"dividebyzero", div0, BUILT_IN, 0},
-{"opcode", op_code, BUILT_IN, 0},
-{"clear", clear, BUILT_IN, 0},
-{"ipod", ipod_menu, BUILT_IN, 0},
-{"testmm", test_mm, !BUILT_IN,  0}, 
-{"testprio",test_prio, !BUILT_IN, 0},
-{"testproc",test_processes, !BUILT_IN, 0}
+{"help", help, BUILT_IN},
+{"time", showcurrentTime, BUILT_IN},
+{"eliminator", eliminator, BUILT_IN},
+{"zoomin", zoomIn, BUILT_IN},
+{"zoomout", zoomOut, BUILT_IN},
+{"getregs", getRegs, BUILT_IN},
+{"dividebyzero", div0, BUILT_IN},
+{"opcode", op_code, BUILT_IN},
+{"clear", clear_screen, BUILT_IN},
+{"ipod", ipod_menu, BUILT_IN},
+{"testmm", test_mm, !BUILT_IN}, 
+{"testprio",test_prio, !BUILT_IN},
+{"testproc",test_processes, !BUILT_IN},
+{"killpid", kill_pid, BUILT_IN}
 };
 
 
@@ -45,23 +49,28 @@ int main()
 
 }
 
+void free_args(char** args, uint64_t argc){
+	for(int i = 0; i < argc; i++){
+		my_free(args[i]);
+	}
+	my_free(args);
+	return;
+}
+
 void call_function_process(module m, char** args, uint64_t argc)
 {
 	if(m.is_built_in){
-		m.function();
+		m.function(args, argc);
+		free_args(args, argc);
 		return;
 	}
 
-	int64_t ans = sys_create_process(m.function, m.priority, args, argc); //@todo le agregamos checkeo??
+	int64_t ans = sys_create_process(m.function, LOW, args, argc); //@todo le agregamos checkeo??
 	if(ans < 0){
 		fprintf ( STDERR, "Could not create process\n" );
 	}
 	
-	for(int i = 0; i < argc; i++){
-		my_free(args[i]);
-	}
-
-	my_free(args);
+	free_args(args, argc);
 	return;
 }
 
@@ -110,57 +119,6 @@ char ** command_parse(char shellBuffer[], uint64_t * argc)
 	return args;
 }
 
-	/*
-
-    // Parse the commandBuffer
-    for (int i = 0; commandBuffer[i] != '\0';) {
-
-        // Skip spaces
-        while (commandBuffer[i] == ' ') {
-            i++;
-        }
-
-        // If we reached the end of the string, break
-        if (commandBuffer[i] == '\0') {
-            break;
-        }
-
-        // If we found an argument, copy it to a new array
-        args[argsDim] = sysmalloc(MAX_ARG_SIZE * sizeof(char));
-        int j = 0;
-        while (commandBuffer[i] != ' ' && commandBuffer[i] != '\0') {
-            args[argsDim][j] = commandBuffer[i];
-            i++;
-            j++;
-        }
-        args[argsDim][j] = '\0';
-        args[argsDim] = sysrealloc(args[argsDim], (j + 1) * sizeof(char));
-        argsDim++;
-    }
-
-    // If the last argument is an ampersand, remove it and set flag
-    if (strcmp(args[argsDim - 1], "&") == 0) {
-        sysfree(args[argsDim - 1]);
-        args[argsDim - 1] = NULL;
-        argsDim--;
-        *isBackground = TRUE;
-    } else {
-        *isBackground = FALSE;
-    }
-
-    // If we found no arguments, free the array
-    // Else reallocate the array to the correct size
-    if (argsDim == 0) {
-        sysfree(args);
-        args = NULL;
-    } else {
-        args = sysrealloc(args, argsDim * sizeof(char *));
-    }
-
-    *argc = argsDim;
-    return args;
-}
-*/
 
 void interpret()
 {
@@ -180,7 +138,6 @@ void interpret()
 
 	for ( int i = 0; i < MAX_MODULES && ((args != NULL) || (argc != 0)); i++ ) {
 		if ( strcmp (args[0], modules[i].name ) == 0 ) {
-			//modules[i].function();
 			call_function_process(modules[i], args, argc);
 			return;	
 		}
@@ -190,8 +147,25 @@ void interpret()
 
 }
 
-static void help()
+
+
+static void kill_pid(char ** argv, uint64_t argc){
+	int64_t pid;
+
+	if(argc != 2 || argv == NULL || ((pid = satoi(argv[1])) < 0)){
+		fprintf(STDERR, "Usage: killpid <pid>\n");
+		return;
+	}
+
+	if(my_kill(pid) < 0){
+		fprintf(STDERR, "Could not kill process %d\n", pid);
+	}
+
+}
+
+static void help(char** args, uint64_t argc)
 {
+	
 	puts ( "\nComandos disponibles:\n\n" );
 	puts ( "- help: Muestra todos los modulos disponibles del sistema operativo.\n" );
 	puts ( "- time: Muestra la hora actual del sistema.\n" );
@@ -204,14 +178,14 @@ static void help()
 	puts ( "- clear: Limpia la pantalla.\n" );
 	puts ( "- ipod: Inicia el reproductor de musica.\n" );
 	puts ( "- testprio: Testea las prioridades del scheduler.\n" );
-	puts ( "- testproc: Testea la creacion de procesos.\n" );
-	puts ( "- testmm: Testea el uso del malloc y free.\n\n" );
+	puts ( "- killpid <pid>: Mata al pid numero pid.\n" );
+	puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
+	puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n\n" );
 
 }
 
 
 
-// Function to zoom in
 void zoomIn()
 {
 	if ( font_size < MAX_FONT_SIZE ) {
@@ -223,7 +197,6 @@ void zoomIn()
 	return;
 }
 
-// Function to zoom out
 void zoomOut()
 {
 	if ( font_size > MIN_FONT_SIZE ) {
@@ -234,8 +207,6 @@ void zoomOut()
 	}
 	return;
 }
-
-
 
 
 void showcurrentTime()
@@ -286,8 +257,7 @@ void getRegs()
 	return;
 }
 
-void clear()
-{
-	clear_screen();
-}
-
+// void clear()
+// {
+// 	clear_screen();
+// }

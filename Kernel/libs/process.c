@@ -31,10 +31,7 @@ static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc){
         return NULL;
     }
 
-   /// pcb_array[pid].argc = argc;
-    
     if(argc == 0){
-       // pcb_array[pid].argv == NULL;
         return NULL;
     }
     
@@ -43,7 +40,6 @@ static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc){
     if(ans == NULL){
         return NULL;
     }
-
 
     for(uint64_t i=0; i<argc;i++){
         uint64_t len = my_strlen(argv[i])+1;
@@ -62,38 +58,30 @@ static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc){
 }
 
 
-int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64_t argc){
+int64_t new_process(main_function rip, priority_t priority, uint8_t killable,char ** argv, uint64_t argc){
   
     if(!((priority != LOW) || (priority != MEDIUM) || (priority != HIGH))){
         return -1;
     }
     
-    // uint64_t rsp = (uint64_t) my_malloc(STACK_SIZE);
-    // if(rsp == NULL){
-    //     return -1;
-    // }
-    // rsp += STACK_SIZE;
     int64_t pid = find_free_pcb();
     if(pid == -1){
         return -1;
     }
 
-    uint64_t rsp_malloc = (uint64_t) my_malloc(STACK_SIZE) ;  //@TODO No hacerlo dinamico. Definir zona de STACKS y hacer un arreglo
+    uint64_t rsp_malloc = (uint64_t) my_malloc(STACK_SIZE) ;
     uint64_t rsp = rsp_malloc + STACK_SIZE;
 
-    if(rsp_malloc == NULL){  //Este checkeo con la zona estatica no lo tendriamos que hacer
+    if(rsp_malloc == NULL){  
         return -1;
     }
 
-    // todo -> cambiar el BLOCK_SIZE en el memory manager para que entre el stack
     char ** args_cpy = copy_argv(pid, argv, argc);
     if(argc>0 && args_cpy == NULL){
         my_free((void *)rsp_malloc); 
         pcb_array[pid].status = FREE;
         return -1;
     }
-
-
     
     rsp = load_stack(rip, rsp, args_cpy, argc, pid);
     
@@ -108,13 +96,11 @@ int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64
     pcb_array[pid].argc = argc;
     pcb_array[pid].priority = priority;
     pcb_array[pid].base_pointer = rsp_malloc;
+    pcb_array[pid].killable = killable;
 
-    ready(&pcb_array[pid]);
-    // ready_queue.push((void *)pcb_array + pid * sizeof(PCB));
-   
+    ready(&pcb_array[pid]);   
     amount_of_processes++;
     return pid;
-
 }
 
 static int64_t find_free_pcb(){
@@ -144,7 +130,7 @@ PCB * get_pcb(int64_t pid){
 //     }
 //     unschedule(&pcb_array[pid]);
 //     pcb_array[pid].status = ZOMBIE;
-//      pcb_array[pid].status = ret;
+//      pcb_array[pid].ret = ret;
 // }
 void set_free_pcb(int64_t pid){
     PCB * process = get_pcb(pid);
@@ -166,13 +152,13 @@ void set_free_pcb(int64_t pid){
 
 
 int64_t kill_process(int64_t pid){
-    if(pid >= PCB_AMOUNT || pid < 0 || pcb_array[pid].status == FREE){
+    if(pid >= PCB_AMOUNT || pid < 0 || pcb_array[pid].status == FREE || !pcb_array[pid].killable ){
         return -1;
     }
+
     unschedule(&pcb_array[pid]);
     set_free_pcb(pid);
     amount_of_processes--;
-    //pcb_array[pid].status = ZOMBIE;
     return 0;
     // llamar a int20 si es el proceso que está corriendo?
 }

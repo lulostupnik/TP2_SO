@@ -13,6 +13,6 @@ void my_free ( void *p );
 
 #define BLOCK_SIZE 0x1000                       // 4k
 #define HEAP_SIZE 0x1000000                     // 16MB
-#define BLOCK_COUNT (HEAP_SIZE / BLOCK_SIZE)    // 4096
+#define BLOCK_COUNT (HEAP_SIZE / BLOCK_SIZE)    
 
 #endif

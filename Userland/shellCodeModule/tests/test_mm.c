@@ -40,9 +40,6 @@ uint64_t test_mm ( char *argv[],  uint64_t argc )
 			mm_rqs[rq].size = GetUniform ( max_memory - total - 1 ) + 1;
 			mm_rqs[rq].address = my_malloc ( mm_rqs[rq].size );
 			
-			if(mm_rqs[rq].address < 0x601400 && mm_rqs[rq].address != 0){
-				printf("whoops");
-			}
 
 			if ( mm_rqs[rq].address ) {
 				total += mm_rqs[rq].size;

@@ -226,7 +226,7 @@ void sys_free ( void *p )
 
 int64_t sys_create_process (main_function rip, priority_t priority, char ** argv, uint64_t argc)
 {
-	return (int64_t) new_process( rip, priority, argv, argc );
+	return (int64_t) new_process( rip, priority, 1, argv, argc );
 }
 
 int64_t sys_get_pid()

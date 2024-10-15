@@ -8,11 +8,9 @@ void process_wrapper(main_function rip, char **argv, uint64_t argc, uint64_t pid
     if(pcb == NULL){
         return;
     }
-    pcb->ret = ret;  //@TODO esto podria estar en kill_process
+    pcb->ret = ret;  
     kill_process(pid);
     timer_tick();
-   // __asm__("int $0x20"); //@todo cambiar 
-//	killCurrentProcess(retValue);
 }
 
 uint64_t load_stack(uint64_t rip, uint64_t rsp, char ** argv, uint64_t argc, uint64_t pid)

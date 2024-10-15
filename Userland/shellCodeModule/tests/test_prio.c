@@ -2,7 +2,7 @@
 
 //@todo do a folder as proceses
 
-int64_t prio[TOTAL_PROCESSES] = {LOWEST, MEDIUM, HIGHEST};
+int64_t prio[TOTAL_PROCESSES] = {LOW, MEDIUM, HIGH};
 
 void test_prio() {
   int64_t pids[TOTAL_PROCESSES];

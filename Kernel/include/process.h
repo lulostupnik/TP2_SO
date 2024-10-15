@@ -38,7 +38,7 @@ typedef int (*main_function)(char ** argv, uint64_t argc);
 
 
 
-int64_t new_process(main_function rip, priority_t priority, char ** argv, uint64_t argc);
+int64_t new_process(main_function rip, priority_t priority, uint8_t killable, char ** argv, uint64_t argc);
 PCB * get_pcb(int64_t pid);
 void list_processes();
 

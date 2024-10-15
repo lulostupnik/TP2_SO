@@ -25,6 +25,7 @@ typedef struct PCB{
     uint64_t argc;
     int64_t ret;
     priority_t priority;
+    uint8_t killable;
     //uint64_t base_pointer;
 }PCB;
 
