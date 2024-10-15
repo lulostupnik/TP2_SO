@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 #include <process.h>
 
@@ -46,9 +48,9 @@ static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc){
         char * p = my_malloc(len);
         if(p == NULL){ //@TODO check y modularizar
             for(uint64_t j=0; j<i;j++){
-                my_free(ans[j]);
+                my_free((void *)ans[j]);
             }
-            my_free(ans);
+            my_free((void *)ans);
             return NULL;
         }
         memcpy(p, argv[i], len);
@@ -72,7 +74,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable,cha
     uint64_t rsp_malloc = (uint64_t) my_malloc(STACK_SIZE) ;
     uint64_t rsp = rsp_malloc + STACK_SIZE;
 
-    if(rsp_malloc == NULL){  
+    if((void *)rsp_malloc == NULL){  
         return -1;
     }
 
@@ -83,7 +85,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable,cha
         return -1;
     }
     
-    rsp = load_stack(rip, rsp, args_cpy, argc, pid);
+    rsp = load_stack((uint64_t )rip, rsp, args_cpy, argc, pid);
     
    
 
@@ -137,15 +139,15 @@ void set_free_pcb(int64_t pid){
     if(process == NULL){
         return;
     }
-    my_free(process->base_pointer);
+    my_free((void *)process->base_pointer);
     if(process->argv == NULL){
         process->status  = FREE;
         return;
     }
     for(uint64_t i=0; i<process->argc ; i++){
-        my_free(process->argv[i]);
+        my_free((void *)process->argv[i]);
     }
-    my_free(process->argv);
+    my_free((void * )process->argv);
     process->status = FREE;
     
 }

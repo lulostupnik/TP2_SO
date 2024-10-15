@@ -112,7 +112,8 @@ int64_t sys_yield();
 int64_t sys_kill ( int64_t pid );
 
 int64_t sys_block ( int64_t pid );
-//int64_t sys_unblock ( int64_t pid );
+
+int64_t sys_unblock ( int64_t pid );
 //int64_t sys_sem_open ( char *sem_id, uint64_t initialValue );
 //int64_t sys_sem_wait ( char *sem_id );
 //int64_t sys_sem_post ( char *sem_id );

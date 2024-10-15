@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include <test_prio.h>
 
 //@todo do a folder as proceses
@@ -12,7 +15,7 @@ void test_prio() {
 
   printf("\n");
   for (i = 0; i < TOTAL_PROCESSES; i++){
-    pids[i] = my_create_process(endless_loop_print_main,0, argv, 1);
+    pids[i] = my_create_process((main_function)endless_loop_print_main,0, argv, 1);
     if(pids[i] < 0){
 	    fprintf ( STDERR, "Failed to create process number %d\n", i+1 );
     }

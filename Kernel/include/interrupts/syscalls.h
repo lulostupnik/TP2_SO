@@ -13,6 +13,7 @@
 #include <scheduler.h>
 #include <memory_management.h>
 #include <stack_registers.h>
+#include <process.h>
 
 #define NOT_VALID_SYS_ID -2
 

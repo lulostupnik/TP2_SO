@@ -25,11 +25,11 @@ static module modules[] = {
 {"getregs", getRegs, BUILT_IN},
 {"dividebyzero", div0, BUILT_IN},
 {"opcode", op_code, BUILT_IN},
-{"clear", clear_screen, BUILT_IN},
+{"clear", (void (*)(char **, uint64_t)) clear_screen, BUILT_IN},
 {"ipod", ipod_menu, BUILT_IN},
-{"testmm", test_mm, !BUILT_IN}, 
+{"testmm", (void (*)(char **, uint64_t)) test_mm, !BUILT_IN}, 
 {"testprio",test_prio, !BUILT_IN},
-{"testproc",test_processes, !BUILT_IN},
+{"testproc",(void (*)(char **, uint64_t)) test_processes, !BUILT_IN},
 {"killpid", kill_pid, BUILT_IN}
 };
 
@@ -65,7 +65,7 @@ void call_function_process(module m, char** args, uint64_t argc)
 		return;
 	}
 
-	int64_t ans = sys_create_process(m.function, LOW, args, argc); //@todo le agregamos checkeo??
+	int64_t ans = sys_create_process((main_function)m.function, LOW, args, argc); //@todo le agregamos checkeo??
 	if(ans < 0){
 		fprintf ( STDERR, "Could not create process\n" );
 	}

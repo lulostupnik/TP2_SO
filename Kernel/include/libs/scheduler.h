@@ -3,7 +3,7 @@
 #define _SCHEDULER_H_
 #include <listADT.h>
 #include <PCB.h>
-
+#include <interrupts.h>
 
 void initialize_scheduler(int64_t idle_process_pid);
 void ready(PCB * process);

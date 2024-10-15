@@ -460,17 +460,17 @@ int64_t my_get_pid(){
 }
 
 int64_t my_kill ( int64_t pid ){
-	sys_kill(pid);
+	return sys_kill(pid);
 }
 int64_t my_block ( int64_t pid ){
-	sys_block(pid);
+	return sys_block(pid);
 }
 int64_t my_nice(int64_t pid, uint64_t newPrio ){
 	return sys_nice(pid, newPrio);
 }
 
 int64_t my_yield(){
-	sys_yield();
+	return sys_yield();
 }
 int64_t my_unblock ( int64_t pid ){
 	return sys_unblock(pid);

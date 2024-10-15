@@ -1,3 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include <test_proc.h>
 
 enum State { RUNNING,
@@ -14,8 +17,6 @@ int64_t test_processes( char *argv[], uint64_t argc) {
   uint64_t alive = 0;
   uint64_t action;
   uint64_t max_processes;
-//  uint64_t iteration = 0;
-  char *argvAux[] = {0};
   
   if (argc != 2 || (max_processes = satoi(argv[1])) < 0){
     fprintf(STDERR, "Usage: test_processes <max_processes>\n");
@@ -25,29 +26,12 @@ int64_t test_processes( char *argv[], uint64_t argc) {
   if(max_processes > 20 || max_processes == 0){
     fprintf(STDERR, "max_processes must be between 1 and 20\n");
   }
-  /*
-  if ((max_processes = satoi(argv[1])) <= 0){
-    fprintf(STDERR, "Usage: test_processes <max_processes>\n");
-    return -1;
-  }
-  */
-
-  // printf("\n%d max processes\n", max_processes);
-  // printf("%d argv\n", argv);
-  // printf("%s argv[0]\n", *argv );
-  // printf("%d argc\n", argc);
+ 
   p_rq p_rqs[max_processes];
 
   while (1) {
-    //iteration++;
-    //printf("Iter num %d\n", iteration);
     for (rq = 0; rq < max_processes; rq++) {
-      //p_rqs[rq].pid = my_create_process("endless_loop", 0, argvAux);
-      p_rqs[rq].pid = my_create_process(endless_loop, 0, NULL, 0);
-      // if(rq == 0){
-      //   printf("Min pid %d\n",p_rqs[rq].pid );
-      // }
-      //printf("Created process number %d\n", p_rqs[rq].pid);
+      p_rqs[rq].pid = my_create_process((main_function)endless_loop, 0, NULL, 0);
       if (p_rqs[rq].pid < 0) {
         fprintf(STDERR, "test_processes: ERROR creating process\n");
         return -1;
@@ -56,7 +40,6 @@ int64_t test_processes( char *argv[], uint64_t argc) {
         alive++;
       }
     }
-    //printf("Max PID %d \n", p_rqs[rq-1].pid);
 
     while (alive > 0) {
 
@@ -68,7 +51,6 @@ int64_t test_processes( char *argv[], uint64_t argc) {
             if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
               if (my_kill(p_rqs[rq].pid) == -1) {
                 fprintf(STDERR, "test_processes: ERROR killing process\n");
-                //printf("Last pid was %d\n",p_rqs[rq-1].pid );
                 return -1;
               }
               p_rqs[rq].state = KILLED;
