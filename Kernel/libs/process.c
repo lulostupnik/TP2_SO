@@ -43,8 +43,8 @@ static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc){
         return NULL;
     }
 
-    for(uint64_t i=0; i<argc;i++){
-        uint64_t len = my_strlen(argv[i])+1;
+    for(uint64_t i = 0; i < argc; i++){
+        uint64_t len = my_strlen(argv[i]) + 1;
         char * p = my_malloc(len);
         if(p == NULL){ //@TODO check y modularizar
             for(uint64_t j=0; j<i;j++){
@@ -62,7 +62,7 @@ static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc){
 
 int64_t new_process(main_function rip, priority_t priority, uint8_t killable,char ** argv, uint64_t argc){
   
-    if(!((priority != LOW) || (priority != MEDIUM) || (priority != HIGH))){
+    if(((priority != LOW) && (priority != MEDIUM) && (priority != HIGH))){
         return -1;
     }
     
@@ -108,7 +108,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable,cha
 static int64_t find_free_pcb(){
     int64_t to_return = 0;
 
-    while(pcb_array[to_return].status != FREE && to_return < PCB_AMOUNT){
+    while(to_return < PCB_AMOUNT && pcb_array[to_return].status != FREE ){
         to_return++;
     }
 

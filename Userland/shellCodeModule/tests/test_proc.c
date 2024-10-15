@@ -16,7 +16,7 @@ int64_t test_processes( char *argv[], uint64_t argc) {
   uint64_t rq;
   uint64_t alive = 0;
   uint64_t action;
-  uint64_t max_processes;
+  int64_t max_processes;
   
   if (argc != 2 || (max_processes = satoi(argv[1])) < 0){
     fprintf(STDERR, "Usage: test_processes <max_processes>\n");
