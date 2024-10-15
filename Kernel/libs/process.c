@@ -3,8 +3,6 @@
 
 #include <process.h>
 
-#define STACK_SIZE 0x0FFF
-#define PCB_AMOUNT 100
 
 
 

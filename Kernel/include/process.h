@@ -11,12 +11,12 @@
 
 #define READY 1
 #define BLOCKED 2
-#define FREE 0  //@todo esto deberia estar en pcb.h pero no compila. Igualmente pcb.h deberia estar aca pero tampoco compila. 
+#define FREE 0  
 #define ZOMBIE 3
 
-// typedef enum {
-// 	READY,BLOCKED,FREE
-// } status_t;
+#define STACK_SIZE 0x0FFF
+#define PCB_AMOUNT 100
+
 
 typedef struct process_info {
 	int64_t pid;
