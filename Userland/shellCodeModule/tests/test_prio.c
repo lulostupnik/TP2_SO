@@ -3,8 +3,6 @@
 
 #include <test_prio.h>
 
-//@todo do a folder as proceses
-
 int64_t prio[TOTAL_PROCESSES] = {LOW, MEDIUM, HIGH};
 
 void test_prio() {

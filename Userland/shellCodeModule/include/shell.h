@@ -22,7 +22,6 @@
 #define MAX_FONT_SIZE 3
 #define MIN_FONT_SIZE 1
 
-//Type Definitions
 typedef struct module
 {
 	char *name;
@@ -46,7 +45,6 @@ void showcurrentTime();
 
 void getRegs();
 
-//void clear();
 
 
 

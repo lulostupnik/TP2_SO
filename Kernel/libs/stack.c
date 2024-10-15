@@ -24,7 +24,6 @@ uint64_t load_stack(uint64_t rip, uint64_t rsp, char ** argv, uint64_t argc, uin
     my_stack->regs.rsi = (uint64_t) argv;
     my_stack->regs.rdx = argc;
     my_stack->regs.rcx = pid;
-    //my_stack->rip = rip;
     my_stack->rip = (uint64_t) &process_wrapper;
     my_stack->cs = 0x8;
     my_stack->rflags = 0x202;

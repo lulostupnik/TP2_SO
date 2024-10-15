@@ -16,5 +16,6 @@
 #include <process.h>
 #include <scheduler.h>
 
+int main();
 
 #endif

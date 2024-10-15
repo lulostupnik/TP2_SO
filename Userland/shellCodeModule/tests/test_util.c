@@ -79,7 +79,7 @@ void endless_loop_print_main(char ** argv, uint64_t argc){
 		return;
 	}
 
-	uint64_t wait = satoi(argv[0]); //@todo satoi es con signo, wait es uint64_t...	
+	uint64_t wait = satoi(argv[0]);
 	endless_loop_print(wait);
 }
 

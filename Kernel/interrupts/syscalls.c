@@ -81,10 +81,7 @@ int64_t sys_call_handler ( stack_registers * regs )
 	case 21:
 		return sys_kill( (int64_t) regs->rdi );
 		break;
-	/*
-	case 21:
-		return ps(); // (int64_t) ?
-	*/
+	
 	default:
 		return NOT_VALID_SYS_ID;
 

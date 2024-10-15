@@ -10,7 +10,7 @@ static void kill_pid(char ** argv, uint64_t argc);
 
 static void toUtcMinus3 ( time_struct * time );
 
-static uint64_t font_size = 1; // font_size 1 is the default size
+static uint64_t font_size = 1; 
 
 #define BUILT_IN 1
 
@@ -65,7 +65,7 @@ void call_function_process(module m, char** args, uint64_t argc)
 		return;
 	}
 
-	int64_t ans = sys_create_process((main_function)m.function, LOW, args, argc); //@todo le agregamos checkeo??
+	int64_t ans = sys_create_process((main_function)m.function, LOW, args, argc); 
 	if(ans < 0){
 		fprintf ( STDERR, "Could not create process\n" );
 	}
@@ -257,7 +257,3 @@ void getRegs()
 	return;
 }
 
-// void clear()
-// {
-// 	clear_screen();
-// }

@@ -27,10 +27,9 @@ void pic_master_mask ( uint8_t mask );
 
 void pic_slave_mask ( uint8_t mask );
 
-//Termina la ejecución de la cpu.
 void haltcpu ( void );
 
-void timer_tick( void ); //@TODO crear un .h poara libasm.h y refacctor los q estan aca
+void timer_tick( void ); 
 
 void yield( void );
 

@@ -16,21 +16,14 @@ int compare_elements(elem_type_ptr e1, elem_type_ptr e2) {
     return e1 - e2; 
 }
 
-
 void initialize_scheduler(int64_t idle_process_pid){
     t_compare cmp = compare_elements;
     ready_list = new_list(cmp);
     blocked_list = new_list(cmp);
     idle_pcb = get_pcb(idle_process_pid);
-   // delete_list(ready_list, idle_pcb);
     initialized = 1;
     return;
 }
-
-// void finish_init(){
-//     initialized = 1;
-// }
-
 
 void ready(PCB * process){
     process->status = READY;
@@ -54,18 +47,6 @@ void unschedule(PCB * process){
     }
    
 }
-/*
-uint64_t yield(){
-    PCB * next_pcb = next(ready_list);
-    times_ran = 0;
-    if(next_pcb!=NULL){
-        running = next_pcb;
-        return 0;
-    }
-    return 1;
-}
-*/
-
 
 void scheduler_yield(){
     if(running == NULL || is_empty_list(ready_list)){
@@ -110,7 +91,7 @@ uint64_t scheduler(uint64_t current_rsp){
         running = idle_pcb;   
         return idle_pcb->rsp; 
     }
-    if(running == NULL){ // Running is null but list is not empty
+    if(running == NULL){ 
         running = next(ready_list);
         return running->rsp;
     }
@@ -132,34 +113,3 @@ int64_t nice ( int64_t pid, uint64_t new_prio ){
     process->priority = new_prio;
     return 0;
 }
-
-
-
-
-    /*
-    if(is_empty_list(ready_list)){
-        //while(1){_hlt();}
-        return; 
-    }
-    if(running==null){
-        list_adt(to_begin(ready_list));
-        running = next(ready_list);
-        running->status = running;
-        return;
-    }
-    
-    if(running->status == running){
-        running->status = ready;
-        add_list(ready_list, running);
-    }
-    else if(running->status == blocked){
-        delete_list(ready_list, running);
-        add_list(blocked_list, running);
-    }
-
-    pcb * next_process = null;
-
-    delete_list(ready_list, next_process);
-    next_process->status = running;
-    context_switch(running, next_process);
-    running=next_process;*/

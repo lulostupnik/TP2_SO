@@ -1,15 +1,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
-// No alinear
-// No gestionar fragmentación
-// No pide tamaño de bloque
-// Si liberar memoria
-
-
 #include <memory_management.h>
-
-
 
 typedef struct MM_rq {
 	void *address;
@@ -19,7 +11,7 @@ typedef struct MM_rq {
 void *start;
 int size;
 int current;
-void *free_ptrs[BLOCK_COUNT]; // [10, 20, 30, 40, 50] --> [20, 30, 40, 50] --> [30, 40, 50]
+void *free_ptrs[BLOCK_COUNT]; 
 
 void my_mm_init ( void *p, uint64_t s )
 {

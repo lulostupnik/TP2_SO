@@ -25,8 +25,6 @@ typedef struct process_info{
     uint64_t base_pointer;
     uint64_t stack_pointer;
     uint8_t status;
-
-    // uint8_t is_foreground;
 }process_info;
 
 typedef struct process_info_list{
@@ -35,7 +33,6 @@ typedef struct process_info_list{
 }process_info_list;
 
 typedef int (*main_function)(char ** argv, uint64_t argc);
-
 
 
 int64_t new_process(main_function rip, priority_t priority, uint8_t killable, char ** argv, uint64_t argc);

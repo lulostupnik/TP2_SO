@@ -1,6 +1,3 @@
-
-//listas ordenadas sin repetidos de cualquier tipo
-
 #ifndef _LISTADT_H_
 #define _LISTADT_H_
 
@@ -10,8 +7,6 @@
 #include <memory_management.h>
 #include <process.h>
 #include <PCB.h>
-//elem_type must be a pointer
-
 
 typedef struct list_cdt * list_adt;
 typedef PCB * elem_type_ptr;
@@ -29,7 +24,7 @@ list_adt new_list(t_compare cmp);
 
 void free_list(list_adt list);
 
-int add_list(list_adt list, elem_type_ptr elem); // retorna 1 si lo inserto, 0 si no.
+int add_list(list_adt list, elem_type_ptr elem); 
 
 int delete_list(list_adt list, elem_type_ptr elem);
 

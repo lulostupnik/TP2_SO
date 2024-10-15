@@ -9,26 +9,22 @@
 
 typedef struct node {
     elem_type_ptr head;
-    // int has_runned_times; //no admite repetidos
     struct node *tail;
 } t_node;
 
 typedef t_node *t_list;
 
 struct list_cdt {
-    // t_list first;  // pointer to the first node
     t_list pre_next;
-    size_t size;  // number of elements in the list
-    t_compare cmp; // comparison function for elements
-    // t_list next;   // pointer for iteration
+    size_t size;  
+    t_compare cmp; 
 };
 
-// create a new list
 list_adt new_list(t_compare cmp) {
     list_adt aux = my_malloc(sizeof(*aux));
     if(aux == NULL){
         return NULL;
-    } // ensure memory allocation is successful
+    } 
     aux->size = 0;
     aux->pre_next = NULL;
     aux->cmp = cmp;
@@ -81,10 +77,9 @@ int add_list(list_adt list, elem_type_ptr elem) {
     } 
 
     list->size++;
-    return 0; // successfully added
+    return 0; 
 }
 
-// get the next element in the list
 elem_type_ptr next(list_adt list) {
     if (is_empty_list(list)) {
         return NULL;

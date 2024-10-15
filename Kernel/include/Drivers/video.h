@@ -56,9 +56,9 @@ struct vbe_mode_info_structure {
  * Structure representing a color
  */
 typedef struct {
-	uint8_t r; // Red component
-	uint8_t g; // Green component
-	uint8_t b; // Blue component
+	uint8_t r; 
+	uint8_t g; 
+	uint8_t b; 
 } color;
 
 
