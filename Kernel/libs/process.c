@@ -94,6 +94,8 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	pcb_array[pid].priority = priority;
 	pcb_array[pid].base_pointer = rsp_malloc;
 	pcb_array[pid].killable = killable;
+	*(uint64_t *)rsp_malloc = CANARY;
+
 
 	ready(&pcb_array[pid]);
 	amount_of_processes++;
