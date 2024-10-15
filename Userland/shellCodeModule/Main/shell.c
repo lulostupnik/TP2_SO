@@ -10,7 +10,7 @@ static void kill_pid(char ** argv, uint64_t argc);
 
 static void toUtcMinus3 ( time_struct * time );
 
-static uint64_t font_size = 1; 
+static uint64_t font_size = 1;
 
 #define BUILT_IN 1
 
@@ -27,9 +27,9 @@ static module modules[] = {
 {"opcode", op_code, BUILT_IN},
 {"clear", (void (*)(char **, uint64_t)) clear_screen, BUILT_IN},
 {"ipod", ipod_menu, BUILT_IN},
-{"testmm", (void (*)(char **, uint64_t)) test_mm, !BUILT_IN}, 
-{"testprio",test_prio, !BUILT_IN},
-{"testproc",(void (*)(char **, uint64_t)) test_processes, !BUILT_IN},
+{"testmm", (void (*)(char **, uint64_t)) test_mm, !BUILT_IN},
+{"testprio", test_prio, !BUILT_IN},
+{"testproc", (void (*)(char **, uint64_t)) test_processes, !BUILT_IN},
 {"killpid", kill_pid, BUILT_IN}
 };
 
@@ -41,7 +41,7 @@ int main()
 
 	puts ( WELCOME );
 	help();
-	
+
 
 	while ( 1 ) {
 		interpret();
@@ -49,27 +49,28 @@ int main()
 
 }
 
-void free_args(char** args, uint64_t argc){
-	for(int i = 0; i < argc; i++){
+void free_args(char ** args, uint64_t argc)
+{
+	for (int i = 0; i < argc; i++) {
 		my_free(args[i]);
 	}
 	my_free(args);
 	return;
 }
 
-void call_function_process(module m, char** args, uint64_t argc)
+void call_function_process(module m, char ** args, uint64_t argc)
 {
-	if(m.is_built_in){
+	if (m.is_built_in) {
 		m.function(args, argc);
 		free_args(args, argc);
 		return;
 	}
 
-	int64_t ans = sys_create_process((main_function)m.function, LOW, args, argc); 
-	if(ans < 0){
+	int64_t ans = sys_create_process((main_function)m.function, LOW, args, argc);
+	if (ans < 0) {
 		fprintf ( STDERR, "Could not create process\n" );
 	}
-	
+
 	free_args(args, argc);
 	return;
 }
@@ -77,22 +78,22 @@ void call_function_process(module m, char** args, uint64_t argc)
 char ** command_parse(char shellBuffer[], uint64_t * argc)
 {
 	char ** args = my_malloc(MAX_ARGS * sizeof(char *));
-	if(args == NULL){
+	if (args == NULL) {
 		*argc = -1;
 		return NULL;
 	}
 	uint64_t args_count = 0;
 
 	for (int i = 0; shellBuffer[i] != '\0';) {
-		if(shellBuffer[i] == ' '){
+		if (shellBuffer[i] == ' ') {
 			i++;
 			continue;
 		}
 
-        args[args_count] = my_malloc(MAX_ARGS_SIZE * sizeof(char));
+		args[args_count] = my_malloc(MAX_ARGS_SIZE * sizeof(char));
 
-		if(args[args_count] == NULL){
-			for(int n = 0; n < args_count; n++){
+		if (args[args_count] == NULL) {
+			for (int n = 0; n < args_count; n++) {
 				my_free(args[n]);
 			}
 			my_free(args);
@@ -101,21 +102,21 @@ char ** command_parse(char shellBuffer[], uint64_t * argc)
 		}
 
 		int j;
-		for(j = 0; shellBuffer[i] != ' ' && shellBuffer[i] != '\0'; i++, j++){
+		for (j = 0; shellBuffer[i] != ' ' && shellBuffer[i] != '\0'; i++, j++) {
 			args[args_count][j] = shellBuffer[i];
 		}
-		
-        args[args_count][j] = '\0';
-        args_count++;
-    }
+
+		args[args_count][j] = '\0';
+		args_count++;
+	}
 
 	*argc = args_count;
 
-	if(args_count == 0){
+	if (args_count == 0) {
 		my_free(args);
 		args = NULL;
 	}
-	
+
 	return args;
 }
 
@@ -132,40 +133,41 @@ void interpret()
 	uint64_t argc;
 	args = command_parse(shellBuffer, &argc);
 
-	if(argc == -1){
+	if (argc == -1) {
 		fprintf ( STDERR, "Not enough memory to create process\n" );
 	}
 
 	for ( int i = 0; i < MAX_MODULES && ((args != NULL) || (argc != 0)); i++ ) {
 		if ( strcmp (args[0], modules[i].name ) == 0 ) {
 			call_function_process(modules[i], args, argc);
-			return;	
+			return;
 		}
 	}
-	
+
 	fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
 
 }
 
 
 
-static void kill_pid(char ** argv, uint64_t argc){
+static void kill_pid(char ** argv, uint64_t argc)
+{
 	int64_t pid;
 
-	if(argc != 2 || argv == NULL || ((pid = satoi(argv[1])) < 0)){
+	if (argc != 2 || argv == NULL || ((pid = satoi(argv[1])) < 0)) {
 		fprintf(STDERR, "Usage: killpid <pid>\n");
 		return;
 	}
 
-	if(my_kill(pid) < 0){
+	if (my_kill(pid) < 0) {
 		fprintf(STDERR, "Could not kill process %d\n", pid);
 	}
 
 }
 
-static void help(char** args, uint64_t argc)
+static void help(char ** args, uint64_t argc)
 {
-	
+
 	puts ( "\nComandos disponibles:\n\n" );
 	puts ( "- help: Muestra todos los modulos disponibles del sistema operativo.\n" );
 	puts ( "- time: Muestra la hora actual del sistema.\n" );

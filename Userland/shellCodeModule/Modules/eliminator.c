@@ -14,8 +14,8 @@ static void singlePlayer();
 static void retryMenuMultiplayer ( int whoWon, int scores[] );
 static void multiPlayer();
 
-static void print_centered_string ( uint64_t x, uint64_t y, const char* str, uint64_t font_size );
-static void print_string ( uint64_t x, uint64_t y, const char* str, uint64_t font_size );
+static void print_centered_string ( uint64_t x, uint64_t y, const char * str, uint64_t font_size );
+static void print_string ( uint64_t x, uint64_t y, const char * str, uint64_t font_size );
 static void fill_position ( uint64_t x, uint64_t y, color color );
 static void initialize_map();
 
@@ -35,14 +35,14 @@ void welcome()
 	while ( ( ( c = getChar() ) != 'q' ) && ( c != 'm' ) && ( c != 's' ) ) {}
 	clear_screen();
 	switch ( c ) {
-	case 'q':
-		break;
-	case 's':
-		singlePlayer();
-		break;
-	case 'm':
-		multiPlayer();
-		break;
+		case 'q':
+			break;
+		case 's':
+			singlePlayer();
+			break;
+		case 'm':
+			multiPlayer();
+			break;
 	}
 	return;
 }
@@ -60,12 +60,12 @@ static void retryMenuSingleplayer()
 	while ( ( ( c = getChar() ) != 'r' ) && ( c != 'm' ) ) {}
 	clear_screen();
 	switch ( c ) {
-	case 'r':
-		singlePlayer();
-		break;
-	case 'm':
-		welcome();
-		break;
+		case 'r':
+			singlePlayer();
+			break;
+		case 'm':
+			welcome();
+			break;
 	}
 }
 
@@ -128,12 +128,12 @@ static void retryMenuMultiplayer ( int whoWon, int scores[] )
 	while ( ( ( c = getChar() ) != 'r' ) && ( c != 'm' ) ) {}
 	clear_screen();
 	switch ( c ) {
-	case 'r':
-		multiPlayer();
-		break;
-	case 'm':
-		welcome();
-		break;
+		case 'r':
+			multiPlayer();
+			break;
+		case 'm':
+			welcome();
+			break;
 	}
 }
 
@@ -213,34 +213,34 @@ static void multiPlayer()
 static void get_player_1_direction ( uint16_t c, int64_t * direction )
 {
 	switch ( c ) {
-	case ( 'w' ) :
-		if ( direction[1] == 1 ) {
+		case ( 'w' ) :
+			if ( direction[1] == 1 ) {
+				break;
+			}
+			direction[0] = 0;
+			direction[1] = -1;
 			break;
-		}
-		direction[0] = 0;
-		direction[1] = -1;
-		break;
-	case ( 'a' ) :
-		if ( direction[0] == 1 ) {
+		case ( 'a' ) :
+			if ( direction[0] == 1 ) {
+				break;
+			}
+			direction[0] = -1;
+			direction[1] = 0;
 			break;
-		}
-		direction[0] = -1;
-		direction[1] = 0;
-		break;
-	case ( 's' ) :
-		if ( direction[1] == -1 ) {
+		case ( 's' ) :
+			if ( direction[1] == -1 ) {
+				break;
+			}
+			direction[0] = 0;
+			direction[1] = 1;
 			break;
-		}
-		direction[0] = 0;
-		direction[1] = 1;
-		break;
-	case ( 'd' ) :
-		if ( direction[0] == -1 ) {
+		case ( 'd' ) :
+			if ( direction[0] == -1 ) {
+				break;
+			}
+			direction[0] = 1;
+			direction[1] = 0;
 			break;
-		}
-		direction[0] = 1;
-		direction[1] = 0;
-		break;
 	}
 }
 
@@ -248,34 +248,34 @@ static void get_player_1_direction ( uint16_t c, int64_t * direction )
 static void get_player_2_direction ( uint16_t c, int64_t * direction )
 {
 	switch ( c ) {
-	case ( 'i' ) :
-		if ( direction[1] == 1 ) {
+		case ( 'i' ) :
+			if ( direction[1] == 1 ) {
+				break;
+			}
+			direction[0] = 0;
+			direction[1] = -1;
 			break;
-		}
-		direction[0] = 0;
-		direction[1] = -1;
-		break;
-	case ( 'j' ) :
-		if ( direction[0] == 1 ) {
+		case ( 'j' ) :
+			if ( direction[0] == 1 ) {
+				break;
+			}
+			direction[0] = -1;
+			direction[1] = 0;
 			break;
-		}
-		direction[0] = -1;
-		direction[1] = 0;
-		break;
-	case ( 'k' ) :
-		if ( direction[1] == -1 ) {
+		case ( 'k' ) :
+			if ( direction[1] == -1 ) {
+				break;
+			}
+			direction[0] = 0;
+			direction[1] = 1;
 			break;
-		}
-		direction[0] = 0;
-		direction[1] = 1;
-		break;
-	case ( 'l' ) :
-		if ( direction[0] == -1 ) {
+		case ( 'l' ) :
+			if ( direction[0] == -1 ) {
+				break;
+			}
+			direction[0] = 1;
+			direction[1] = 0;
 			break;
-		}
-		direction[0] = 1;
-		direction[1] = 0;
-		break;
 	}
 }
 
@@ -292,7 +292,7 @@ void eliminator()
 }
 
 
-static void print_centered_string ( uint64_t x, uint64_t y, const char* str, uint64_t font_size )
+static void print_centered_string ( uint64_t x, uint64_t y, const char * str, uint64_t font_size )
 {
 	uint64_t len = strlen ( str );
 	uint64_t start_x = x - ( len / 2 ) * CHARACTER_WIDTH * font_size;
@@ -301,7 +301,7 @@ static void print_centered_string ( uint64_t x, uint64_t y, const char* str, uin
 }
 
 
-static void print_string ( uint64_t x, uint64_t y, const char* str, uint64_t font_size )
+static void print_string ( uint64_t x, uint64_t y, const char * str, uint64_t font_size )
 {
 	for ( uint64_t i = 0; str[i] != '\0'; i++ ) {
 		draw_letter ( x + i * CHARACTER_WIDTH * font_size, y, str[i], ( color ) {

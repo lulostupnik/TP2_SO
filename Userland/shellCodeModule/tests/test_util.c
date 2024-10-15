@@ -22,9 +22,9 @@ uint32_t GetUniform ( uint32_t max )
 }
 
 // Memory
-uint8_t memcheck ( void *start, uint8_t value, uint32_t size )
+uint8_t memcheck ( void * start, uint8_t value, uint32_t size )
 {
-	uint8_t *p = ( uint8_t * ) start;
+	uint8_t * p = ( uint8_t * ) start;
 	uint32_t i;
 
 	for ( i = 0; i < size; i++, p++ )
@@ -35,7 +35,7 @@ uint8_t memcheck ( void *start, uint8_t value, uint32_t size )
 }
 
 // Parameters
-int64_t satoi ( char *str )
+int64_t satoi ( char * str )
 {
 	uint64_t i = 0;
 	int64_t res = 0;
@@ -73,8 +73,9 @@ void endless_loop()
 }
 
 
-void endless_loop_print_main(char ** argv, uint64_t argc){
-	if(argv == NULL || argc != 1){
+void endless_loop_print_main(char ** argv, uint64_t argc)
+{
+	if (argv == NULL || argc != 1) {
 		fprintf ( STDERR, "Wrong parameters\n" );
 		return;
 	}
@@ -85,10 +86,9 @@ void endless_loop_print_main(char ** argv, uint64_t argc){
 
 void endless_loop_print(uint64_t wait)
 {
-    int64_t pid = my_get_pid();
-    while (1)
-    {
-        printf("%d ", pid);
-        bussy_wait(wait);
-    }
+	int64_t pid = my_get_pid();
+	while (1) {
+		printf("%d ", pid);
+		bussy_wait(wait);
+	}
 }

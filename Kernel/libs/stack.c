@@ -5,30 +5,31 @@
 
 
 
-void process_wrapper(main_function rip, char **argv, uint64_t argc, uint64_t pid) {
-    int ret = rip(argv, argc);
-    PCB * pcb= get_pcb(pid);
-    if(pcb == NULL){
-        return;
-    }
-    pcb->ret = ret;  
-    kill_process(pid);
-    timer_tick();
+void process_wrapper(main_function rip, char ** argv, uint64_t argc, uint64_t pid)
+{
+	int ret = rip(argv, argc);
+	PCB * pcb = get_pcb(pid);
+	if (pcb == NULL) {
+		return;
+	}
+	pcb->ret = ret;
+	kill_process(pid);
+	timer_tick();
 }
 
 uint64_t load_stack(uint64_t rip, uint64_t rsp, char ** argv, uint64_t argc, uint64_t pid)
 {
-    stack * my_stack = (stack *) (rsp - sizeof(stack));
-   
-    my_stack->regs.rdi = rip;
-    my_stack->regs.rsi = (uint64_t) argv;
-    my_stack->regs.rdx = argc;
-    my_stack->regs.rcx = pid;
-    my_stack->rip = (uint64_t) &process_wrapper;
-    my_stack->cs = 0x8;
-    my_stack->rflags = 0x202;
-    my_stack->rsp = rsp;
-    my_stack->ss = 0x0;
+	stack * my_stack = (stack *) (rsp - sizeof(stack));
 
-    return (uint64_t) my_stack;
+	my_stack->regs.rdi = rip;
+	my_stack->regs.rsi = (uint64_t) argv;
+	my_stack->regs.rdx = argc;
+	my_stack->regs.rcx = pid;
+	my_stack->rip = (uint64_t) &process_wrapper;
+	my_stack->cs = 0x8;
+	my_stack->rflags = 0x202;
+	my_stack->rsp = rsp;
+	my_stack->ss = 0x0;
+
+	return (uint64_t) my_stack;
 }

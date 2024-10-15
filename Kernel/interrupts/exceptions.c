@@ -33,14 +33,14 @@ static void print_regs ( uint8_t * message, uint8_t cant_chars_message )
 	vdriver_set_mode ( TEXT_MODE, col );
 	vdriver_text_set_font_size ( 2 );
 
-	vdriver_text_write ( STDERR, ( char* ) message, cant_chars_message );
+	vdriver_text_write ( STDERR, ( char * ) message, cant_chars_message );
 	uint8_t newline = '\n';
 	for ( int i = 0; i < CANT_REGS; i++ ) {
 		vdriver_text_write ( STDERR, regs[i], 10 );
 		vdriver_text_write ( STDERR, ": 0x", 4 );
-		vdriver_text_write ( STDERR, ( char* ) num_to_string ( exception_regs[i], 16 ), 10 );
+		vdriver_text_write ( STDERR, ( char * ) num_to_string ( exception_regs[i], 16 ), 10 );
 		vdriver_text_write ( STDERR, "h", 1 );
-		vdriver_text_write ( STDERR, ( char* ) &newline, 1 );
+		vdriver_text_write ( STDERR, ( char * ) &newline, 1 );
 	}
 }
 
@@ -49,22 +49,22 @@ static void print_regs ( uint8_t * message, uint8_t cant_chars_message )
 void exception_dispatcher ( uint64_t exception )
 {
 
-	uint8_t * message = ( uint8_t* ) "";
+	uint8_t * message = ( uint8_t * ) "";
 	uint8_t message_cant_chars = 1;
 	if ( exception == ZERO_EXCEPTION_ID ) {
-		message = ( uint8_t* ) "Zero div exception\n\n";
+		message = ( uint8_t * ) "Zero div exception\n\n";
 		message_cant_chars = 20;
 	}
 
 	if ( exception == OPCODE_EXCEPTION_ID ) {
-		message = ( uint8_t* ) "Invalid opcode\n\n";
+		message = ( uint8_t * ) "Invalid opcode\n\n";
 		message_cant_chars = 16;
 	}
 	if ( exception == GENERAL_PROTECTION ) {
-		message = ( uint8_t* ) "General Protection\n\n";
+		message = ( uint8_t * ) "General Protection\n\n";
 		message_cant_chars = 20;
 	}
-	
+
 
 
 	print_regs ( message, message_cant_chars );

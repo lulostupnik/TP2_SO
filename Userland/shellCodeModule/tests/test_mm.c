@@ -6,11 +6,11 @@
 
 
 typedef struct MM_rq {
-	void *address;
+	void * address;
 	uint64_t size;
 } mm_rq;
 
-uint64_t test_mm ( char *argv[],  uint64_t argc )
+uint64_t test_mm ( char * argv[],  uint64_t argc )
 {
 
 	mm_rq mm_rqs[MAX_BLOCKS];
@@ -39,7 +39,7 @@ uint64_t test_mm ( char *argv[],  uint64_t argc )
 		while ( rq < MAX_BLOCKS && total < max_memory ) {
 			mm_rqs[rq].size = GetUniform ( max_memory - total - 1 ) + 1;
 			mm_rqs[rq].address = my_malloc ( mm_rqs[rq].size );
-			
+
 
 			if ( mm_rqs[rq].address ) {
 				total += mm_rqs[rq].size;

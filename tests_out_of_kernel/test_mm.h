@@ -10,6 +10,6 @@
 
 #define MAX_BLOCKS BLOCK_COUNT
 
-uint64_t test_mm ( uint64_t argc, char *argv[] );
+uint64_t test_mm ( uint64_t argc, char * argv[] );
 
 #endif

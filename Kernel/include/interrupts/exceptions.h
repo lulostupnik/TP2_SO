@@ -10,4 +10,4 @@
 
 void exception_dispatcher ( uint64_t exception );
 
-#endif 
+#endif

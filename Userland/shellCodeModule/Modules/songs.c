@@ -119,7 +119,7 @@ Song twinkle_twinkle = {
 	.name = "Twinkle Twinkle"
 };
 
-Song* my_songs[SONG_AMOUNT] = {
+Song * my_songs[SONG_AMOUNT] = {
 	&happy_birthday,
 	&arcade_song,
 	&twinkle_twinkle

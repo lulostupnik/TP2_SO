@@ -14,7 +14,7 @@ typedef PCB * elem_type_ptr;
 /*
 *  < 0 si e1 debe estar antes que e2 (aka e1< e2, en caso ascendente)
 *  > 0 si e1 debe estar despues que e2 (aka e1 > e2)
-*  0 si son "iguales" 
+*  0 si son "iguales"
 */
 
 
@@ -24,7 +24,7 @@ list_adt new_list(t_compare cmp);
 
 void free_list(list_adt list);
 
-int add_list(list_adt list, elem_type_ptr elem); 
+int add_list(list_adt list, elem_type_ptr elem);
 
 int delete_list(list_adt list, elem_type_ptr elem);
 

@@ -124,7 +124,7 @@ int64_t setFontSize ( uint64_t size );
  * @param str The string whose length is to be calculated.
  * @return size_t Returns the number of characters in the string pointed to by `str`.
  */
-uint64_t strlen ( const char *str );
+uint64_t strlen ( const char * str );
 
 
 
@@ -202,7 +202,7 @@ int64_t printf ( const char * fmt, ... );
  * @param n The maximum number of characters to read. (the last character will be a null terminator)
  * @return char* Returns a pointer to the buffer.
  */
-char* gets ( char* buffer, int n );
+char * gets ( char * buffer, int n );
 
 
 
@@ -216,7 +216,7 @@ char* gets ( char* buffer, int n );
  * @param str2 The second string to be compared.
  * @return int Returns an integer less than, equal to, or greater than zero if str1 is found, respectively, to be less than, to match, or be greater than str2.
  */
-int64_t strcmp ( const char *str1, const char *str2 );
+int64_t strcmp ( const char * str1, const char * str2 );
 
 
 
@@ -294,7 +294,7 @@ void * memset ( void * destination, int32_t c, uint64_t length );
 
 void * my_malloc ( uint64_t size );
 
-void my_free ( void *ptr );
+void my_free ( void * ptr );
 
 int64_t my_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc);
 

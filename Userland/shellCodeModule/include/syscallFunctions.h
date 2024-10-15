@@ -99,7 +99,7 @@ int64_t sys_get_time ( time_struct * time );
 
 void * sys_malloc ( uint64_t size );
 
-void sys_free ( void *p );
+void sys_free ( void * p );
 
 int64_t sys_create_process ( main_function rip, uint64_t priority, char ** argv, uint64_t argc );
 

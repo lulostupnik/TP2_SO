@@ -92,9 +92,9 @@ int64_t setFontSize ( uint64_t size )
  * @param str The string whose length is to be calculated.
  * @return size_t Returns the number of characters in the string pointed to by `str`.
  */
-uint64_t strlen ( const char *str )
+uint64_t strlen ( const char * str )
 {
-	const char *s = str;
+	const char * s = str;
 	while ( *s )
 		++s;
 	return s - str;
@@ -170,7 +170,7 @@ int64_t fputc ( char c, uint64_t fd )
  * @param argv A variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-static int64_t vfprintf ( uint64_t fd, const char *fmt, va_list argv )
+static int64_t vfprintf ( uint64_t fd, const char * fmt, va_list argv )
 {
 	uint64_t flag = 0;
 	uint64_t written = 0;
@@ -189,26 +189,26 @@ static int64_t vfprintf ( uint64_t fd, const char *fmt, va_list argv )
 		}
 
 		switch ( fmt[i] ) {
-		case 'c':
-			fputc ( va_arg ( argv, int ), fd );
-			written++;
-			break;
-		case 'd':
-			written += vfprintf ( fd, numToString ( va_arg ( argv, uint64_t ), 10 ), argv );
-			break;
-		case 'x':
-			written += vfprintf ( fd, "0x", argv );
-			written += vfprintf ( fd, numToString ( va_arg ( argv, uint64_t ), 16 ), argv );
-			break;
-		case 's':
-			written += vfprintf ( fd, va_arg ( argv, char * ), argv );
-			break;
-		case '%':
-			fputc ( '%', fd );
-			written++;
-			break;
-		default:
-			return -1;
+			case 'c':
+				fputc ( va_arg ( argv, int ), fd );
+				written++;
+				break;
+			case 'd':
+				written += vfprintf ( fd, numToString ( va_arg ( argv, uint64_t ), 10 ), argv );
+				break;
+			case 'x':
+				written += vfprintf ( fd, "0x", argv );
+				written += vfprintf ( fd, numToString ( va_arg ( argv, uint64_t ), 16 ), argv );
+				break;
+			case 's':
+				written += vfprintf ( fd, va_arg ( argv, char * ), argv );
+				break;
+			case '%':
+				fputc ( '%', fd );
+				written++;
+				break;
+			default:
+				return -1;
 		}
 
 		flag = 0;
@@ -273,7 +273,7 @@ int64_t printf ( const char * fmt, ... )
  * @param n The maximum number of characters to read. (the last character will be a null terminator)
  * @return char* Returns a pointer to the buffer.
  */
-char* gets ( char* buffer, int n )
+char * gets ( char * buffer, int n )
 {
 	int c;
 	int i = 0;
@@ -306,7 +306,7 @@ char* gets ( char* buffer, int n )
  * @param str2 The second string to be compared.
  * @return int Returns an integer less than, equal to, or greater than zero if str1 is found, respectively, to be less than, to match, or be greater than str2.
  */
-int64_t strcmp ( const char *str1, const char *str2 )
+int64_t strcmp ( const char * str1, const char * str2 )
 {
 	while ( *str1 && ( *str1 == *str2 ) ) {
 		str1++;
@@ -432,7 +432,7 @@ void print_register_snapshot()
 void * memset ( void * destination, int32_t c, uint64_t length )
 {
 	uint8_t chr = ( uint8_t ) c;
-	char * dst = ( char* ) destination;
+	char * dst = ( char * ) destination;
 
 	while ( length-- )
 		dst[length] = chr;
@@ -445,33 +445,40 @@ void * my_malloc ( uint64_t size )
 	return sys_malloc ( size );
 }
 
-void my_free ( void *p )
+void my_free ( void * p )
 {
 	return sys_free ( p );
 }
 
-int64_t my_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc){
-	return sys_create_process(rip, priority,argv, argc);
+int64_t my_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc)
+{
+	return sys_create_process(rip, priority, argv, argc);
 }
 
-int64_t my_get_pid(){
+int64_t my_get_pid()
+{
 	return sys_get_pid();
 }
 
-int64_t my_kill ( int64_t pid ){
+int64_t my_kill ( int64_t pid )
+{
 	return sys_kill(pid);
 }
-int64_t my_block ( int64_t pid ){
+int64_t my_block ( int64_t pid )
+{
 	return sys_block(pid);
 }
-int64_t my_nice(int64_t pid, uint64_t newPrio ){
+int64_t my_nice(int64_t pid, uint64_t newPrio )
+{
 	return sys_nice(pid, newPrio);
 }
 
-int64_t my_yield(){
+int64_t my_yield()
+{
 	return sys_yield();
 }
-int64_t my_unblock ( int64_t pid ){
+int64_t my_unblock ( int64_t pid )
+{
 	return sys_unblock(pid);
 }
 

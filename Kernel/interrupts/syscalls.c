@@ -15,75 +15,75 @@ extern uint64_t regs_shot_available;
 int64_t sys_call_handler ( stack_registers * regs )
 {
 	switch ( regs->rax ) {
-	case 0:
-		return sys_read ( regs->rdi, ( uint16_t * ) regs->rsi, regs->rdx );
-		break;
-	case 1:
-		return sys_write ( regs->rdi, ( char * ) regs->rsi, regs->rdx );
-		break;
-	case 2:
-		return sys_get_register_snapshot ( ( snapshot * ) regs->rdi );
-		break;
-	case 3:
-		return sys_beep ( regs->rdi, regs->rsi );
-		break;
-	case 4:
-		return sys_set_font_size ( regs->rdi );
-		break;
-	case 5:
-		return sys_clear_screen();
-		break;
-	case 6:
-		return sys_put_pixel ( regs->rdi, regs->rsi, ( color * ) regs->rdx );
-		break;
-	case 7:
-		return sys_put_rectangle ( regs->rdi, regs->rsi, regs->rdx, regs->rcx, ( color * ) regs->r8 );
-		break;
-	case 8:
-		return sys_draw_letter ( regs->rdi, regs->rsi, ( char * ) regs->rdx, ( color * ) regs->rcx, regs->r8 );
-		break;
-	case 9:
-		return sys_set_mode ( regs->rdi );
-		break;
-	case 10:
-		return sys_get_screen_information ( ( screen_information * ) regs->rdi );
-		break;
-	case 11:
-		return sys_nano_sleep ( regs->rdi );
-		break;
-	case 12:
-		return sys_get_time ( ( time_struct* ) regs->rdi );
-		break;
-	case 13:
-		return ( int64_t ) sys_malloc ( regs->rdi );
-		break;
-	case 14:
-		sys_free ( ( void* ) regs->rdi );
-		return 0;
-		break;
-	case 15:
-		return sys_get_pid();
-		break;
-	case 16:
-		return sys_create_process ( ( main_function ) regs->rdi, ( priority_t ) regs->rsi, ( char ** ) regs->rdx, regs->rcx );
-		break;
-	case 17:
-		return sys_block ( regs->rdi );
-		break;
-	case 18:
-		return sys_unblock ( regs->rdi );
-	case 19:
-		return sys_yield();
-		break;	
-	case 20:
-		return sys_nice( (int64_t) regs->rdi, regs->rsi);
-		break;
-	case 21:
-		return sys_kill( (int64_t) regs->rdi );
-		break;
-	
-	default:
-		return NOT_VALID_SYS_ID;
+		case 0:
+			return sys_read ( regs->rdi, ( uint16_t * ) regs->rsi, regs->rdx );
+			break;
+		case 1:
+			return sys_write ( regs->rdi, ( char * ) regs->rsi, regs->rdx );
+			break;
+		case 2:
+			return sys_get_register_snapshot ( ( snapshot * ) regs->rdi );
+			break;
+		case 3:
+			return sys_beep ( regs->rdi, regs->rsi );
+			break;
+		case 4:
+			return sys_set_font_size ( regs->rdi );
+			break;
+		case 5:
+			return sys_clear_screen();
+			break;
+		case 6:
+			return sys_put_pixel ( regs->rdi, regs->rsi, ( color * ) regs->rdx );
+			break;
+		case 7:
+			return sys_put_rectangle ( regs->rdi, regs->rsi, regs->rdx, regs->rcx, ( color * ) regs->r8 );
+			break;
+		case 8:
+			return sys_draw_letter ( regs->rdi, regs->rsi, ( char * ) regs->rdx, ( color * ) regs->rcx, regs->r8 );
+			break;
+		case 9:
+			return sys_set_mode ( regs->rdi );
+			break;
+		case 10:
+			return sys_get_screen_information ( ( screen_information * ) regs->rdi );
+			break;
+		case 11:
+			return sys_nano_sleep ( regs->rdi );
+			break;
+		case 12:
+			return sys_get_time ( ( time_struct * ) regs->rdi );
+			break;
+		case 13:
+			return ( int64_t ) sys_malloc ( regs->rdi );
+			break;
+		case 14:
+			sys_free ( ( void * ) regs->rdi );
+			return 0;
+			break;
+		case 15:
+			return sys_get_pid();
+			break;
+		case 16:
+			return sys_create_process ( ( main_function ) regs->rdi, ( priority_t ) regs->rsi, ( char ** ) regs->rdx, regs->rcx );
+			break;
+		case 17:
+			return sys_block ( regs->rdi );
+			break;
+		case 18:
+			return sys_unblock ( regs->rdi );
+		case 19:
+			return sys_yield();
+			break;
+		case 20:
+			return sys_nice( (int64_t) regs->rdi, regs->rsi);
+			break;
+		case 21:
+			return sys_kill( (int64_t) regs->rdi );
+			break;
+
+		default:
+			return NOT_VALID_SYS_ID;
 
 	}
 }
@@ -214,7 +214,7 @@ void * sys_malloc ( uint64_t size )
 {
 	return my_malloc ( size );
 }
-void sys_free ( void *p )
+void sys_free ( void * p )
 {
 	my_free ( p );
 }
@@ -251,22 +251,22 @@ int64_t sys_unblock ( int64_t pid )
 	return unblock_arbitrary ( pid );
 }
 
-int64_t sys_sem_open ( char *sem_id, uint64_t initial_value )
+int64_t sys_sem_open ( char * sem_id, uint64_t initial_value )
 {
 	return 0;
 }
 
-int64_t sys_sem_wait ( char *sem_id )
+int64_t sys_sem_wait ( char * sem_id )
 {
 	return 0;
 }
 
-int64_t sys_sem_post ( char *sem_id )
+int64_t sys_sem_post ( char * sem_id )
 {
 	return 0;
 }
 
-int64_t sys_sem_close ( char *sem_id )
+int64_t sys_sem_close ( char * sem_id )
 {
 	return 0;
 }

@@ -15,30 +15,30 @@
 
 
 typedef struct {
-	char **array;
+	char ** array;
 	int length;
 } array_t;
 
 
 /* Used by main to communicate with parse_opt. */
 struct arguments {
-	char *argv[MAX_FILES];
+	char * argv[MAX_FILES];
 	int silent, verbose;
-	char *output_file;
+	char * output_file;
 	int count;
 };
 
 
-int buildImage ( array_t fileArray, char *output_file );
+int buildImage ( array_t fileArray, char * output_file );
 
-int write_size ( FILE *target, char *filename );
+int write_size ( FILE * target, char * filename );
 
-int write_file ( FILE *target, FILE *source );
+int write_file ( FILE * target, FILE * source );
 
 int checkFiles ( array_t fileArray );
 
 static error_t
-parse_opt ( int key, char *arg, struct argp_state *state );
+parse_opt ( int key, char * arg, struct argp_state * state );
 
 
 #endif

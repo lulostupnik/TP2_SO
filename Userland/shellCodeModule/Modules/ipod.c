@@ -20,7 +20,7 @@ void ipod_menu()
 	play_song ( my_songs[song_number] );
 }
 
-void play_song ( Song* song )
+void play_song ( Song * song )
 {
 	printf ( "Playing song: %s\n", song->name );
 	for ( int i = 0; i < song->note_count; i++ ) {

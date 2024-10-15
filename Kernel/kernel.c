@@ -11,8 +11,8 @@ extern uint8_t endOfKernel;
 
 static const uint64_t PageSize = 0x1000;
 
-static void * const shellCodeModuleAddress = ( void* ) 0x400000;
-static void * const shellDataModuleAddress = ( void* ) 0x500000;
+static void * const shellCodeModuleAddress = ( void * ) 0x400000;
+static void * const shellDataModuleAddress = ( void * ) 0x500000;
 
 static void * const heap = ( void * ) 0x600000;
 
@@ -29,7 +29,7 @@ void clearBSS ( void * bssAddress, uint64_t bssSize )
 
 void * get_stack_base()
 {
-	return ( void* ) (
+	return ( void * ) (
 	           ( uint64_t ) &endOfKernel
 	           + PageSize * 8				//The size of the stack itself, 32KiB
 	           - sizeof ( uint64_t )			//Begin at the top of the stack
@@ -48,10 +48,11 @@ void * initializeKernelBinary()
 }
 
 
-void idle_process(){
-    while(1){
-        _hlt();
-    }
+void idle_process()
+{
+	while (1) {
+		_hlt();
+	}
 }
 
 

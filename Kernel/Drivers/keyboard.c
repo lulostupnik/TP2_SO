@@ -41,42 +41,42 @@ static void function_key_handler ( uint64_t code )
 {
 	int64_t i = -1;
 	switch ( code ) {
-	case F1:
-		i = 0;
-		break;
-	case F2:
-		i = 1;
-		break;
-	case F3:
-		i = 2;
-		break;
-	case F4:
-		i = 3;
-		break;
-	case F5:
-		i = 4;
-		break;
-	case F6:
-		i = 5;
-		break;
-	case F7:
-		i = 6;
-		break;
-	case F8:
-		i = 7;
-		break;
-	case F9:
-		i = 8;
-		break;
-	case F10:
-		i = 9;
-		break;
-	case F11:
-		i = 10;
-		break;
-	case F12:
-		i = 11;
-		break;
+		case F1:
+			i = 0;
+			break;
+		case F2:
+			i = 1;
+			break;
+		case F3:
+			i = 2;
+			break;
+		case F4:
+			i = 3;
+			break;
+		case F5:
+			i = 4;
+			break;
+		case F6:
+			i = 5;
+			break;
+		case F7:
+			i = 6;
+			break;
+		case F8:
+			i = 7;
+			break;
+		case F9:
+			i = 8;
+			break;
+		case F10:
+			i = 9;
+			break;
+		case F11:
+			i = 10;
+			break;
+		case F12:
+			i = 11;
+			break;
 	}
 	if ( i != -1 && function_key_fun_array[i] != 0 ) {
 		function_key_fun_array[i]();

@@ -13,10 +13,10 @@
 #define BLOCK_COUNT 1024
 #define MEM_SIZE_STR "1048576"
 
-void my_mm_init ( void *p, int s );
+void my_mm_init ( void * p, int s );
 
-void *my_malloc ( int size );
+void * my_malloc ( int size );
 
-void my_free ( void *p );
+void my_free ( void * p );
 
 #endif

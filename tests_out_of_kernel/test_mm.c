@@ -1,11 +1,11 @@
 #include "test_mm.h"
 
 typedef struct MM_rq {
-	void *address;
+	void * address;
 	uint32_t size;
 } mm_rq;
 
-uint64_t test_mm ( uint64_t argc, char *argv[] )
+uint64_t test_mm ( uint64_t argc, char * argv[] )
 {
 
 	mm_rq mm_rqs[MAX_BLOCKS];

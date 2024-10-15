@@ -11,9 +11,9 @@
 #include "modulePacker.h"
 
 //Parser elements
-const char *argp_program_version =
+const char * argp_program_version =
     "x64BareBones ModulePacker (C) v0.2";
-const char *argp_program_bug_address =
+const char * argp_program_bug_address =
     "arq-catedra@googlegroups.com";
 
 /* Program documentation. */
@@ -36,7 +36,7 @@ static struct argp_option options[] = {
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
 
-int main ( int argc, char *argv[] )
+int main ( int argc, char * argv[] )
 {
 
 	struct arguments arguments;
@@ -55,10 +55,10 @@ int main ( int argc, char *argv[] )
 	return !buildImage ( fileArray, arguments.output_file );
 }
 
-int buildImage ( array_t fileArray, char *output_file )
+int buildImage ( array_t fileArray, char * output_file )
 {
 
-	FILE *target;
+	FILE * target;
 
 	if ( ( target = fopen ( output_file, "w" ) ) == NULL ) {
 		printf ( "Can't create target file\n" );
@@ -66,7 +66,7 @@ int buildImage ( array_t fileArray, char *output_file )
 	}
 
 	//First, write the kernel
-	FILE *source = fopen ( fileArray.array[0], "r" );
+	FILE * source = fopen ( fileArray.array[0], "r" );
 	write_file ( target, source );
 
 	//Write how many extra binaries we got.
@@ -76,7 +76,7 @@ int buildImage ( array_t fileArray, char *output_file )
 
 	int i;
 	for ( i = 1 ; i < fileArray.length ; i++ ) {
-		FILE *source = fopen ( fileArray.array[i], "r" );
+		FILE * source = fopen ( fileArray.array[i], "r" );
 
 		//Write the file size;
 		write_size ( target, fileArray.array[i] );
@@ -106,7 +106,7 @@ int checkFiles ( array_t fileArray )
 
 }
 
-int write_size ( FILE *target, char *filename )
+int write_size ( FILE * target, char * filename )
 {
 	struct stat st;
 	stat ( filename, &st );
@@ -115,7 +115,7 @@ int write_size ( FILE *target, char *filename )
 }
 
 
-int write_file ( FILE *target, FILE *source )
+int write_file ( FILE * target, FILE * source )
 {
 	char buffer[BUFFER_SIZE];
 	int read;
@@ -131,29 +131,29 @@ int write_file ( FILE *target, FILE *source )
 
 /* Parse a single option. */
 static error_t
-parse_opt ( int key, char *arg, struct argp_state *state )
+parse_opt ( int key, char * arg, struct argp_state * state )
 {
 	/* Get the input argument from argp_parse, which we
 	   know is a pointer to our arguments structure. */
-	struct arguments *arguments = state->input;
+	struct arguments * arguments = state->input;
 
 	switch ( key ) {
-	case 'o':
-		arguments->output_file = arg;
-		break;
+		case 'o':
+			arguments->output_file = arg;
+			break;
 
-	case ARGP_KEY_ARG:
-		arguments->argv[state->arg_num] = arg;
-		break;
+		case ARGP_KEY_ARG:
+			arguments->argv[state->arg_num] = arg;
+			break;
 
-	case ARGP_KEY_END:
-		if ( state->arg_num < 1 )
-			argp_usage ( state );
-		arguments->count = state->arg_num;
-		break;
+		case ARGP_KEY_END:
+			if ( state->arg_num < 1 )
+				argp_usage ( state );
+			arguments->count = state->arg_num;
+			break;
 
-	default:
-		return ARGP_ERR_UNKNOWN;
+		default:
+			return ARGP_ERR_UNKNOWN;
 	}
 	return 0;
 }

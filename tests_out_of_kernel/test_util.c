@@ -18,9 +18,9 @@ uint32_t get_uniform ( uint32_t max )
 }
 
 // memory
-uint8_t memcheck ( void *start, uint8_t value, uint32_t size )
+uint8_t memcheck ( void * start, uint8_t value, uint32_t size )
 {
-	uint8_t *p = ( uint8_t * ) start;
+	uint8_t * p = ( uint8_t * ) start;
 	uint32_t i;
 
 	for ( i = 0; i < size; i++, p++ )
@@ -31,7 +31,7 @@ uint8_t memcheck ( void *start, uint8_t value, uint32_t size )
 }
 
 // parameters
-int64_t satoi ( char *str )
+int64_t satoi ( char * str )
 {
 	uint64_t i = 0;
 	int64_t res = 0;
@@ -71,7 +71,7 @@ void endless_loop()
 void endless_loop_print ( uint64_t wait )
 {
 	int64_t pid = my_getpid();
-	if(pid < 0){
+	if (pid < 0) {
 		fprintf ( STDERR, "Error in endless_loop_print\n");
 	}
 	while ( 1 ) {

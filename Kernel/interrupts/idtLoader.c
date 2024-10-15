@@ -31,7 +31,7 @@ void load_idt()
 
 	setup_idt_entry ( 0x00, ( uint64_t ) &_exception0Handler );  // Division by 0 exception
 	setup_idt_entry ( 0x06, ( uint64_t ) &_exception6Handler );  // Operation code exception
-	setup_idt_entry ( 0x0D, ( uint64_t ) &_exception13Handler ); // General Protection exception 
+	setup_idt_entry ( 0x0D, ( uint64_t ) &_exception13Handler ); // General Protection exception
 
 
 	setup_idt_entry ( 0x20, ( uint64_t ) &_irq00Handler ); // Timer tick interruption
