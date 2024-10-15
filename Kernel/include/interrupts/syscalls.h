@@ -9,7 +9,11 @@
 #include <speaker.h>
 #include <time.h>
 #include <rtc.h>
+#include <process.h>
+#include <scheduler.h>
 #include <memory_management.h>
+#include <stack_registers.h>
+#include <process.h>
 
 #define NOT_VALID_SYS_ID -2
 
@@ -228,18 +232,19 @@ void * sys_malloc ( uint64_t size );
 void sys_free ( void *p );
 
 
-int64_t my_getpid();
-int64_t my_create_process ( char *name, uint64_t argc, char *argv[] );
-int64_t my_nice ( uint64_t pid, uint64_t newPrio );
-int64_t my_kill ( uint64_t pid );
-int64_t my_block ( uint64_t pid );
-int64_t my_unblock ( uint64_t pid );
-int64_t my_sem_open ( char *sem_id, uint64_t initialValue );
-int64_t my_sem_wait ( char *sem_id );
-int64_t my_sem_post ( char *sem_id );
-int64_t my_sem_close ( char *sem_id );
-int64_t my_yield();
-int64_t my_wait ( int64_t pid );
+int64_t sys_get_pid();
+int64_t sys_create_process ( main_function rip, priority_t priority, char ** argv, uint64_t argc );
+
+int64_t sys_nice ( int64_t pid, uint64_t newPrio );
+int64_t sys_kill ( int64_t pid );
+int64_t sys_block ( int64_t pid );
+int64_t sys_unblock ( int64_t pid );
+int64_t sys_sem_open ( char *sem_id, uint64_t initialValue );
+int64_t sys_sem_wait ( char *sem_id );
+int64_t sys_sem_post ( char *sem_id );
+int64_t sys_sem_close ( char *sem_id );
+int64_t sys_yield();
+int64_t sys_wait ( int64_t pid );
 
 
 

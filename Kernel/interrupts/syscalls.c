@@ -4,15 +4,15 @@
 #include <syscalls.h>
 
 
-typedef struct {
-	uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rdi, rbp, rdx, rcx, rbx, rax;
-} registers;
+// typedef struct {
+// 	uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rdi, rbp, rdx, rcx, rbx, rax;
+// } registers;
 
 extern uint64_t regs_shot[17];
 extern uint64_t regs_shot_available;
 
 
-int64_t sys_call_handler ( registers * regs )
+int64_t sys_call_handler ( stack_registers * regs )
 {
 	switch ( regs->rax ) {
 	case 0:
@@ -61,6 +61,30 @@ int64_t sys_call_handler ( registers * regs )
 		sys_free ( ( void* ) regs->rdi );
 		return 0;
 		break;
+	case 15:
+		return sys_get_pid();
+		break;
+	case 16:
+		return sys_create_process ( ( main_function ) regs->rdi, ( priority_t ) regs->rsi, ( char ** ) regs->rdx, regs->rcx );
+		break;
+	case 17:
+		return sys_block ( regs->rdi );
+		break;
+	case 18:
+		return sys_unblock ( regs->rdi );
+	case 19:
+		return sys_yield();
+		break;	
+	case 20:
+		return sys_nice( (int64_t) regs->rdi, regs->rsi);
+		break;
+	case 21:
+		return sys_kill( (int64_t) regs->rdi );
+		break;
+	/*
+	case 21:
+		return ps(); // (int64_t) ?
+	*/
 	default:
 		return NOT_VALID_SYS_ID;
 
@@ -199,62 +223,64 @@ void sys_free ( void *p )
 }
 
 
-int64_t my_getpid()
+
+int64_t sys_create_process (main_function rip, priority_t priority, char ** argv, uint64_t argc)
+{
+	return (int64_t) new_process( rip, priority, 1, argv, argc );
+}
+
+int64_t sys_get_pid()
+{
+	return get_pid();
+}
+
+int64_t sys_nice ( int64_t pid, uint64_t new_prio )
+{
+	return nice(pid, new_prio);
+}
+
+int64_t sys_kill ( int64_t pid )
+{
+	return kill_process(pid);
+}
+
+int64_t sys_block ( int64_t pid )
+{
+	return block_arbitrary ( pid );
+}
+
+int64_t sys_unblock ( int64_t pid )
+{
+	return unblock_arbitrary ( pid );
+}
+
+int64_t sys_sem_open ( char *sem_id, uint64_t initial_value )
 {
 	return 0;
 }
 
-int64_t my_create_process ( char *name, uint64_t argc, char *argv[] )
+int64_t sys_sem_wait ( char *sem_id )
 {
 	return 0;
 }
 
-int64_t my_nice ( uint64_t pid, uint64_t new_prio )
+int64_t sys_sem_post ( char *sem_id )
 {
 	return 0;
 }
 
-int64_t my_kill ( uint64_t pid )
+int64_t sys_sem_close ( char *sem_id )
 {
 	return 0;
 }
 
-int64_t my_block ( uint64_t pid )
+int64_t sys_yield()
 {
+	scheduler_yield();
 	return 0;
 }
 
-int64_t my_unblock ( uint64_t pid )
-{
-	return 0;
-}
-
-int64_t my_sem_open ( char *sem_id, uint64_t initial_value )
-{
-	return 0;
-}
-
-int64_t my_sem_wait ( char *sem_id )
-{
-	return 0;
-}
-
-int64_t my_sem_post ( char *sem_id )
-{
-	return 0;
-}
-
-int64_t my_sem_close ( char *sem_id )
-{
-	return 0;
-}
-
-int64_t my_yield()
-{
-	return 0;
-}
-
-int64_t my_wait ( int64_t pid )
+int64_t sys_wait ( int64_t pid )
 {
 	return 0;
 }

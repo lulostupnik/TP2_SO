@@ -46,7 +46,7 @@ int main ( int argc, char *argv[] )
 
 	argp_parse ( &argp, argc, argv, 0, 0, &arguments );
 
-	array_t fileArray = {arguments.args, arguments.count};
+	array_t fileArray = {arguments.argv, arguments.count};
 
 	if ( !checkFiles ( fileArray ) ) {
 		return 1;
@@ -143,7 +143,7 @@ parse_opt ( int key, char *arg, struct argp_state *state )
 		break;
 
 	case ARGP_KEY_ARG:
-		arguments->args[state->arg_num] = arg;
+		arguments->argv[state->arg_num] = arg;
 		break;
 
 	case ARGP_KEY_END:

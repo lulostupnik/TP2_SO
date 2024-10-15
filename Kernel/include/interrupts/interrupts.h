@@ -15,6 +15,7 @@ void _irq80Handler ( void );
 
 void _exception0Handler ( void );
 void _exception6Handler ( void );
+void _exception13Handler ( void );
 
 void _cli ( void );
 
@@ -28,5 +29,9 @@ void pic_slave_mask ( uint8_t mask );
 
 //Termina la ejecución de la cpu.
 void haltcpu ( void );
+
+void timer_tick( void ); //@TODO crear un .h poara libasm.h y refacctor los q estan aca
+
+void yield( void );
 
 #endif

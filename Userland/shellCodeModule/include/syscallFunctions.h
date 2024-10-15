@@ -56,6 +56,8 @@ typedef struct time {
 	uint8_t seconds;
 } time_struct;
 
+typedef int (*main_function)(char ** argv, uint64_t argc);
+
 
 int64_t sys_read ( uint64_t fd, uint16_t * buffer, uint64_t amount );
 
@@ -98,5 +100,25 @@ int64_t sys_get_time ( time_struct * time );
 void * sys_malloc ( uint64_t size );
 
 void sys_free ( void *p );
+
+int64_t sys_create_process ( main_function rip, uint64_t priority, char ** argv, uint64_t argc );
+
+int64_t sys_get_pid();
+
+int64_t sys_nice ( int64_t pid, uint64_t newPrio );
+
+int64_t sys_yield();
+
+int64_t sys_kill ( int64_t pid );
+
+int64_t sys_block ( int64_t pid );
+
+int64_t sys_unblock ( int64_t pid );
+//int64_t sys_sem_open ( char *sem_id, uint64_t initialValue );
+//int64_t sys_sem_wait ( char *sem_id );
+//int64_t sys_sem_post ( char *sem_id );
+//int64_t sys_sem_close ( char *sem_id );
+
+//int64_t sys_wait ( int64_t pid );
 
 #endif

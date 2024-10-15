@@ -38,6 +38,7 @@ void *my_malloc ( uint64_t size )
 	if ( size > BLOCK_SIZE || current >= BLOCK_COUNT ) {
 		return NULL;
 	}
+	 
 	return free_ptrs[current++];
 }
 

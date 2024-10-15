@@ -10,7 +10,7 @@ typedef struct MM_rq {
 	uint64_t size;
 } mm_rq;
 
-uint64_t test_mm ( uint64_t argc, char *argv[] )
+uint64_t test_mm ( char *argv[],  uint64_t argc )
 {
 
 	mm_rq mm_rqs[MAX_BLOCKS];
@@ -18,19 +18,19 @@ uint64_t test_mm ( uint64_t argc, char *argv[] )
 	uint64_t total;
 	uint64_t max_memory;
 
-	if ( argc != 1 ) {
-		printf ( "Error: argc must be 1" );
+	if ( argc != 2 ) {
+		fprintf(STDERR, "Error: argc must be 2" );
 		return -1;
 	}
 
 
-	if ( ( max_memory = satoi ( argv[0] ) ) <= 0 ) {
-		printf ( "Error: could not read from argv" );
+	if ( ( max_memory = satoi ( argv[1] ) ) <= 0 ) {
+		fprintf(STDERR, "Error: could not read from argv" );
 		return -1;
 	}
 
 
-	printf ( "Running test....\n" );
+	printf ( "\nRunning test....\n" );
 	while (1) {
 		rq = 0;
 		total = 0;
@@ -39,6 +39,8 @@ uint64_t test_mm ( uint64_t argc, char *argv[] )
 		while ( rq < MAX_BLOCKS && total < max_memory ) {
 			mm_rqs[rq].size = GetUniform ( max_memory - total - 1 ) + 1;
 			mm_rqs[rq].address = my_malloc ( mm_rqs[rq].size );
+			
+
 			if ( mm_rqs[rq].address ) {
 				total += mm_rqs[rq].size;
 				rq++;
@@ -55,7 +57,7 @@ uint64_t test_mm ( uint64_t argc, char *argv[] )
 		for ( i = 0; i < rq; i++ )
 			if ( mm_rqs[i].address )
 				if ( !memcheck ( mm_rqs[i].address, i, mm_rqs[i].size ) ) {
-					printf ( "test_mm ERROR\n" );
+					fprintf(STDERR, "test_mm ERROR\n" );
 					return -1;
 				}
 
@@ -64,6 +66,5 @@ uint64_t test_mm ( uint64_t argc, char *argv[] )
 			if ( mm_rqs[i].address )
 				my_free ( mm_rqs[i].address );
 	}
-	printf ( "Everything OK\n" );
 	return 0;
 }

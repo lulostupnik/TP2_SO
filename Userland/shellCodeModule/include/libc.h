@@ -10,7 +10,7 @@
 #define STDERR 1
 #define TEXT_MODE 0
 #define VIDEO_MODE 1
-
+#define NULL 0
 
 typedef enum {
 	LEFT_CONTROL = 256,         // NOTAR: El valor con el que empieza tiene que ser mas grande al ultimo de la tabla ASCII
@@ -296,5 +296,17 @@ void * my_malloc ( uint64_t size );
 
 void my_free ( void *ptr );
 
+int64_t my_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc);
 
+int64_t my_get_pid();
+
+int64_t my_nice ( int64_t pid, uint64_t newPrio );
+
+int64_t my_yield();
+
+int64_t my_kill ( int64_t pid );
+
+int64_t my_block ( int64_t pid );
+
+int64_t my_unblock ( int64_t pid );
 #endif

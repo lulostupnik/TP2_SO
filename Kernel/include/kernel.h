@@ -2,6 +2,8 @@
 #define KERNEL_H
 
 
+
+
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>
@@ -11,6 +13,8 @@
 #include <syscalls.h>
 #include <keyboard.h>
 #include <memory_management.h>
+#include <process.h>
+#include <scheduler.h>
 
 
 #endif

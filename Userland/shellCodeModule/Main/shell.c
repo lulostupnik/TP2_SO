@@ -6,25 +6,32 @@
 
 static void help();
 
+static void kill_pid(char ** argv, uint64_t argc);
+
 static void toUtcMinus3 ( time_struct * time );
 
 static uint64_t font_size = 1; // font_size 1 is the default size
 
+#define BUILT_IN 1
+
+
 
 static module modules[] = {
-{"help", help},
-{"time", showcurrentTime},
-{"eliminator", eliminator},
-{"zoomin", zoomIn},
-{"zoomout", zoomOut},
-{"getregs", getRegs},
-{"dividebyzero", div0},
-{"opcode", op_code},
-{"clear", clear},
-{"testmm", start_test_mm},
-{"ipod", ipod_menu},
+{"help", help, BUILT_IN},
+{"time", showcurrentTime, BUILT_IN},
+{"eliminator", eliminator, BUILT_IN},
+{"zoomin", zoomIn, BUILT_IN},
+{"zoomout", zoomOut, BUILT_IN},
+{"getregs", getRegs, BUILT_IN},
+{"dividebyzero", div0, BUILT_IN},
+{"opcode", op_code, BUILT_IN},
+{"clear", (void (*)(char **, uint64_t)) clear_screen, BUILT_IN},
+{"ipod", ipod_menu, BUILT_IN},
+{"testmm", (void (*)(char **, uint64_t)) test_mm, !BUILT_IN}, 
+{"testprio",test_prio, !BUILT_IN},
+{"testproc",(void (*)(char **, uint64_t)) test_processes, !BUILT_IN},
+{"killpid", kill_pid, BUILT_IN}
 };
-
 
 
 int main()
@@ -34,13 +41,85 @@ int main()
 
 	puts ( WELCOME );
 	help();
-
+	
 
 	while ( 1 ) {
 		interpret();
 	}
 
 }
+
+void free_args(char** args, uint64_t argc){
+	for(int i = 0; i < argc; i++){
+		my_free(args[i]);
+	}
+	my_free(args);
+	return;
+}
+
+void call_function_process(module m, char** args, uint64_t argc)
+{
+	if(m.is_built_in){
+		m.function(args, argc);
+		free_args(args, argc);
+		return;
+	}
+
+	int64_t ans = sys_create_process((main_function)m.function, LOW, args, argc); //@todo le agregamos checkeo??
+	if(ans < 0){
+		fprintf ( STDERR, "Could not create process\n" );
+	}
+	
+	free_args(args, argc);
+	return;
+}
+
+char ** command_parse(char shellBuffer[], uint64_t * argc)
+{
+	char ** args = my_malloc(MAX_ARGS * sizeof(char *));
+	if(args == NULL){
+		*argc = -1;
+		return NULL;
+	}
+	uint64_t args_count = 0;
+
+	for (int i = 0; shellBuffer[i] != '\0';) {
+		if(shellBuffer[i] == ' '){
+			i++;
+			continue;
+		}
+
+        args[args_count] = my_malloc(MAX_ARGS_SIZE * sizeof(char));
+
+		if(args[args_count] == NULL){
+			for(int n = 0; n < args_count; n++){
+				my_free(args[n]);
+			}
+			my_free(args);
+			*argc = -1;
+			return NULL;
+		}
+
+		int j;
+		for(j = 0; shellBuffer[i] != ' ' && shellBuffer[i] != '\0'; i++, j++){
+			args[args_count][j] = shellBuffer[i];
+		}
+		
+        args[args_count][j] = '\0';
+        args_count++;
+    }
+
+	*argc = args_count;
+
+	if(args_count == 0){
+		my_free(args);
+		args = NULL;
+	}
+	
+	return args;
+}
+
+
 void interpret()
 {
 	puts ( PROMPT );
@@ -49,19 +128,44 @@ void interpret()
 	if ( strlen ( shellBuffer ) == 0 ) {
 		return;
 	}
-	for ( int i = 0; i < MAX_MODULES; i++ ) {
-		if ( strcmp ( shellBuffer, modules[i].name ) == 0 ) {
-			modules[i].function();
-			return;
+	char ** args;
+	uint64_t argc;
+	args = command_parse(shellBuffer, &argc);
+
+	if(argc == -1){
+		fprintf ( STDERR, "Not enough memory to create process\n" );
+	}
+
+	for ( int i = 0; i < MAX_MODULES && ((args != NULL) || (argc != 0)); i++ ) {
+		if ( strcmp (args[0], modules[i].name ) == 0 ) {
+			call_function_process(modules[i], args, argc);
+			return;	
 		}
 	}
+	
 	fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
 
 }
 
-static void help()
-{
 
+
+static void kill_pid(char ** argv, uint64_t argc){
+	int64_t pid;
+
+	if(argc != 2 || argv == NULL || ((pid = satoi(argv[1])) < 0)){
+		fprintf(STDERR, "Usage: killpid <pid>\n");
+		return;
+	}
+
+	if(my_kill(pid) < 0){
+		fprintf(STDERR, "Could not kill process %d\n", pid);
+	}
+
+}
+
+static void help(char** args, uint64_t argc)
+{
+	
 	puts ( "\nComandos disponibles:\n\n" );
 	puts ( "- help: Muestra todos los modulos disponibles del sistema operativo.\n" );
 	puts ( "- time: Muestra la hora actual del sistema.\n" );
@@ -73,13 +177,15 @@ static void help()
 	puts ( "- opcode: Genera una excepcion de codigo de operacion invalido.\n" );
 	puts ( "- clear: Limpia la pantalla.\n" );
 	puts ( "- ipod: Inicia el reproductor de musica.\n" );
-	puts ( "- testmm: Testea el uso del malloc y free.\n\n" );
+	puts ( "- testprio: Testea las prioridades del scheduler.\n" );
+	puts ( "- killpid <pid>: Mata al pid numero pid.\n" );
+	puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
+	puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n\n" );
 
 }
 
 
 
-// Function to zoom in
 void zoomIn()
 {
 	if ( font_size < MAX_FONT_SIZE ) {
@@ -91,7 +197,6 @@ void zoomIn()
 	return;
 }
 
-// Function to zoom out
 void zoomOut()
 {
 	if ( font_size > MIN_FONT_SIZE ) {
@@ -102,8 +207,6 @@ void zoomOut()
 	}
 	return;
 }
-
-
 
 
 void showcurrentTime()
@@ -154,8 +257,7 @@ void getRegs()
 	return;
 }
 
-void clear()
-{
-	clear_screen();
-}
-
+// void clear()
+// {
+// 	clear_screen();
+// }

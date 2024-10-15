@@ -18,7 +18,7 @@ void my_mm_init ( void *p, int s )
 
 void *my_malloc ( int size )
 {
-	if ( size > BLOCK_SIZE || current >= BLOCK_COUNT ) {
+	if ( size > BLOCK_SIZE || current >= BLOCK_COUNT || size <= 0 ) {
 		return NULL;
 	}
 	return free_ptrs[current++];

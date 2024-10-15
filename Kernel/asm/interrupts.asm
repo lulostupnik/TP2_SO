@@ -16,6 +16,7 @@ GLOBAL _irq80Handler
 
 GLOBAL _exception0Handler
 GLOBAL _exception6Handler
+GLOBAL _exception13Handler
 
 GLOBAL regs_shot
 GLOBAL exception_regs
@@ -26,6 +27,7 @@ EXTERN exception_dispatcher
 EXTERN sys_call_handler
 EXTERN should_take_reg_shot
 EXTERN get_stack_base
+EXTERN scheduler
 
 SECTION .text
 
@@ -147,7 +149,22 @@ pic_slave_mask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	irqHandlerMaster 0
+	pushState
+
+	mov rdi, 0 ; pasaje de parametro
+	call irq_dispatcher
+
+	;@TODO: STI y CLI?
+    mov rdi, rsp
+    call scheduler
+    mov rsp, rax
+
+	; signal pic EOI (End of Interrupt)
+	mov al, 20h
+	out 20h, al
+
+	popState
+	iretq
 
 ;Keyboard
 _irq01Handler:
@@ -282,6 +299,10 @@ _exception0Handler:
 ;Invalid operation code exception
 _exception6Handler:
 	exceptionHandler 6
+
+_exception13Handler:
+	exceptionHandler 13
+
 
 
 haltcpu:
