@@ -23,13 +23,13 @@ void initialize_scheduler(int64_t idle_process_pid)
 	ready_list = new_list(cmp);
 	blocked_list = new_list(cmp);
 	idle_pcb = get_pcb(idle_process_pid);
-	//initialized = 1;
+	initialized = 1;
 	return;
 }
 
-void start_scheduling(){
-	initialized = 1;
-}
+// void start_scheduling(){
+// 	initialized = 1;
+// }
 
 void ready(PCB * process)
 {
@@ -95,30 +95,18 @@ uint64_t unblock_arbitrary(int64_t pid)
 
 #include <video.h>
 #include <idtLoader.h>
-void check_canary(){
-	_cli();
-	pic_master_mask ( 0xfd ); //Solo interrupciones de teclado
-
-	if(running == NULL || (*(uint64_t *)running->base_pointer == CANARY) || (running->base_pointer > running->rsp) ){
+void check_rsp(){
+	if(running == NULL || (running->base_pointer > running->rsp) ){
 		return;
 	}
 	color col = {255, 255, 255};
 	vdriver_clear_screen ( col );
 	vdriver_set_mode ( TEXT_MODE, col );
 	vdriver_text_set_font_size ( 2 );
-	vdriver_text_write ( STDERR, "STACK SMASHING DETECTED. ABORTING\n", 35 );
-
-	vdriver_text_write ( STDERR, "\nPress any key to continue", 30 );
-	uint16_t buffer;
-	_sti();
-	while ( sys_read ( 1, &buffer, 1 ) == 0 );
-	_cli();
-	pic_master_mask ( DEFAULT_MASTER_MASK );  // restores to default
-
-	color c = {0, 0, 0};
-	vdriver_clear_screen ( c );
-	_sti();
-	main();
+	vdriver_text_write ( STDERR, "STACK SMASHING DETECTED.\n", 35 );
+	while(1){
+		_hlt();
+	} //nothing to do, stack smashed.....
 }
 
 uint64_t scheduler(uint64_t current_rsp)
@@ -126,7 +114,7 @@ uint64_t scheduler(uint64_t current_rsp)
 	if (!initialized) {
 		return current_rsp;
 	}
-	check_canary();
+	check_rsp();
 	if (running != NULL) {
 		running->rsp = current_rsp;
 	}

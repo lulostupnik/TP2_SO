@@ -27,7 +27,7 @@ static void setup_idt_entry ( int index, uint64_t offset );
 void load_idt()
 {
 
-	_cli();
+	
 
 	setup_idt_entry ( 0x00, ( uint64_t ) &_exception0Handler );  // Division by 0 exception
 	setup_idt_entry ( 0x06, ( uint64_t ) &_exception6Handler );  // Operation code exception
@@ -41,7 +41,7 @@ void load_idt()
 	pic_master_mask ( DEFAULT_MASTER_MASK );
 	pic_slave_mask ( DEFAULT_SLAVE_MASK );
 
-	_sti();
+	
 }
 
 static void setup_idt_entry ( int index, uint64_t offset )

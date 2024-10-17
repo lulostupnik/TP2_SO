@@ -57,18 +57,21 @@ void idle_process()
 
 extern void canary_activator();
 
+static int i=0;
 int main()
 {
-	// _cli();
+	 _cli();
 	// pic_master_mask ( 0xff ); //ninguna interrupcion
 	load_idt();
 	my_mm_init ( heap, HEAP_SIZE );
 	initialize_scheduler(new_process((main_function) idle_process, LOW, 0, 0, 0));
 	new_process((main_function) shellCodeModuleAddress, HIGH, 0, 0, 0);
-	new_process((main_function) canary_activator, HIGH, 0, 0, 0);
 
-	start_scheduling();
-	timer_tick();
+	//new_process((main_function) canary_activator, HIGH, 0, 0, 0);
 
+	//start_scheduling();
+	_sti(); //se lo borre a la idt
+	timer_tick();//se esta llamando a shell antes q estoi
+	
 	return 0;
 }

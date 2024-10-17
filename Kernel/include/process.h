@@ -17,8 +17,6 @@
 #define STACK_SIZE 0x0FFF
 #define PCB_AMOUNT 100
 
-#define CANARY 0xCA5ACAFEDEFE0A12
-
 typedef struct process_info {
 	int64_t pid;
 	int64_t ppid;
