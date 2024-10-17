@@ -39,12 +39,12 @@ static uint64_t CHAR_BUFFER_COLS_zoomed = CHAR_BUFFER_COLS;
 
 
 
-static void clear_screen();
+static void libc_clear_screen();
 static uint64_t in_text_mode();
 static uint64_t in_video_mode();
 static void add_char_to_buffer ( uint8_t c, uint8_t fd );
 static void print_font ( char_buffer_type letter );
-static void clear_screen();
+static void libc_clear_screen();
 static void new_line_print();
 static void new_line_buff();
 static void new_line();
@@ -76,7 +76,7 @@ int64_t vdriver_text_set_font_size ( uint64_t size )
 	font_size = size;
 	CHAR_BUFFER_ROWS_zoomed = ( SCREEN_HEIGHT / ( font_size * FONT_HEIGHT ) );
 	CHAR_BUFFER_COLS_zoomed = ( SCREEN_WIDTH / ( font_size * FONT_WIDTH ) );
-	clear_screen();
+	libc_clear_screen();
 	return 0;
 }
 
@@ -178,10 +178,10 @@ int64_t vdriver_video_draw_rectangle ( uint64_t x, uint64_t y, uint64_t width, u
 int64_t vdriver_video_draw_font ( uint64_t x, uint64_t y, uint8_t ascii, color color, uint64_t font_size )
 {
 	if ( ascii < FIRST_ASCII_FONT || ascii > LAST_ASCII_FONT ) {
-		return NOT_VALID_ASCII;
+		return -1;
 	}
 	if ( !in_video_mode() ) {
-		return 0;
+		return -1;
 	}
 	int letter = ( ascii - ' ' ) * 16;
 	for ( uint64_t i = 0; i < 16; i++ ) {
@@ -272,7 +272,7 @@ static void print_font ( char_buffer_type letter )
 	current_screen_point.x += FONT_WIDTH * font_size;
 }
 
-static void clear_screen()
+static void libc_clear_screen()
 {
 	vdriver_clear_screen ( background_color );
 }
@@ -340,7 +340,7 @@ static void back_space()
 static void re_buffer_print()
 {
 	uint64_t aux = buffer_index; // con el clear screen se setea en 0
-	clear_screen();
+	libc_clear_screen();
 	uint64_t j = 0;
 	for ( uint64_t i = CHAR_BUFFER_COLS_zoomed * rows_to_rebuffer ( CHAR_BUFFER_ROWS_zoomed ) ; i < aux; i++, j++ ) {
 		char_buffer[j] = char_buffer[i];
@@ -352,7 +352,7 @@ static void re_buffer_print()
 static void print_buffer()
 {
 	uint64_t aux = buffer_index; // con clear screen se borra
-	clear_screen();
+	libc_clear_screen();
 	for ( int i = 0 ; i < aux ; i++ ) {
 		vdriver_text_write ( char_buffer[i].fd, ( char * ) &char_buffer[i].c, 1 );
 	}

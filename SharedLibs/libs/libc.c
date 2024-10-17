@@ -12,7 +12,7 @@
  *
  * @return int64_t Returns the value of the read character.
  */
-char getChar()
+char libc_get_char()
 {
 	uint16_t c;
 	while ( sys_read ( STDIN, &c, 1 ) == 0 || c > 255 );
@@ -29,7 +29,7 @@ char getChar()
  *
  * @param c The character to write.
  */
-void put_char ( char c )
+void libc_put_char ( char c )
 {
 	sys_write ( STDOUT, &c, 1 );
 }
@@ -37,16 +37,16 @@ void put_char ( char c )
 
 
 /**
- * @brief Generates a beep sound.
+ * @brief Generates a libc_beep sound.
  *
- * This function uses the sys_beep system call to generate a beep sound.
- * The beep sound is produced by the system speaker.
+ * This function uses the sys_beep system call to generate a libc_beep sound.
+ * The libc_beep sound is produced by the system speaker.
  *
- * @param frequency The frequency of the beep sound in hertz.
- * @param duration The duration of the beep sound in milliseconds.
- * @return int64_t Returns 0 if the beep was successfully generated, or -1 if an error occurred.
+ * @param frequency The frequency of the libc_beep sound in hertz.
+ * @param duration The duration of the libc_beep sound in milliseconds.
+ * @return int64_t Returns 0 if the libc_beep was successfully generated, or -1 if an error occurred.
  */
-int64_t beep ( uint64_t frequency, uint64_t duration )
+int64_t libc_beep ( uint64_t frequency, uint64_t duration )
 {
 	return sys_beep ( frequency, duration );
 }
@@ -61,7 +61,7 @@ int64_t beep ( uint64_t frequency, uint64_t duration )
  *
  * @return int64_t Returns 0 if the screen was successfully cleared, or -1 if an error occurred.
  */
-int64_t clear_screen()
+int64_t libc_clear_screen()
 {
 	return sys_clear_screen();
 }
@@ -77,7 +77,7 @@ int64_t clear_screen()
  * @param size The desired font size.
  * @return int64_t Returns 0 if the font size was successfully set, or -1 if an error occurred.
  */
-int64_t setFontSize ( uint64_t size )
+int64_t libc_set_font_size ( uint64_t size )
 {
 	return sys_set_font_size ( size );
 }
@@ -92,7 +92,7 @@ int64_t setFontSize ( uint64_t size )
  * @param str The string whose length is to be calculated.
  * @return size_t Returns the number of characters in the string pointed to by `str`.
  */
-uint64_t strlen ( const char * str )
+uint64_t libc_strlen ( const char * str )
 {
 	const char * s = str;
 	while ( *s )
@@ -106,22 +106,41 @@ uint64_t strlen ( const char * str )
  * @brief Converts a number to a string representation in a specified base.
  *
  * This function converts a number to its string representation in a specified base.
- * It uses a static buffer to hold the result, so the returned string should be used or copied before the next call to `numToString`.
+ * It uses a static buffer to hold the result, so the returned string should be used or copied before the next call to `libc_num_to_string`.
  *
  * @param num The number to be converted.
  * @param base The base to use for the conversion. This should be between 2 and 16 inclusive.
  * @return char* Returns a pointer to the string representation of the number. This string is null-terminated.
  */
-char * numToString ( uint64_t num, uint64_t base )
-{
-	static char buffer[64];
-	char * ptr = &buffer[63];
-	*ptr = '\0';
-	do {
-		*--ptr = "0123456789ABCDEF"[num % base];
-		num /= base;
-	} while ( num != 0 );
-	return ptr;
+// char * libc_num_to_string ( uint64_t num, uint64_t base )
+// {
+// 	static char buffer[64];
+// 	char * ptr = &buffer[63];
+// 	*ptr = '\0';
+// 	do {
+// 		*--ptr = "0123456789ABCDEF"[num % base];
+// 		num /= base;
+// 	} while ( num != 0 );
+// 	return ptr;
+// }
+
+char * libc_num_to_string(uint64_t num, uint64_t base, char *buffer, size_t buffer_size) {
+    if (base < 2 || base > 16 || buffer_size < 2) {
+        return NULL;  
+    }
+
+    char *ptr = &buffer[buffer_size - 1];  
+    *ptr = '\0';  
+
+    do {
+        if (ptr == buffer) {
+            return NULL;  
+        }
+        *--ptr = "0123456789ABCDEF"[num % base];
+        num /= base;
+    } while (num != 0);
+
+    return ptr;  
 }
 
 
@@ -136,9 +155,9 @@ char * numToString ( uint64_t num, uint64_t base )
  * @param str The string to write.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-int64_t puts ( const char * str )
+int64_t libc_puts ( const char * str )
 {
-	return sys_write ( STDOUT, str, strlen ( str ) );
+	return sys_write ( STDOUT, str, libc_strlen ( str ) );
 }
 
 
@@ -152,17 +171,16 @@ int64_t puts ( const char * str )
  * @param fd The file descriptor to write to.
  * @return int64_t Returns the 0 if the operation was successful, or -1 if an error occurred.
  */
-int64_t fputc ( char c, uint64_t fd )
+int64_t libc_fputc ( char c, uint64_t fd )
 {
 	return sys_write ( fd, &c, 1 ) == -1 ? -1 : 0;
 }
 
 
-
 /**
  * @brief Writes formatted output to a specified file descriptor.
  *
- * This auxiliary function is used by printf and fprintf to write formatted output to a specified file descriptor.
+ * This auxiliary function is used by libc_printf and libc_fprintf to write formatted output to a specified file descriptor.
  * It takes a variable argument list and a format string, which specifies how subsequent arguments are converted for output.
  *
  * @param fd The file descriptor to write to.
@@ -170,10 +188,13 @@ int64_t fputc ( char c, uint64_t fd )
  * @param argv A variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-static int64_t vfprintf ( uint64_t fd, const char * fmt, va_list argv )
+#define BUFF_SIZE 64
+static int64_t libc_vfprintf ( uint64_t fd, const char * fmt, va_list argv )
 {
 	uint64_t flag = 0;
 	uint64_t written = 0;
+	char buffer[BUFF_SIZE];
+
 
 	for ( uint64_t i = 0; fmt[i] != '\0'; i++ ) {
 		if ( fmt[i] == '%' && !flag ) {
@@ -182,29 +203,30 @@ static int64_t vfprintf ( uint64_t fd, const char * fmt, va_list argv )
 		}
 
 		if ( !flag ) {
-			fputc ( fmt[i], fd );
+			libc_fputc ( fmt[i], fd );
 			flag = 0;
 			written++;
 			continue;
 		}
+	
 
 		switch ( fmt[i] ) {
 			case 'c':
-				fputc ( va_arg ( argv, int ), fd );
+				libc_fputc ( va_arg ( argv, int ), fd );
 				written++;
 				break;
 			case 'd':
-				written += vfprintf ( fd, numToString ( va_arg ( argv, uint64_t ), 10 ), argv );
+				written += libc_vfprintf ( fd, libc_num_to_string ( va_arg ( argv, uint64_t ), 10 , buffer, BUFF_SIZE), argv );
 				break;
 			case 'x':
-				written += vfprintf ( fd, "0x", argv );
-				written += vfprintf ( fd, numToString ( va_arg ( argv, uint64_t ), 16 ), argv );
+				written += libc_vfprintf ( fd, "0x", argv );
+				written += libc_vfprintf ( fd, libc_num_to_string ( va_arg ( argv, uint64_t ), 16, buffer, BUFF_SIZE ), argv );
 				break;
 			case 's':
-				written += vfprintf ( fd, va_arg ( argv, char * ), argv );
+				written += libc_vfprintf ( fd, va_arg ( argv, char * ), argv );
 				break;
 			case '%':
-				fputc ( '%', fd );
+				libc_fputc ( '%', fd );
 				written++;
 				break;
 			default:
@@ -219,8 +241,8 @@ static int64_t vfprintf ( uint64_t fd, const char * fmt, va_list argv )
 
 
 
-// fprintf and printf were copied from this website. vfprintf was implemented by us.
-// http://www.firmcodes.com/write-printf-function-c/
+// libc_fprintf and libc_printf were copied from this website. libc_vfprintf was implemented by us.
+// http://www.firmcodes.com/write-libc_printf-function-c/
 /**
  * @brief Writes formatted output to a specified file descriptor.
  *
@@ -229,12 +251,12 @@ static int64_t vfprintf ( uint64_t fd, const char * fmt, va_list argv )
  * @param ... Variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-int64_t fprintf ( uint64_t fd, const char * fmt, ... )
+int64_t libc_fprintf ( uint64_t fd, const char * fmt, ... )
 {
 	va_list argv;
 	va_start ( argv, fmt );
 
-	int64_t out = vfprintf ( fd, fmt, argv );
+	int64_t out = libc_vfprintf ( fd, fmt, argv );
 
 	va_end ( argv );
 	return out;
@@ -249,12 +271,12 @@ int64_t fprintf ( uint64_t fd, const char * fmt, ... )
  * @param ... Variable argument list.
  * @return int64_t Returns the number of characters written if the operation was successful, or -1 if an error occurred.
  */
-int64_t printf ( const char * fmt, ... )
+int64_t libc_printf ( const char * fmt, ... )
 {
 	va_list argv;
 	va_start ( argv, fmt );
 
-	int64_t out = vfprintf ( STDOUT, fmt, argv );
+	int64_t out = libc_vfprintf ( STDOUT, fmt, argv );
 
 	va_end ( argv );
 	return out;
@@ -273,22 +295,22 @@ int64_t printf ( const char * fmt, ... )
  * @param n The maximum number of characters to read. (the last character will be a null terminator)
  * @return char* Returns a pointer to the buffer.
  */
-char * gets ( char * buffer, int n )
+char * libc_gets ( char * buffer, int n )
 {
 	int c;
 	int i = 0;
 
-	while ( ( c = getChar() ) != '\n' ) {
+	while ( ( c = libc_get_char() ) != '\n' ) {
 		if ( c == '\b' && i > 0 ) {
-			put_char ( c );
+			libc_put_char ( c );
 			i--;
 		}
 		if ( c != '\b' && i < n - 1 ) {
-			put_char ( c );
+			libc_put_char ( c );
 			buffer[i++] = ( char ) c;
 		}
 	}
-	put_char ( '\n' );
+	libc_put_char ( '\n' );
 	buffer[i] = '\0';
 
 	return buffer;
@@ -306,7 +328,7 @@ char * gets ( char * buffer, int n )
  * @param str2 The second string to be compared.
  * @return int Returns an integer less than, equal to, or greater than zero if str1 is found, respectively, to be less than, to match, or be greater than str2.
  */
-int64_t strcmp ( const char * str1, const char * str2 )
+int64_t libc_strcmp ( const char * str1, const char * str2 )
 {
 	while ( *str1 && ( *str1 == *str2 ) ) {
 		str1++;
@@ -322,7 +344,7 @@ int64_t strcmp ( const char * str1, const char * str2 )
  *
  * @return int64_t Returns 0 if the mode was successfully set, or -1 if an error occurred.
  */
-int64_t enter_video_mode()
+int64_t libc_enter_video_mode()
 {
 	return sys_set_mode ( VIDEO_MODE );
 }
@@ -334,7 +356,7 @@ int64_t enter_video_mode()
  *
  * @return int64_t Returns 0 if the mode was successfully set, or -1 if an error occurred.
  */
-int64_t enter_text_mode()
+int64_t libc_enter_text_mode()
 {
 	return sys_set_mode ( TEXT_MODE );
 }
@@ -349,7 +371,7 @@ int64_t enter_text_mode()
  * @param color The color of the pixel.
  * @return int64_t Returns 0 if the pixel was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_pixel ( uint64_t x, uint64_t y, color color )
+int64_t libc_draw_pixel ( uint64_t x, uint64_t y, color color )
 {
 	return sys_put_pixel ( x, y, &color );
 }
@@ -366,7 +388,7 @@ int64_t draw_pixel ( uint64_t x, uint64_t y, color color )
  * @param color The color of the rectangle.
  * @return int64_t Returns 0 if the rectangle was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_rectangle ( uint64_t x, uint64_t y, uint64_t width, uint64_t height, color color )
+int64_t libc_draw_rectangle ( uint64_t x, uint64_t y, uint64_t width, uint64_t height, color color )
 {
 	return sys_put_rectangle ( x, y, width, height, &color );
 }
@@ -382,7 +404,7 @@ int64_t draw_rectangle ( uint64_t x, uint64_t y, uint64_t width, uint64_t height
  * @param fontSize The size of the font.
  * @return int64_t Returns 0 if the letter was successfully drawn, or -1 if an error occurred.
  */
-int64_t draw_letter ( uint64_t x, uint64_t y, char letter, color color, uint64_t font_size )
+int64_t libc_draw_letter ( uint64_t x, uint64_t y, char letter, color color, uint64_t font_size )
 {
 	return sys_draw_letter ( x, y, &letter, &color, font_size );
 	// int64_t sys_draw_letter(uint64_t x, uint64_t y, char * letter, color * color, uint64_t fontSize)
@@ -399,32 +421,32 @@ int64_t draw_letter ( uint64_t x, uint64_t y, char letter, color color, uint64_t
  *
  * @return void
  */
-void print_register_snapshot()
+void libc_print_register_snapshot()
 {
 	snapshot snap;
 	if ( sys_get_register_snapshot ( &snap ) == -1 ) {
-		fprintf ( STDERR, "No register snapshot available. Press F1 to take a snapshot.\n" );
+		libc_fprintf ( STDERR, "No register snapshot available. Press F1 to take a snapshot.\n" );
 		return;
 	}
 
-	puts ( "Register snapshot:\n" );
-	printf ( "rax: %x\n", snap.rax );
-	printf ( "rbx: %x\n", snap.rbx );
-	printf ( "rcx: %x\n", snap.rcx );
-	printf ( "rdx: %x\n", snap.rdx );
-	printf ( "rsi: %x\n", snap.rsi );
-	printf ( "rdi: %x\n", snap.rdi );
-	printf ( "rbp: %x\n", snap.rbp );
-	printf ( "rsp: %x\n", snap.rsp );
-	printf ( "r8:  %x\n", snap.r8 );
-	printf ( "r9:  %x\n", snap.r9 );
-	printf ( "r10: %x\n", snap.r10 );
-	printf ( "r11: %x\n", snap.r11 );
-	printf ( "r12: %x\n", snap.r12 );
-	printf ( "r13: %x\n", snap.r13 );
-	printf ( "r14: %x\n", snap.r14 );
-	printf ( "r15: %x\n", snap.r15 );
-	printf ( "rIP: %x\n", snap.rip );
+	libc_puts ( "Register snapshot:\n" );
+	libc_printf ( "rax: %x\n", snap.rax );
+	libc_printf ( "rbx: %x\n", snap.rbx );
+	libc_printf ( "rcx: %x\n", snap.rcx );
+	libc_printf ( "rdx: %x\n", snap.rdx );
+	libc_printf ( "rsi: %x\n", snap.rsi );
+	libc_printf ( "rdi: %x\n", snap.rdi );
+	libc_printf ( "rbp: %x\n", snap.rbp );
+	libc_printf ( "rsp: %x\n", snap.rsp );
+	libc_printf ( "r8:  %x\n", snap.r8 );
+	libc_printf ( "r9:  %x\n", snap.r9 );
+	libc_printf ( "r10: %x\n", snap.r10 );
+	libc_printf ( "r11: %x\n", snap.r11 );
+	libc_printf ( "r12: %x\n", snap.r12 );
+	libc_printf ( "r13: %x\n", snap.r13 );
+	libc_printf ( "r14: %x\n", snap.r14 );
+	libc_printf ( "r15: %x\n", snap.r15 );
+	libc_printf ( "rIP: %x\n", snap.rip );
 }
 
 //----------------------------- TP2 ---------------------------------- //
@@ -440,44 +462,44 @@ void * memset ( void * destination, int32_t c, uint64_t length )
 	return destination;
 }
 
-void * my_malloc ( uint64_t size )
+void * libc_malloc ( uint64_t size )
 {
 	return sys_malloc ( size );
 }
 
-void my_free ( void * p )
+void libc_free ( void * p )
 {
 	return sys_free ( p );
 }
 
-int64_t my_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc)
+int64_t libc_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc)
 {
 	return sys_create_process(rip, priority, argv, argc);
 }
 
-int64_t my_get_pid()
+int64_t libc_get_pid()
 {
 	return sys_get_pid();
 }
 
-int64_t my_kill ( int64_t pid )
+int64_t libc_kill ( int64_t pid )
 {
 	return sys_kill(pid);
 }
-int64_t my_block ( int64_t pid )
+int64_t libc_block ( int64_t pid )
 {
 	return sys_block(pid);
 }
-int64_t my_nice(int64_t pid, uint64_t newPrio )
+int64_t libc_nice(int64_t pid, uint64_t newPrio )
 {
 	return sys_nice(pid, newPrio);
 }
 
-int64_t my_yield()
+int64_t libc_yield()
 {
 	return sys_yield();
 }
-int64_t my_unblock ( int64_t pid )
+int64_t libc_unblock ( int64_t pid )
 {
 	return sys_unblock(pid);
 }
@@ -488,12 +510,12 @@ int64_t my_unblock ( int64_t pid )
 void ps(){
 	(process_info_list *) process_list = sys_ps();
 	if(process_list == NULL){
-		printf("Error while getting process list\n");
+		libc_printf("Error while getting process list\n");
 		return;
 	}
-	printf("PID\tPPID\tPriority\tBase Pointer\tStack Pointer\tStatus\n");
+	libc_printf("PID\tPPID\tPriority\tBase Pointer\tStack Pointer\tStatus\n");
 	for(int i = 0; i < process_list->amount_of_processes; i++){
-		printf("%d\t%d\t%d\t%d\t%d\t%d\n", process_list->processes[i].pid, process_list->processes[i].ppid, process_list->processes[i].priority, process_list->processes[i].base_pointer, process_list->processes[i].stack_pointer, process_list->processes[i].status);
+		libc_printf("%d\t%d\t%d\t%d\t%d\t%d\n", process_list->processes[i].pid, process_list->processes[i].ppid, process_list->processes[i].priority, process_list->processes[i].base_pointer, process_list->processes[i].stack_pointer, process_list->processes[i].status);
 	}
 }
 */

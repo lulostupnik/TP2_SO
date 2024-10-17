@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <process.h>
-#include <stack_registers.h>
 
 
 

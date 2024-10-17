@@ -4,6 +4,6 @@
 #include <time.h>
 #include <lib.h>
 
-void beep ( uint32_t freq, int time );
+void libc_beep ( uint32_t freq, int time );
 
 #endif // SPEAKER_H

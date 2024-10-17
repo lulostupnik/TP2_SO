@@ -8,16 +8,16 @@
 static uint32_t m_z = 362436069;
 static uint32_t m_w = 521288629;
 
-uint32_t GetUint()
+uint32_t get_u_int()
 {
 	m_z = 36969 * ( m_z & 65535 ) + ( m_z >> 16 );
 	m_w = 18000 * ( m_w & 65535 ) + ( m_w >> 16 );
 	return ( m_z << 16 ) + m_w;
 }
 
-uint32_t GetUniform ( uint32_t max )
+uint32_t get_uniform ( uint32_t max )
 {
-	uint32_t u = GetUint();
+	uint32_t u = get_u_int();
 	return ( u + 1.0 ) * 2.328306435454494e-10 * max;
 }
 
@@ -76,7 +76,7 @@ void endless_loop()
 void endless_loop_print_main(char ** argv, uint64_t argc)
 {
 	if (argv == NULL || argc != 1) {
-		fprintf ( STDERR, "Wrong parameters\n" );
+		libc_fprintf ( STDERR, "Wrong parameters\n" );
 		return;
 	}
 
@@ -86,9 +86,9 @@ void endless_loop_print_main(char ** argv, uint64_t argc)
 
 void endless_loop_print(uint64_t wait)
 {
-	int64_t pid = my_get_pid();
+	int64_t pid = libc_get_pid();
 	while (1) {
-		printf("%d ", pid);
+		libc_printf("%d ", pid);
 		bussy_wait(wait);
 	}
 }

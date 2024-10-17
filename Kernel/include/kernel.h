@@ -2,8 +2,6 @@
 #define KERNEL_H
 
 
-
-
 #include <stdint.h>
 #include <string.h>
 #include <lib.h>

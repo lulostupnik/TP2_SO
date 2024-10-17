@@ -1,12 +1,9 @@
 // this is a personal academic project. dear pvs-studio, please check it.
 // pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
 
-#include <syscalls.h>
+#include <syscallsKernel.h>
 
 
-// typedef struct {
-// 	uint64_t r15, r14, r13, r12, r11, r10, r9, r8, rsi, rdi, rbp, rdx, rcx, rbx, rax;
-// } registers;
 
 extern uint64_t regs_shot[17];
 extern uint64_t regs_shot_available;
@@ -115,7 +112,7 @@ int64_t sys_set_font_size ( uint64_t size )
 
 int64_t sys_beep ( uint32_t freq, uint32_t time )
 {
-	beep ( freq, time );
+	libc_beep ( freq, time );
 	return 0;
 }
 
