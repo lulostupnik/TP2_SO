@@ -36,7 +36,7 @@ static void nosound()
 }
 
 //make a libc_beep
-void libc_beep ( uint32_t freq, int time )
+void beep ( uint32_t freq, int time )
 {
 	play_sound ( freq );
 	nano_sleep ( time );

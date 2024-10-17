@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <font.h>
 #include <driversInformation.h>
-#include <sharedDefs.h>
+#include <shared_defs.h>
 #ifndef VIDEODRIVER_H
 #define VIDEODRIVER_H
 

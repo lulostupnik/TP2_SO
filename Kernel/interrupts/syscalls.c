@@ -112,7 +112,7 @@ int64_t sys_set_font_size ( uint64_t size )
 
 int64_t sys_beep ( uint32_t freq, uint32_t time )
 {
-	libc_beep ( freq, time );
+	beep ( freq, time );
 	return 0;
 }
 

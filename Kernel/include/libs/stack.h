@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <process.h>
-
+#include <shared_defs.h>
 
 
 typedef struct stack {
