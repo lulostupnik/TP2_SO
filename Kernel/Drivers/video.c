@@ -208,7 +208,7 @@ int64_t vdriver_video_draw_pixel ( uint64_t x, uint64_t y, color color )
 		return -1;
 	}
 
-	uint8_t * framebuffer = ( uint8_t * ) vbe_mode_info->framebuffer;
+	uint8_t * framebuffer = ( uint8_t * ) ( uintptr_t ) vbe_mode_info->framebuffer;
 	uint64_t offset = ( x * ( ( vbe_mode_info->bpp ) / 8 ) ) + ( y * vbe_mode_info->pitch );
 	framebuffer[offset]     =  color.b;
 	framebuffer[offset + 1]   =  color.g;
