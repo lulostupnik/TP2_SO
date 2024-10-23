@@ -29,7 +29,7 @@ typedef struct module
 	uint8_t is_built_in;
 } module;
 
-typedef enum { LOW = 0, MEDIUM, HIGH } priority_t;
+
 
 
 

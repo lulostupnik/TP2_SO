@@ -1,9 +1,8 @@
 #ifndef _PCB_H
 #define _PCB_H
 
+#include <shared_defs.h>
 
-
-typedef enum { LOW = 0, MEDIUM, HIGH } priority_t;
 
 typedef struct PCB {
 	int64_t pid, ppid;

@@ -1,12 +1,16 @@
 include ../Makefile.inc
 
 MODULE=0000-shellCodeModule
-SOURCES=$(wildcard */*.c)
+SOURCES=$(wildcard */*.c) $(wildcard ../../SharedLibs/libs/*.c)
+
 SOURCES_ASM=$(wildcard */*.asm)
 OBJECTS=$(SOURCES:.c=.o)
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 LOADERSRC=_loader.c
 LOADEROBJECT=$(LOADERSRC:.c=.o)
+
+INCLUDE_DIRS=$(shell find include -type d) $(shell find ../../SharedLibs/include -type d)
+INCLUDE_FLAGS=$(addprefix -I,$(INCLUDE_DIRS))
 
 all: $(MODULE)
 
@@ -15,7 +19,7 @@ $(MODULE):$(OBJECTS) $(OBJECTS_ASM) $(LOADEROBJECT)
 	$(LD) $(LDFLAGS) -T shellCodeModule.ld -z noexecstack --oformat=elf64-x86-64 -o ../$(MODULE).elf $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM)
 
 %.o: %.c
-	$(GCC) $(GCCFLAGS) -I./include -c $< -o $@
+	$(GCC) $(GCCFLAGS) $(INCLUDE_FLAGS) -c $< -o $@
 
 %.o : %.asm
 	$(ASM) $(ASMFLAGS) $< -o $@

@@ -8,7 +8,9 @@ SOURCES_INTERRUPTS=$(wildcard interrupts/*.c)
 SOURCES_LIBS=$(wildcard libs/*.c) 
 SOURCES_TESTS=$(wildcard tests/*.c)  
 SOURCES_ADTS=$(wildcard ADTs/*.c)
+SOURCES_SHARED=$(wildcard ../SharedLibs/libs/*.c)
 OBJECTS=$(SOURCES:.c=.o)
+OBJECTS_SHARED=$(SOURCES_SHARED:.c=.o)
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 OBJECTS_DRIVERS=$(SOURCES_DRIVERS:.c=.o)
 OBJECTS_INTERRUPTS=$(SOURCES_INTERRUPTS:.c=.o)
@@ -20,7 +22,7 @@ LOADERSRC=loader.asm
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
-INCLUDE_DIRS=$(shell find include -type d)
+INCLUDE_DIRS=$(shell find include -type d) $(shell find ../SharedLibs/include -type d)
 INCLUDE_FLAGS=$(addprefix -I,$(INCLUDE_DIRS))
 
 all: $(KERNEL)

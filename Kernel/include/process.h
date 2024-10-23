@@ -9,11 +9,6 @@
 #include <PCB.h>
 
 
-#define READY 1
-#define BLOCKED 2
-#define FREE 0  
-#define ZOMBIE 3
-
 #define STACK_SIZE 0x0FFF
 #define PCB_AMOUNT 100
 

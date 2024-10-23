@@ -25,7 +25,7 @@ static module modules[] = {
 {"getregs", getRegs, BUILT_IN},
 {"dividebyzero", div0, BUILT_IN},
 {"opcode", op_code, BUILT_IN},
-{"clear", (void (*)(char **, uint64_t)) clear_screen, BUILT_IN},
+{"clear", (void (*)(char **, uint64_t)) libc_clear_screen, BUILT_IN},
 {"ipod", ipod_menu, BUILT_IN},
 {"testmm", (void (*)(char **, uint64_t)) test_mm, !BUILT_IN},
 {"testprio", test_prio, !BUILT_IN},
@@ -37,9 +37,9 @@ static module modules[] = {
 int main()
 {
 
-	setFontSize ( font_size );
+	libc_set_font_size ( font_size );
 
-	puts ( WELCOME );
+	libc_puts ( WELCOME );
 	help();
 
 
@@ -52,9 +52,9 @@ int main()
 void free_args(char ** args, uint64_t argc)
 {
 	for (int i = 0; i < argc; i++) {
-		my_free(args[i]);
+		libc_free(args[i]);
 	}
-	my_free(args);
+	libc_free(args);
 	return;
 }
 
@@ -68,7 +68,7 @@ void call_function_process(module m, char ** args, uint64_t argc)
 
 	int64_t ans = sys_create_process((main_function)m.function, LOW, args, argc);
 	if (ans < 0) {
-		fprintf ( STDERR, "Could not create process\n" );
+		libc_fprintf ( STDERR, "Could not create process\n" );
 	}
 
 	free_args(args, argc);
@@ -77,7 +77,7 @@ void call_function_process(module m, char ** args, uint64_t argc)
 
 char ** command_parse(char shellBuffer[], uint64_t * argc)
 {
-	char ** args = my_malloc(MAX_ARGS * sizeof(char *));
+	char ** args = libc_malloc(MAX_ARGS * sizeof(char *));
 	if (args == NULL) {
 		*argc = -1;
 		return NULL;
@@ -90,13 +90,13 @@ char ** command_parse(char shellBuffer[], uint64_t * argc)
 			continue;
 		}
 
-		args[args_count] = my_malloc(MAX_ARGS_SIZE * sizeof(char));
+		args[args_count] = libc_malloc(MAX_ARGS_SIZE * sizeof(char));
 
 		if (args[args_count] == NULL) {
 			for (int n = 0; n < args_count; n++) {
-				my_free(args[n]);
+				libc_free(args[n]);
 			}
-			my_free(args);
+			libc_free(args);
 			*argc = -1;
 			return NULL;
 		}
@@ -113,7 +113,7 @@ char ** command_parse(char shellBuffer[], uint64_t * argc)
 	*argc = args_count;
 
 	if (args_count == 0) {
-		my_free(args);
+		libc_free(args);
 		args = NULL;
 	}
 
@@ -123,10 +123,10 @@ char ** command_parse(char shellBuffer[], uint64_t * argc)
 
 void interpret()
 {
-	puts ( PROMPT );
+	libc_puts ( PROMPT );
 	char shellBuffer[MAX_COMMAND_SIZE];
-	gets ( shellBuffer, MAX_COMMAND_SIZE );
-	if ( strlen ( shellBuffer ) == 0 ) {
+	libc_gets ( shellBuffer, MAX_COMMAND_SIZE );
+	if ( libc_strlen ( shellBuffer ) == 0 ) {
 		return;
 	}
 	char ** args;
@@ -134,17 +134,17 @@ void interpret()
 	args = command_parse(shellBuffer, &argc);
 
 	if (argc == -1) {
-		fprintf ( STDERR, "Not enough memory to create process\n" );
+		libc_fprintf ( STDERR, "Not enough memory to create process\n" );
 	}
 
 	for ( int i = 0; i < MAX_MODULES && ((args != NULL) || (argc != 0)); i++ ) {
-		if ( strcmp (args[0], modules[i].name ) == 0 ) {
+		if ( libc_strcmp (args[0], modules[i].name ) == 0 ) {
 			call_function_process(modules[i], args, argc);
 			return;
 		}
 	}
 
-	fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
+	libc_fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
 
 }
 
@@ -155,12 +155,12 @@ static void kill_pid(char ** argv, uint64_t argc)
 	int64_t pid;
 
 	if (argc != 2 || argv == NULL || ((pid = satoi(argv[1])) < 0)) {
-		fprintf(STDERR, "Usage: killpid <pid>\n");
+		libc_fprintf(STDERR, "Usage: killpid <pid>\n");
 		return;
 	}
 
-	if (my_kill(pid) < 0) {
-		fprintf(STDERR, "Could not kill process %d\n", pid);
+	if (libc_kill(pid) < 0) {
+		libc_fprintf(STDERR, "Could not kill process %d\n", pid);
 	}
 
 }
@@ -168,21 +168,21 @@ static void kill_pid(char ** argv, uint64_t argc)
 static void help(char ** args, uint64_t argc)
 {
 
-	puts ( "\nComandos disponibles:\n\n" );
-	puts ( "- help: Muestra todos los modulos disponibles del sistema operativo.\n" );
-	puts ( "- time: Muestra la hora actual del sistema.\n" );
-	puts ( "- eliminator: Inicia el juego Eliminator, un clasico.\n" );
-	puts ( "- zoomin: Agranda los caracteres en pantalla.\n" );
-	puts ( "- zoomout: Achica  la pantalla.\n" );
-	puts ( "- getregs: Muestra el estado actual de los registros.\n" );
-	puts ( "- dividebyzero: Genera una excepcion de division por cero.\n" );
-	puts ( "- opcode: Genera una excepcion de codigo de operacion invalido.\n" );
-	puts ( "- clear: Limpia la pantalla.\n" );
-	puts ( "- ipod: Inicia el reproductor de musica.\n" );
-	puts ( "- testprio: Testea las prioridades del scheduler.\n" );
-	puts ( "- killpid <pid>: Mata al pid numero pid.\n" );
-	puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
-	puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n\n" );
+	libc_puts ( "\nComandos disponibles:\n\n" );
+	libc_puts ( "- help: Muestra todos los modulos disponibles del sistema operativo.\n" );
+	libc_puts ( "- time: Muestra la hora actual del sistema.\n" );
+	libc_puts ( "- eliminator: Inicia el juego Eliminator, un clasico.\n" );
+	libc_puts ( "- zoomin: Agranda los caracteres en pantalla.\n" );
+	libc_puts ( "- zoomout: Achica  la pantalla.\n" );
+	libc_puts ( "- getregs: Muestra el estado actual de los registros.\n" );
+	libc_puts ( "- dividebyzero: Genera una excepcion de division por cero.\n" );
+	libc_puts ( "- opcode: Genera una excepcion de codigo de operacion invalido.\n" );
+	libc_puts ( "- clear: Limpia la pantalla.\n" );
+	libc_puts ( "- ipod: Inicia el reproductor de musica.\n" );
+	libc_puts ( "- testprio: Testea las prioridades del scheduler.\n" );
+	libc_puts ( "- killpid <pid>: Mata al pid numero pid.\n" );
+	libc_puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
+	libc_puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n\n" );
 
 }
 
@@ -192,9 +192,9 @@ void zoomIn()
 {
 	if ( font_size < MAX_FONT_SIZE ) {
 		font_size++;
-		setFontSize ( font_size );
+		libc_set_font_size ( font_size );
 	} else {
-		puts ( "Maximum font size reached!\n" );
+		libc_puts ( "Maximum font size reached!\n" );
 	}
 	return;
 }
@@ -203,9 +203,9 @@ void zoomOut()
 {
 	if ( font_size > MIN_FONT_SIZE ) {
 		font_size--;
-		setFontSize ( font_size );
+		libc_set_font_size ( font_size );
 	} else {
-		puts ( "Minimum font size reached!\n" );
+		libc_puts ( "Minimum font size reached!\n" );
 	}
 	return;
 }
@@ -216,9 +216,9 @@ void showcurrentTime()
 	time_struct time;
 	sys_get_time ( &time );
 	toUtcMinus3 ( &time );
-	printf ( "%d/%d/%d [d/m/y]\n", time.day, time.month, time.year ); //Obs: En el PVS aparece como warning porque no implementamos %u (uint8_t)
+	libc_printf ( "%d/%d/%d [d/m/y]\n", time.day, time.month, time.year ); //Obs: En el PVS aparece como warning porque no implementamos %u (uint8_t)
 	int64_t h = time.hour;
-	printf ( "%d:%d:%d [hour/min/sec] (Argentina)\n", h, time.minutes, time.seconds ); // la hora es -3 para que este en tiempo argentino.
+	libc_printf ( "%d:%d:%d [hour/min/sec] (Argentina)\n", h, time.minutes, time.seconds ); // la hora es -3 para que este en tiempo argentino.
 
 	return;
 }
@@ -255,7 +255,7 @@ static void toUtcMinus3 ( time_struct * time )
 
 void getRegs()
 {
-	print_register_snapshot();
+	libc_print_register_snapshot();
 	return;
 }
 

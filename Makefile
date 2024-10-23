@@ -1,4 +1,3 @@
-
 all:  bootloader kernel userland image
 
 bootloader:

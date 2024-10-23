@@ -1,13 +1,11 @@
 #include <stdint.h>
 #include <font.h>
 #include <driversInformation.h>
+#include <shared_defs.h>
 #ifndef VIDEODRIVER_H
 #define VIDEODRIVER_H
 
 
-
-#define TEXT_MODE 0
-#define VIDEO_MODE 1
 
 
 /**
@@ -55,25 +53,17 @@ struct vbe_mode_info_structure {
 /**
  * Structure representing a color
  */
-typedef struct {
-	uint8_t r;
-	uint8_t g;
-	uint8_t b;
-} color;
 
 
 /**
  * Structure representing the dimensions of the screen.
  */
-typedef struct {
-	int64_t width;
-	int64_t height;
-} screen_information;
+// typedef struct {
+// 	int64_t width;
+// 	int64_t height;
+// } screen_information;
 
 
-typedef enum {
-	NOT_VALID_ASCII, NOT_VALID_FONT_SIZE
-} t_error;
 
 
 

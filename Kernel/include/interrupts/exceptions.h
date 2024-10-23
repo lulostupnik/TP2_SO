@@ -5,7 +5,7 @@
 
 #include <video.h>
 #include <idtLoader.h>
-#include <syscalls.h>
+#include <syscallsKernel.h>
 #include <interrupts.h>
 
 void exception_dispatcher ( uint64_t exception );

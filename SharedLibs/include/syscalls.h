@@ -2,53 +2,14 @@
 #ifndef _SYSCALLS_H
 #define _SYSCALLS_H
 
-#include <video.h>
 #include <stdint.h>
-#include <registerSaver.h>
-#include <stddef.h>
-#include <keyboard.h>
-#include <speaker.h>
-#include <time.h>
-#include <rtc.h>
-#include <process.h>
-#include <scheduler.h>
-#include <memory_management.h>
-#include <stack_registers.h>
-#include <process.h>
-
-#define NOT_VALID_SYS_ID -2
+#include <shared_defs.h>
+#include <driversInformation.h>
+//#include <registerSaver.h>
 
 
-typedef struct {
-	uint64_t rax;
-	uint64_t rbx;
-	uint64_t rcx;
-	uint64_t rdx;
-	uint64_t rsi;
-	uint64_t rdi;
-	uint64_t rbp;
-	uint64_t rsp;
-	uint64_t r8;
-	uint64_t r9;
-	uint64_t r10;
-	uint64_t r11;
-	uint64_t r12;
-	uint64_t r13;
-	uint64_t r14;
-	uint64_t r15;
-	uint64_t rip;
-} snapshot;
+#define NOT_VALID_SYS_ID -1
 
-
-
-typedef struct time {
-	uint8_t year;
-	uint8_t month;
-	uint8_t day;
-	uint8_t hour;
-	uint8_t minutes;
-	uint8_t seconds;
-} time_struct;
 
 
 /**
@@ -97,13 +58,13 @@ int64_t sys_get_register_snapshot ( snapshot * snapshot );
 
 
 /**
- * @brief Generates a beep sound using the system speaker.
+ * @brief Generates a libc_beep sound using the system speaker.
  *
- * This system call interfaces with the system's hardware to generate a beep sound.
- * The frequency and duration of the beep are specified by the parameters.
+ * This system call interfaces with the system's hardware to generate a libc_beep sound.
+ * The frequency and duration of the libc_beep are specified by the parameters.
  *
- * @param frequency The frequency of the beep in Hertz. This value must be between 20 and 20000.
- * @param duration The duration of the beep in milliseconds.
+ * @param frequency The frequency of the libc_beep in Hertz. This value must be between 20 and 20000.
+ * @param duration The duration of the libc_beep in milliseconds.
  * @return int64_t Returns 0 on success, or -1 if an error occurred (for example, if the frequency or duration is out of range).
  */
 int64_t sys_beep ( uint32_t frequency, uint32_t duration );
@@ -237,15 +198,13 @@ int64_t sys_nice ( int64_t pid, uint64_t newPrio );
 int64_t sys_kill ( int64_t pid );
 int64_t sys_block ( int64_t pid );
 int64_t sys_unblock ( int64_t pid );
-int64_t sys_sem_open ( char * sem_id, uint64_t initialValue );
-int64_t sys_sem_wait ( char * sem_id );
-int64_t sys_sem_post ( char * sem_id );
-int64_t sys_sem_close ( char * sem_id );
 int64_t sys_yield();
-int64_t sys_wait ( int64_t pid );
 
-
-
+//int64_t sys_sem_open ( char *sem_id, uint64_t initialValue );
+//int64_t sys_sem_wait ( char *sem_id );
+//int64_t sys_sem_post ( char *sem_id );
+//int64_t sys_sem_close ( char *sem_id );
+//int64_t sys_wait ( int64_t pid );
 
 #endif
 

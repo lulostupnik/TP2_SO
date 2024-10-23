@@ -22,18 +22,18 @@ static void initialize_map();
 
 void welcome()
 {
-	clear_screen();
+	libc_clear_screen();
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "Bienvenido al Eliminator!", 3 );
 	play_arcade_song();
-	clear_screen();
+	libc_clear_screen();
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 100, "Elija su Game Mode: (Presione la tecla correspondiente)", 2 );
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50, "s. Single Player", 2 );
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "m. Multiplayer", 2 );
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50, "q. Exit", 2 );
 
 	char c;
-	while ( ( ( c = getChar() ) != 'q' ) && ( c != 'm' ) && ( c != 's' ) ) {}
-	clear_screen();
+	while ( ( ( c = libc_get_char() ) != 'q' ) && ( c != 'm' ) && ( c != 's' ) ) {}
+	libc_clear_screen();
 	switch ( c ) {
 		case 'q':
 			break;
@@ -49,16 +49,16 @@ void welcome()
 
 static void retryMenuSingleplayer()
 {
-	clear_screen();
+	libc_clear_screen();
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 300, "Perdiste! Mejor suerte la proxima", 2 );
 	sys_nano_sleep ( 18 );
-	clear_screen();
+	libc_clear_screen();
 	print_centered_string ( SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, "r. Retry", 2 );
 	print_centered_string ( SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2, "m. Main Menu", 2 );
 
 	char c;
-	while ( ( ( c = getChar() ) != 'r' ) && ( c != 'm' ) ) {}
-	clear_screen();
+	while ( ( ( c = libc_get_char() ) != 'r' ) && ( c != 'm' ) ) {}
+	libc_clear_screen();
 	switch ( c ) {
 		case 'r':
 			singlePlayer();
@@ -73,7 +73,7 @@ static void singlePlayer()
 {
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "Utilice W-A-S-D para moverse", 2 );
 	sys_nano_sleep ( 50 );
-	clear_screen();
+	libc_clear_screen();
 	initialize_map();
 	uint64_t p1x = PLAYER_1_INIT_X;
 	uint64_t p1y = PLAYER_1_INIT_Y - 10;
@@ -104,9 +104,11 @@ static void singlePlayer()
 
 }
 
+#define BUFF_SIZE_STR 64
 static void retryMenuMultiplayer ( int whoWon, int scores[] )
 {
-	clear_screen();
+	char buffer[BUFF_SIZE_STR];
+	libc_clear_screen();
 	if ( whoWon == 1 )
 		print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "Ganador: Jugador 1", 3 );
 	else if ( whoWon == 2 )
@@ -115,18 +117,18 @@ static void retryMenuMultiplayer ( int whoWon, int scores[] )
 		print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, "Empate", 3 );
 
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50, "Puntaje", 2 );
-	print_centered_string ( SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 100, numToString ( scores[0], 10 ), 2 );
+	print_centered_string ( SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2 + 100, libc_num_to_string ( scores[0], 10, buffer, BUFF_SIZE_STR ), 2 );
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 100, " VS ", 2 );
-	print_centered_string ( SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 + 100, numToString ( scores[1], 10 ), 2 );
+	print_centered_string ( SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2 + 100, libc_num_to_string ( scores[1], 10, buffer, BUFF_SIZE_STR ), 2 );
 
 	sys_nano_sleep ( 50 );
-	clear_screen();
+	libc_clear_screen();
 	print_centered_string ( SCREEN_WIDTH / 2 - 100, SCREEN_HEIGHT / 2, "r. Retry", 2 );
 	print_centered_string ( SCREEN_WIDTH / 2 + 100, SCREEN_HEIGHT / 2, "m. Main Menu", 2 );
 
 	char c;
-	while ( ( ( c = getChar() ) != 'r' ) && ( c != 'm' ) ) {}
-	clear_screen();
+	while ( ( ( c = libc_get_char() ) != 'r' ) && ( c != 'm' ) ) {}
+	libc_clear_screen();
 	switch ( c ) {
 		case 'r':
 			multiPlayer();
@@ -142,7 +144,7 @@ static void multiPlayer()
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 - 50, "Jugador 1: Utilice W-A-S-D para moverse", 2 );
 	print_centered_string ( SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 50, "Jugador 2: Utilice I-J-K-L para moverse", 2 );
 	sys_nano_sleep ( 50 );
-	clear_screen();
+	libc_clear_screen();
 	static int scores[2] = {0, 0}; //No Funciona Si Jugas mas de 2^64 Veces jaja :D
 	initialize_map();
 	uint64_t p1x = PLAYER_1_INIT_X;
@@ -281,20 +283,20 @@ static void get_player_2_direction ( uint16_t c, int64_t * direction )
 
 void eliminator()
 {
-	enter_video_mode();
+	libc_enter_video_mode();
 	welcome();
-	clear_screen();
+	libc_clear_screen();
 	print_centered_string ( 512, 384, "Saliendoo", 3 );
-	beep ( 100, 5 );
-	beep ( 50, 5 );
-	enter_text_mode();
+	libc_beep ( 100, 5 );
+	libc_beep ( 50, 5 );
+	libc_enter_text_mode();
 	return;
 }
 
 
 static void print_centered_string ( uint64_t x, uint64_t y, const char * str, uint64_t font_size )
 {
-	uint64_t len = strlen ( str );
+	uint64_t len = libc_strlen ( str );
 	uint64_t start_x = x - ( len / 2 ) * CHARACTER_WIDTH * font_size;
 	uint64_t start_y = y;
 	print_string ( start_x, start_y, str, font_size );
@@ -304,7 +306,7 @@ static void print_centered_string ( uint64_t x, uint64_t y, const char * str, ui
 static void print_string ( uint64_t x, uint64_t y, const char * str, uint64_t font_size )
 {
 	for ( uint64_t i = 0; str[i] != '\0'; i++ ) {
-		draw_letter ( x + i * CHARACTER_WIDTH * font_size, y, str[i], ( color ) {
+		libc_draw_letter ( x + i * CHARACTER_WIDTH * font_size, y, str[i], ( color ) {
 			0, 255, 0
 		}, font_size );
 	}
@@ -317,7 +319,7 @@ static void fill_position ( uint64_t x, uint64_t y, color color )
 	if ( x >= MAP_WIDTH || y >= MAP_HEIGHT ) {
 		return;
 	}
-	draw_rectangle ( x * PIXEL, y * PIXEL, PIXEL, PIXEL, color );
+	libc_draw_rectangle ( x * PIXEL, y * PIXEL, PIXEL, PIXEL, color );
 	map[y][x] = 1;
 	return;
 }
@@ -349,9 +351,9 @@ static void play_arcade_song()
 	int eighth_note = quarter_note / 3;
 
 	// Play the song.
-	beep ( C4, eighth_note );
-	beep ( E4, eighth_note );
-	beep ( G4, eighth_note );
-	beep ( C5, eighth_note );
+	libc_beep ( C4, eighth_note );
+	libc_beep ( E4, eighth_note );
+	libc_beep ( G4, eighth_note );
+	libc_beep ( C5, eighth_note );
 }
 

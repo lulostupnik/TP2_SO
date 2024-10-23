@@ -3,9 +3,9 @@
 
 #include <test_proc.h>
 
-enum State { RUNNING,
-             BLOCKED,
-             KILLED
+enum State { STATE_RUNNING,
+             STATE_BLOCKED,
+             STATE_KILLED
            };
 
 typedef struct p_rq {
@@ -21,24 +21,24 @@ int64_t test_processes( char * argv[], uint64_t argc)
 	int64_t max_processes;
 
 	if (argc != 2 || (max_processes = satoi(argv[1])) < 0) {
-		fprintf(STDERR, "Usage: test_processes <max_processes>\n");
+		libc_fprintf(STDERR, "Usage: test_processes <max_processes>\n");
 		return -1;
 	}
 
 	if (max_processes > 20 || max_processes == 0) {
-		fprintf(STDERR, "max_processes must be between 1 and 20\n");
+		libc_fprintf(STDERR, "max_processes must be between 1 and 20\n");
 	}
 
 	p_rq p_rqs[max_processes];
 
 	while (1) {
 		for (rq = 0; rq < max_processes; rq++) {
-			p_rqs[rq].pid = my_create_process((main_function)endless_loop, 0, NULL, 0);
+			p_rqs[rq].pid = libc_create_process((main_function)endless_loop, 0, NULL, 0);
 			if (p_rqs[rq].pid < 0) {
-				fprintf(STDERR, "test_processes: ERROR creating process\n");
+				libc_fprintf(STDERR, "test_processes: ERROR creating process\n");
 				return -1;
 			} else {
-				p_rqs[rq].state = RUNNING;
+				p_rqs[rq].state = STATE_RUNNING;
 				alive++;
 			}
 		}
@@ -46,40 +46,40 @@ int64_t test_processes( char * argv[], uint64_t argc)
 		while (alive > 0) {
 
 			for (rq = 0; rq < max_processes; rq++) {
-				action = GetUniform(100) % 2;
+				action = get_uniform(100) % 2;
 
 				switch (action) {
 					case 0:
-						if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
-							if (my_kill(p_rqs[rq].pid) == -1) {
-								fprintf(STDERR, "test_processes: ERROR killing process\n");
+						if (p_rqs[rq].state == STATE_RUNNING || p_rqs[rq].state == STATE_BLOCKED) {
+							if (libc_kill(p_rqs[rq].pid) == -1) {
+								libc_fprintf(STDERR, "test_processes: ERROR killing process\n");
 								return -1;
 							}
-							p_rqs[rq].state = KILLED;
+							p_rqs[rq].state = STATE_KILLED;
 							alive--;
 
 						}
 						break;
 
 					case 1:
-						if (p_rqs[rq].state == RUNNING) {
-							if (my_block(p_rqs[rq].pid) == -1) {
-								fprintf(STDERR, "test_processes: ERROR blocking process\n");
+						if (p_rqs[rq].state == STATE_RUNNING) {
+							if (libc_block(p_rqs[rq].pid) == -1) {
+								libc_fprintf(STDERR, "test_processes: ERROR blocking process\n");
 								return -1;
 							}
-							p_rqs[rq].state = BLOCKED;
+							p_rqs[rq].state = STATE_BLOCKED;
 						}
 						break;
 				}
 			}
 
 			for (rq = 0; rq < max_processes; rq++)
-				if (p_rqs[rq].state == BLOCKED && GetUniform(100) % 2) {
-					if (my_unblock(p_rqs[rq].pid) == -1) {
-						fprintf(STDERR, "test_processes: ERROR unblocking process\n");
+				if (p_rqs[rq].state == STATE_BLOCKED && get_uniform(100) % 2) {
+					if (libc_unblock(p_rqs[rq].pid) == -1) {
+						libc_fprintf(STDERR, "test_processes: ERROR unblocking process\n");
 						return -1;
 					}
-					p_rqs[rq].state = RUNNING;
+					p_rqs[rq].state = STATE_RUNNING;
 				}
 		}
 	}

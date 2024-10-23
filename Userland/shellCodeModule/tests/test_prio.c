@@ -12,42 +12,42 @@ void test_prio()
 	char * argv[] = {str};
 	uint64_t i;
 
-	printf("\n");
+	libc_printf("\n");
 	for (i = 0; i < TOTAL_PROCESSES; i++) {
-		pids[i] = my_create_process((main_function)endless_loop_print_main, 0, argv, 1);
+		pids[i] = libc_create_process((main_function)endless_loop_print_main, 0, argv, 1);
 		if (pids[i] < 0) {
-			fprintf ( STDERR, "Failed to create process number %d\n", i + 1 );
+			libc_fprintf ( STDERR, "Failed to create process number %d\n", i + 1 );
 		}
 	}
 	bussy_wait(WAIT);
-	printf("\nCHANGING PRIORITIES ...\n");
+	libc_printf("\nCHANGING PRIORITIES ...\n");
 
 	for (i = 0; i < TOTAL_PROCESSES; i++) {
-		my_nice(pids[i], prio[i]);
-		printf("Pid %d with priority %s\n", pids[i], prio[i] == 0 ? "LOW" : (prio[i] == 1 ? "MEDIUM" : "HIGH"));
+		libc_nice(pids[i], prio[i]);
+		libc_printf("Pid %d with priority %s\n", pids[i], prio[i] == 0 ? "LOW" : (prio[i] == 1 ? "MEDIUM" : "HIGH"));
 	}
 	bussy_wait(WAIT);
-	printf("\nBLOCKING...\n");
+	libc_printf("\nBLOCKING...\n");
 
 	for (i = 0; i < TOTAL_PROCESSES; i++) {
-		my_block(pids[i]);
+		libc_block(pids[i]);
 	}
 
-	printf("CHANGING PRIORITIES WHILE BLOCKED (TO MEDIUM)...\n");
+	libc_printf("CHANGING PRIORITIES WHILE BLOCKED (TO MEDIUM)...\n");
 
 	for (i = 0; i < TOTAL_PROCESSES; i++) {
-		my_nice(pids[i], MEDIUM);
+		libc_nice(pids[i], MEDIUM);
 	}
-	printf("UNBLOCKING...\n");
+	libc_printf("UNBLOCKING...\n");
 
 	for (i = 0; i < TOTAL_PROCESSES; i++) {
-		my_unblock(pids[i]);
+		libc_unblock(pids[i]);
 	}
 	bussy_wait(WAIT);
-	printf("\nKILLING...\n");
+	libc_printf("\nKILLING...\n");
 
 	for (i = 0; i < TOTAL_PROCESSES; i++) {
-		my_kill(pids[i]);
+		libc_kill(pids[i]);
 	}
 	return;
 }
