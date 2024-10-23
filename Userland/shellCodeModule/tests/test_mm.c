@@ -51,7 +51,7 @@ uint64_t test_mm ( char * argv[],  uint64_t argc )
 		uint32_t i;
 		for ( i = 0; i < rq; i++ )
 			if ( mm_rqs[i].address )
-				libc_memset ( mm_rqs[i].address, i, mm_rqs[i].size );
+				shared_libc_memset ( mm_rqs[i].address, i, mm_rqs[i].size );
 
 		// Check
 		for ( i = 0; i < rq; i++ )

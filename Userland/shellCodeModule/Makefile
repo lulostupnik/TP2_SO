@@ -29,7 +29,7 @@ $(LOADEROBJECT):
 
 
 clean:
-	rm -rf */*.o *.o *.bin
+	rm -rf */*.o *.o *.bin 
 	rm -rf *.elf
 
 .PHONY: all clean print

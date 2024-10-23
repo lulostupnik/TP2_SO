@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "mm.h"
+#include <shared_libc.h>
 
 #define MAX_BLOCKS BLOCK_COUNT
 

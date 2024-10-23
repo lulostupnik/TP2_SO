@@ -11,6 +11,7 @@
 #include <syscalls.h>
 #include <keyboard.h>
 #include <memory_management.h>
+#include <shared_libc.h>
 #include <process.h>
 #include <scheduler.h>
 

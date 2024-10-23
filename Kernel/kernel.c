@@ -24,7 +24,7 @@ typedef int ( *EntryPoint ) ();
 
 void clearBSS ( void * bssAddress, uint64_t bssSize )
 {
-	memset ( bssAddress, 0, bssSize );
+	shared_libc_memset ( bssAddress, 0, bssSize );
 }
 
 void * get_stack_base()
