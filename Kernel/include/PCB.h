@@ -6,7 +6,7 @@
 
 
 typedef struct PCB {
-	pid_t pid, ppid;
+	pid_t pid;
 	uint64_t rsp;
 	uint64_t base_pointer;
 	uint8_t status;
@@ -15,6 +15,7 @@ typedef struct PCB {
 	int64_t ret;
 	priority_t priority;
 	uint8_t killable;
+	struct PCB * waiting_me;
 } PCB;
 
 

@@ -78,6 +78,9 @@ int64_t sys_call_handler ( stack_registers * regs )
 		case 21:
 			return sys_kill( (int64_t) regs->rdi );
 			break;
+		case 22:
+			return sys_wait( (int64_t) regs->rdi , (int64_t * ) regs->rsi);
+			break;
 
 		default:
 			return NOT_VALID_SYS_ID;
@@ -274,7 +277,7 @@ int64_t sys_yield()
 	return 0;
 }
 
-int64_t sys_wait ( pid_t pid )
+int64_t sys_wait ( pid_t pid, int64_t * ret )
 {
-	return 0;
+	return wait(pid, ret);
 }

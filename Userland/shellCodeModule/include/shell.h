@@ -31,20 +31,7 @@ typedef struct module
 
 
 
-
-
-int initializeShell();
-
-void interpret();
-
-void zoomIn();
-
-void zoomOut();
-
-void showcurrentTime();
-
-void getRegs();
-
+int main();
 
 
 

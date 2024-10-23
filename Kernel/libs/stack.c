@@ -12,9 +12,7 @@ void process_wrapper(main_function rip, char ** argv, uint64_t argc, pid_t pid)
 	if (pcb == NULL) {
 		return;
 	}
-	pcb->ret = ret;
-	 kill_process(pid);
-	//pcb->status = ZOMBIE;
+	make_me_zombie(ret);
 	timer_tick();
 }
 

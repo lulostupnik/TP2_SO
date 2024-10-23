@@ -466,6 +466,9 @@ int64_t libc_create_process( main_function rip, uint64_t priority, char ** argv,
 {
 	return sys_create_process(rip, priority, argv, argc);
 }
+int64_t libc_get_time ( time_struct * time ){
+	return sys_get_time ( time );
+}
 
 int64_t libc_get_pid()
 {
@@ -492,6 +495,10 @@ int64_t libc_yield()
 int64_t libc_unblock ( pid_t pid )
 {
 	return sys_unblock(pid);
+}
+
+pid_t libc_wait ( pid_t pid, int64_t * ret){
+	return sys_wait(pid, ret);
 }
 
 

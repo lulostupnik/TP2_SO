@@ -40,7 +40,47 @@ void block(PCB * process)
 	process->status = BLOCKED;
 	delete_list(ready_list, process);
 	add_list(blocked_list, process);
+	if(process == running){
+		scheduler_yield();
+	}
+}
 
+void block_current(){
+	block(running);
+}
+
+void unblock_waiting_me(){
+	PCB * pcb = running;
+	if(pcb == NULL || pcb->waiting_me == NULL){
+		return;
+	}
+	ready(pcb->waiting_me);
+}
+
+void unblock_waiting_pid(pid_t pid){
+	PCB * pcb = get_pcb(pid);
+	if(pcb == NULL || pcb->waiting_me == NULL){
+		return;
+	}
+	ready(pcb->waiting_me);
+}
+
+
+
+int64_t make_me_zombie(int64_t retval){
+	PCB * pcb = get_running();
+	if ( (pcb == NULL) || (pcb->status == FREE) ) {
+		return -1;
+	}
+	pcb->ret = retval;
+	unschedule(pcb);
+	unblock_waiting_me();
+	pcb->status = ZOMBIE;
+}
+
+
+PCB * get_running(){
+	return running;
 }
 
 void unschedule(PCB * process)
@@ -105,7 +145,7 @@ uint64_t scheduler(uint64_t current_rsp)
 		running = next(ready_list);
 		return running->rsp;
 	}
-	if (times_ran >= running->priority) {
+	if (times_ran >= running->priority || running->status == ZOMBIE) {
 		PCB * next_pcb = next(ready_list);
 		times_ran = 0;
 		running = next_pcb;

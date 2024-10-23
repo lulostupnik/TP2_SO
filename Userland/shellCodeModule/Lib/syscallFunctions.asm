@@ -20,6 +20,7 @@ GLOBAL sys_yield
 GLOBAL sys_unblock
 GLOBAL sys_nice
 GLOBAL sys_kill
+GLOBAL sys_wait
 
 section .text
 
@@ -181,6 +182,8 @@ sys_nice:
 
 sys_kill:
     simple_sys_handler 21
+sys_wait:
+    simple_sys_handler 22
 
 ;sys_ps:
 ;    simple_sys_handler 21

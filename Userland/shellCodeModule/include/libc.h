@@ -245,7 +245,7 @@ int64_t libc_enter_text_mode();
  */
 int64_t libc_enter_video_mode();
 
-
+int64_t libc_get_time ( time_struct * time );
 
 void * libc_malloc ( uint64_t size );
 
@@ -264,4 +264,7 @@ int64_t libc_kill ( pid_t pid );
 int64_t libc_block ( pid_t pid );
 
 int64_t libc_unblock ( pid_t pid );
+
+pid_t libc_wait( pid_t pid, int64_t * ret);
+
 #endif

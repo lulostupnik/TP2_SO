@@ -11,6 +11,7 @@ uint64_t amount_of_processes = 0;
 
 static int64_t find_free_pcb();
 static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc);
+static int64_t set_free_pcb(pid_t pid);
 
 static uint64_t my_strlen ( const char * str )
 {
@@ -55,9 +56,30 @@ static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc)
 }
 
 //Returns PID if it was succesfull and -1 if it wasnt. 
-int64_t wait(pid_t pid, int64_t * ret){
+pid_t wait(pid_t pid, int64_t * ret){
+	PCB * pcb_to_wait = get_pcb(pid);
+	if(pcb_to_wait == NULL || pcb_to_wait->status == FREE || pcb_to_wait->waiting_me != NULL){
+		return -1;
+	}
+	if(!(pcb_to_wait->status == ZOMBIE)){
+		pcb_to_wait->waiting_me = get_running();
+		block_current();
+	}
+	if(!(pcb_to_wait->status == ZOMBIE)){ // Esto podria pasar si lo mataron
+		return -1;
+	}
 	
-}	
+	*ret = pcb_to_wait->ret;
+	if(set_free_pcb(pid) != -1){
+		amount_of_processes--;
+	}
+	return pid;
+
+}
+
+// procesos bloqueados esperando
+// 
+
 
 int64_t new_process(main_function rip, priority_t priority, uint8_t killable, char ** argv, uint64_t argc)
 {
@@ -87,9 +109,6 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 
 	rsp = load_stack((uint64_t )rip, rsp, args_cpy, argc, pid);
 
-
-
-
 	pcb_array[pid].pid = pid;
 	pcb_array[pid].rsp = rsp;
 	pcb_array[pid].status = READY;
@@ -98,6 +117,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	pcb_array[pid].priority = priority;
 	pcb_array[pid].base_pointer = rsp_malloc;
 	pcb_array[pid].killable = killable;
+	pcb_array[pid].waiting_me = NULL;
 
 	ready(&pcb_array[pid]);
 	amount_of_processes++;
@@ -127,35 +147,39 @@ PCB * get_pcb(pid_t pid)
 	return &pcb_array[pid];
 }
 
-void set_free_pcb(pid_t pid)
+static int64_t set_free_pcb(pid_t pid)
 {
 	PCB * process = get_pcb(pid);
-	if (process == NULL) {
-		return;
+	if (process == NULL || process->status == FREE) {
+		return -1;
 	}
 	my_free((void *)process->base_pointer);
 	if (process->argv == NULL) {
-		process->status  = FREE;
-		return;
+		process->status = FREE;
+		return 0;
 	}
 	for (uint64_t i = 0; i < process->argc ; i++) {
 		my_free((void *)process->argv[i]);
 	}
 	my_free((void * )process->argv);
 	process->status = FREE;
-
+	return 0;
 }
 
 
+
 int64_t kill_process(pid_t pid)
-{
-	if (pid >= PCB_AMOUNT || pid < 0 || pcb_array[pid].status == FREE || !pcb_array[pid].killable ) {
+{	
+	PCB * pcb = get_pcb(pid);
+	if ( (pcb == NULL) || (pcb->status == FREE) || (!pcb->killable) ) {
 		return -1;
 	}
-
-	unschedule(&pcb_array[pid]);
-	set_free_pcb(pid);
-	amount_of_processes--;
+	
+	unschedule(pcb);
+	unblock_waiting_pid(pid);
+	if(set_free_pcb(pid) != -1){
+		amount_of_processes--;
+	}
 	return 0;
 }
 

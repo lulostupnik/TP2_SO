@@ -34,5 +34,6 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 PCB * get_pcb(pid_t pid);
 void list_processes();
 int64_t kill_process(pid_t pid);
+pid_t wait(pid_t pid, int64_t * ret);
 
 #endif

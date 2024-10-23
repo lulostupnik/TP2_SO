@@ -5,10 +5,16 @@
 
 
 static void help();
-
 static void kill_pid(char ** argv, uint64_t argc);
-
-static void toUtcMinus3 ( time_struct * time );
+static void to_utc_minus_3 ( time_struct * time );
+static void free_args(char ** args, uint64_t argc);
+static void call_function_process(module m, char ** args, uint64_t argc);
+static char ** command_parse(char shellBuffer[], uint64_t * argc);
+static void interpret();
+static void zoom_in();
+static void zoom_out();
+static void show_current_time();
+static void get_regs();
 
 static uint64_t font_size = 1;
 
@@ -18,11 +24,11 @@ static uint64_t font_size = 1;
 
 static module modules[] = {
 {"help", help, BUILT_IN},
-{"time", showcurrentTime, BUILT_IN},
+{"time", show_current_time, BUILT_IN},
 {"eliminator", eliminator, BUILT_IN},
-{"zoomin", zoomIn, BUILT_IN},
-{"zoomout", zoomOut, BUILT_IN},
-{"getregs", getRegs, BUILT_IN},
+{"zoomin", zoom_in, BUILT_IN},
+{"zoomout", zoom_out, BUILT_IN},
+{"getregs", get_regs, BUILT_IN},
 {"dividebyzero", div0, BUILT_IN},
 {"opcode", op_code, BUILT_IN},
 {"clear", (void (*)(char **, uint64_t)) libc_clear_screen, BUILT_IN},
@@ -41,15 +47,14 @@ int main()
 
 	libc_puts ( WELCOME );
 	help();
-
-
+	
 	while ( 1 ) {
 		interpret();
 	}
 
 }
 
-void free_args(char ** args, uint64_t argc)
+static void free_args(char ** args, uint64_t argc)
 {
 	for (int i = 0; i < argc; i++) {
 		libc_free(args[i]);
@@ -58,7 +63,8 @@ void free_args(char ** args, uint64_t argc)
 	return;
 }
 
-void call_function_process(module m, char ** args, uint64_t argc)
+
+static void call_function_process(module m, char ** args, uint64_t argc)
 {
 	if (m.is_built_in) {
 		m.function(args, argc);
@@ -66,7 +72,7 @@ void call_function_process(module m, char ** args, uint64_t argc)
 		return;
 	}
 
-	int64_t ans = sys_create_process((main_function)m.function, LOW, args, argc);
+	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc);
 	if (ans < 0) {
 		libc_fprintf ( STDERR, "Could not create process\n" );
 	}
@@ -75,7 +81,8 @@ void call_function_process(module m, char ** args, uint64_t argc)
 	return;
 }
 
-char ** command_parse(char shellBuffer[], uint64_t * argc)
+
+static char ** command_parse(char shellBuffer[], uint64_t * argc)
 {
 	char ** args = libc_malloc(MAX_ARGS * sizeof(char *));
 	if (args == NULL) {
@@ -120,8 +127,7 @@ char ** command_parse(char shellBuffer[], uint64_t * argc)
 	return args;
 }
 
-
-void interpret()
+static void interpret()
 {
 	libc_puts ( PROMPT );
 	char shellBuffer[MAX_COMMAND_SIZE];
@@ -187,8 +193,7 @@ static void help(char ** args, uint64_t argc)
 }
 
 
-
-void zoomIn()
+static void zoom_in()
 {
 	if ( font_size < MAX_FONT_SIZE ) {
 		font_size++;
@@ -199,7 +204,8 @@ void zoomIn()
 	return;
 }
 
-void zoomOut()
+
+void zoom_out()
 {
 	if ( font_size > MIN_FONT_SIZE ) {
 		font_size--;
@@ -211,11 +217,11 @@ void zoomOut()
 }
 
 
-void showcurrentTime()
+void show_current_time()
 {
 	time_struct time;
-	sys_get_time ( &time );
-	toUtcMinus3 ( &time );
+	libc_get_time ( &time );
+	to_utc_minus_3 ( &time );
 	libc_printf ( "%d/%d/%d [d/m/y]\n", time.day, time.month, time.year ); //Obs: En el PVS aparece como warning porque no implementamos %u (uint8_t)
 	int64_t h = time.hour;
 	libc_printf ( "%d:%d:%d [hour/min/sec] (Argentina)\n", h, time.minutes, time.seconds ); // la hora es -3 para que este en tiempo argentino.
@@ -224,7 +230,7 @@ void showcurrentTime()
 }
 
 
-static void toUtcMinus3 ( time_struct * time )
+static void to_utc_minus_3 ( time_struct * time )
 {
 
 	if ( time->hour < 3 ) {
@@ -253,7 +259,7 @@ static void toUtcMinus3 ( time_struct * time )
 }
 
 
-void getRegs()
+static void get_regs()
 {
 	libc_print_register_snapshot();
 	return;
