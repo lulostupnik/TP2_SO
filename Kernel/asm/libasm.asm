@@ -3,9 +3,25 @@ GLOBAL get_key
 GLOBAL inb
 GLOBAL outb
 GLOBAL rtc
+GLOBAL acquire
+GLOBAL release
 
 
 section .text
+
+acquire:
+    mov al, 0
+.retry
+    xchg byte [rdi], al
+    test al, al
+    jnz .retry
+    ret
+
+realease:
+    mov byte [rdi], 1
+    ret
+
+
 
 cpu_vendor:
 	push rbp
