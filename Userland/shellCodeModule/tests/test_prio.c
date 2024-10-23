@@ -7,7 +7,7 @@ int64_t prio[TOTAL_PROCESSES] = {LOW, MEDIUM, HIGH};
 
 void test_prio()
 {
-	int64_t pids[TOTAL_PROCESSES];
+	pid_t pids[TOTAL_PROCESSES];
 	char * str = WAIT_STRING;
 	char * argv[] = {str};
 	uint64_t i;

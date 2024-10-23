@@ -255,13 +255,13 @@ int64_t libc_create_process( main_function rip, uint64_t priority, char ** argv,
 
 int64_t libc_get_pid();
 
-int64_t libc_nice ( int64_t pid, uint64_t newPrio );
+int64_t libc_nice ( pid_t pid, uint64_t newPrio );
 
 int64_t libc_yield();
 
-int64_t libc_kill ( int64_t pid );
+int64_t libc_kill ( pid_t pid );
 
-int64_t libc_block ( int64_t pid );
+int64_t libc_block ( pid_t pid );
 
-int64_t libc_unblock ( int64_t pid );
+int64_t libc_unblock ( pid_t pid );
 #endif

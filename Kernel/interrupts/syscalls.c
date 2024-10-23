@@ -228,22 +228,22 @@ int64_t sys_get_pid()
 	return get_pid();
 }
 
-int64_t sys_nice ( int64_t pid, uint64_t new_prio )
+int64_t sys_nice ( pid_t pid, uint64_t new_prio )
 {
 	return nice(pid, new_prio);
 }
 
-int64_t sys_kill ( int64_t pid )
+int64_t sys_kill ( pid_t pid )
 {
 	return kill_process(pid);
 }
 
-int64_t sys_block ( int64_t pid )
+int64_t sys_block ( pid_t pid )
 {
 	return block_arbitrary ( pid );
 }
 
-int64_t sys_unblock ( int64_t pid )
+int64_t sys_unblock ( pid_t pid )
 {
 	return unblock_arbitrary ( pid );
 }
@@ -274,7 +274,7 @@ int64_t sys_yield()
 	return 0;
 }
 
-int64_t sys_wait ( int64_t pid )
+int64_t sys_wait ( pid_t pid )
 {
 	return 0;
 }

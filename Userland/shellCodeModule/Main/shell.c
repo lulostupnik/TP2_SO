@@ -152,7 +152,7 @@ void interpret()
 
 static void kill_pid(char ** argv, uint64_t argc)
 {
-	int64_t pid;
+	pid_t pid;
 
 	if (argc != 2 || argv == NULL || ((pid = satoi(argv[1])) < 0)) {
 		libc_fprintf(STDERR, "Usage: killpid <pid>\n");

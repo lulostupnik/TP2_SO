@@ -86,7 +86,7 @@ void endless_loop_print_main(char ** argv, uint64_t argc)
 
 void endless_loop_print(uint64_t wait)
 {
-	int64_t pid = libc_get_pid();
+	pid_t pid = libc_get_pid();
 	while (1) {
 		libc_printf("%d ", pid);
 		bussy_wait(wait);

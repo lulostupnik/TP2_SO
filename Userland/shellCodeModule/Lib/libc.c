@@ -472,15 +472,15 @@ int64_t libc_get_pid()
 	return sys_get_pid();
 }
 
-int64_t libc_kill ( int64_t pid )
+int64_t libc_kill ( pid_t pid )
 {
 	return sys_kill(pid);
 }
-int64_t libc_block ( int64_t pid )
+int64_t libc_block ( pid_t pid )
 {
 	return sys_block(pid);
 }
-int64_t libc_nice(int64_t pid, uint64_t newPrio )
+int64_t libc_nice(pid_t pid, uint64_t newPrio )
 {
 	return sys_nice(pid, newPrio);
 }
@@ -489,7 +489,7 @@ int64_t libc_yield()
 {
 	return sys_yield();
 }
-int64_t libc_unblock ( int64_t pid )
+int64_t libc_unblock ( pid_t pid )
 {
 	return sys_unblock(pid);
 }

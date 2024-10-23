@@ -9,7 +9,7 @@ enum State { STATE_RUNNING,
            };
 
 typedef struct p_rq {
-	int32_t pid;
+	pid_t pid;
 	enum State state;
 } p_rq;
 

@@ -68,7 +68,7 @@ int64_t get_pid()
 	return running->pid;
 }
 
-uint64_t block_arbitrary(int64_t pid)
+uint64_t block_arbitrary(pid_t pid)
 {
 	PCB * process = get_pcb(pid);
 	if (process == NULL) {
@@ -78,7 +78,7 @@ uint64_t block_arbitrary(int64_t pid)
 	return 0;
 }
 
-uint64_t unblock_arbitrary(int64_t pid)
+uint64_t unblock_arbitrary(pid_t pid)
 {
 	PCB * process = get_pcb(pid);
 	if (process == NULL) {
@@ -115,7 +115,7 @@ uint64_t scheduler(uint64_t current_rsp)
 	return current_rsp;
 }
 
-int64_t nice ( int64_t pid, uint64_t new_prio )
+int64_t nice ( pid_t pid, uint64_t new_prio )
 {
 	PCB * process = get_pcb(pid);
 	if (process == NULL) {

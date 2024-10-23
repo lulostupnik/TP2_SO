@@ -10,7 +10,7 @@ PCB pcb_array[PCB_AMOUNT] = {0};
 uint64_t amount_of_processes = 0;
 
 static int64_t find_free_pcb();
-static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc);
+static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc);
 
 static uint64_t my_strlen ( const char * str )
 {
@@ -21,7 +21,7 @@ static uint64_t my_strlen ( const char * str )
 }
 
 
-static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc)
+static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc)
 {
 
 	if ( (argc == 0 && argv != NULL) || (argc > 0 && argv == NULL)) {
@@ -54,6 +54,10 @@ static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc)
 	return ans;
 }
 
+//Returns PID if it was succesfull and -1 if it wasnt. 
+int64_t wait(pid_t pid, int64_t * ret){
+	
+}	
 
 int64_t new_process(main_function rip, priority_t priority, uint8_t killable, char ** argv, uint64_t argc)
 {
@@ -62,7 +66,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 		return -1;
 	}
 
-	int64_t pid = find_free_pcb();
+	pid_t pid = find_free_pcb();
 	if (pid == -1) {
 		return -1;
 	}
@@ -115,7 +119,7 @@ static int64_t find_free_pcb()
 	return to_return;
 }
 
-PCB * get_pcb(int64_t pid)
+PCB * get_pcb(pid_t pid)
 {
 	if (pid >= PCB_AMOUNT || pid < 0) {
 		return NULL;
@@ -123,7 +127,7 @@ PCB * get_pcb(int64_t pid)
 	return &pcb_array[pid];
 }
 
-void set_free_pcb(int64_t pid)
+void set_free_pcb(pid_t pid)
 {
 	PCB * process = get_pcb(pid);
 	if (process == NULL) {
@@ -143,7 +147,7 @@ void set_free_pcb(int64_t pid)
 }
 
 
-int64_t kill_process(int64_t pid)
+int64_t kill_process(pid_t pid)
 {
 	if (pid >= PCB_AMOUNT || pid < 0 || pcb_array[pid].status == FREE || !pcb_array[pid].killable ) {
 		return -1;

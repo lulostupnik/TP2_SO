@@ -194,10 +194,10 @@ void * sys_malloc ( uint64_t size );
 void sys_free ( void * p );
 int64_t sys_get_pid();
 int64_t sys_create_process ( main_function rip, priority_t priority, char ** argv, uint64_t argc );
-int64_t sys_nice ( int64_t pid, uint64_t newPrio );
-int64_t sys_kill ( int64_t pid );
-int64_t sys_block ( int64_t pid );
-int64_t sys_unblock ( int64_t pid );
+int64_t sys_nice ( pid_t pid, uint64_t newPrio );
+int64_t sys_kill ( pid_t pid );
+int64_t sys_block ( pid_t pid );
+int64_t sys_unblock ( pid_t pid );
 int64_t sys_yield();
 
 //int64_t sys_sem_open ( char *sem_id, uint64_t initialValue );

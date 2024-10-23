@@ -14,8 +14,8 @@
 
 
 typedef struct process_info {
-	int64_t pid;
-	int64_t ppid;
+	pid_t pid;
+	pid_t ppid;
 	priority_t priority;
 	uint64_t base_pointer;
 	uint64_t stack_pointer;
@@ -31,8 +31,8 @@ typedef int (*main_function)(char ** argv, uint64_t argc);
 
 
 int64_t new_process(main_function rip, priority_t priority, uint8_t killable, char ** argv, uint64_t argc);
-PCB * get_pcb(int64_t pid);
+PCB * get_pcb(pid_t pid);
 void list_processes();
-int64_t kill_process(int64_t pid);
+int64_t kill_process(pid_t pid);
 
 #endif

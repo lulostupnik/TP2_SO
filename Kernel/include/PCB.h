@@ -4,8 +4,9 @@
 #include <shared_defs.h>
 
 
+
 typedef struct PCB {
-	int64_t pid, ppid;
+	pid_t pid, ppid;
 	uint64_t rsp;
 	uint64_t base_pointer;
 	uint8_t status;

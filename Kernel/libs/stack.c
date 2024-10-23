@@ -5,7 +5,7 @@
 
 
 
-void process_wrapper(main_function rip, char ** argv, uint64_t argc, uint64_t pid)
+void process_wrapper(main_function rip, char ** argv, uint64_t argc, pid_t pid)
 {
 	int ret = rip(argv, argc);
 	PCB * pcb = get_pcb(pid);
@@ -13,11 +13,12 @@ void process_wrapper(main_function rip, char ** argv, uint64_t argc, uint64_t pi
 		return;
 	}
 	pcb->ret = ret;
-	kill_process(pid);
+	 kill_process(pid);
+	//pcb->status = ZOMBIE;
 	timer_tick();
 }
 
-uint64_t load_stack(uint64_t rip, uint64_t rsp, char ** argv, uint64_t argc, uint64_t pid)
+uint64_t load_stack(uint64_t rip, uint64_t rsp, char ** argv, uint64_t argc, pid_t pid)
 {
 	stack * my_stack = (stack *) (rsp - sizeof(stack));
 

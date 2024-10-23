@@ -11,7 +11,7 @@ section .text
 
 acquire:
     mov al, 0
-.retry
+.retry:
     xchg byte [rdi], al
     test al, al
     jnz .retry
