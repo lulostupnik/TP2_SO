@@ -2,8 +2,7 @@
 // pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
 
 #include <rtc.h>
-
-extern uint8_t rtc ( uint8_t mode );
+#include <libasm.h>
 
 static uint8_t bcd_decimal ( uint8_t bcd )
 {

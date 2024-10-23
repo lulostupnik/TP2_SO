@@ -2,7 +2,7 @@
 #define SPEAKER_H
 #include <stdint.h>
 #include <time.h>
-#include <lib.h>
+#include <libasm.h>
 
 void beep ( uint32_t freq, int time );
 

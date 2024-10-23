@@ -2,7 +2,7 @@
 // pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
 
 #include <stdint.h>
-#include <lib.h>
+#include <shared_libc.h>
 #include <module_loader.h>
 
 static void load_module ( uint8_t ** module, void * target_module_address );
@@ -21,7 +21,7 @@ void load_modules ( void * payload_start, void ** target_module_address )
 static void load_module ( uint8_t ** module, void * target_module_address )
 {
 	uint32_t module_size = read_uint32 ( module );
-	memcpy ( target_module_address, *module, module_size );
+	shared_libc_memcpy ( target_module_address, *module, module_size );
 	*module += module_size;
 
 }

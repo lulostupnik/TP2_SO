@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <scheduler.h>
 #include <PCB.h>
-
+#include <shared_libc.h>
 
 #define STACK_SIZE 0x0FFF
 #define PCB_AMOUNT 100

@@ -5,6 +5,7 @@ GLOBAL pic_master_mask
 GLOBAL pic_slave_mask
 GLOBAL haltcpu
 GLOBAL _hlt
+GLOBAL timer_tick
 
 GLOBAL _irq00Handler
 GLOBAL _irq01Handler
@@ -115,10 +116,20 @@ SECTION .text
 	iretq
 %endmacro
 
+timer_tick:
+    int 0x20
+    ret
+
 _hlt:
 	sti
 	hlt
 	ret
+
+haltcpu:
+	cli
+	hlt
+	ret
+
 
 _cli:
 	cli
@@ -304,11 +315,6 @@ _exception13Handler:
 	exceptionHandler 13
 
 
-
-haltcpu:
-	cli
-	hlt
-	ret
 
 
 

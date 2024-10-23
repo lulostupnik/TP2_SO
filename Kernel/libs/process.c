@@ -48,7 +48,7 @@ static char ** copy_argv(int64_t pid, char ** argv, uint64_t argc)
 			my_free((void *)ans);
 			return NULL;
 		}
-		memcpy(p, argv[i], len);
+		shared_libc_memcpy(p, argv[i], len);
 		ans[i] = p;
 	}
 	return ans;

@@ -2,9 +2,9 @@
 // pvs-studio static code analyzer for c, c++ and c#: http://www.viva64.com
 
 #include <keyboard.h>
+#include <libasm.h>
 
 
-extern uint8_t get_key();
 
 
 /*

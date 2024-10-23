@@ -4,7 +4,6 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <lib.h>
 #include <module_loader.h>
 #include <video.h>
 #include <idtLoader.h>

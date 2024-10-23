@@ -3,8 +3,9 @@
 #define TEST_MM_H
 
 #include <stdint.h>
-#include "test_util.h"
+#include <test_util.h>
 #include <syscall.h>
+#include <shared_libc.h>
 #include <libc.h>
 
 #define MAX_BLOCKS 100
