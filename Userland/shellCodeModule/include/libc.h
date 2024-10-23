@@ -245,8 +245,7 @@ int64_t libc_enter_text_mode();
  */
 int64_t libc_enter_video_mode();
 
-
-void * memset ( void * destination, int32_t c, uint64_t length );
+void * libc_memset ( void * destination, int32_t c, uint64_t length );
 
 void * libc_malloc ( uint64_t size );
 

@@ -3,9 +3,9 @@
 
 #include <test_proc.h>
 
-enum State { RUNNING,
-             BLOCKED,
-             KILLED
+enum State { STATE_RUNNING,
+             STATE_BLOCKED,
+             STATE_KILLED
            };
 
 typedef struct p_rq {
@@ -38,7 +38,7 @@ int64_t test_processes( char * argv[], uint64_t argc)
 				libc_fprintf(STDERR, "test_processes: ERROR creating process\n");
 				return -1;
 			} else {
-				p_rqs[rq].state = RUNNING;
+				p_rqs[rq].state = STATE_RUNNING;
 				alive++;
 			}
 		}
@@ -50,36 +50,36 @@ int64_t test_processes( char * argv[], uint64_t argc)
 
 				switch (action) {
 					case 0:
-						if (p_rqs[rq].state == RUNNING || p_rqs[rq].state == BLOCKED) {
+						if (p_rqs[rq].state == STATE_RUNNING || p_rqs[rq].state == STATE_BLOCKED) {
 							if (libc_kill(p_rqs[rq].pid) == -1) {
 								libc_fprintf(STDERR, "test_processes: ERROR killing process\n");
 								return -1;
 							}
-							p_rqs[rq].state = KILLED;
+							p_rqs[rq].state = STATE_KILLED;
 							alive--;
 
 						}
 						break;
 
 					case 1:
-						if (p_rqs[rq].state == RUNNING) {
+						if (p_rqs[rq].state == STATE_RUNNING) {
 							if (libc_block(p_rqs[rq].pid) == -1) {
 								libc_fprintf(STDERR, "test_processes: ERROR blocking process\n");
 								return -1;
 							}
-							p_rqs[rq].state = BLOCKED;
+							p_rqs[rq].state = STATE_BLOCKED;
 						}
 						break;
 				}
 			}
 
 			for (rq = 0; rq < max_processes; rq++)
-				if (p_rqs[rq].state == BLOCKED && get_uniform(100) % 2) {
+				if (p_rqs[rq].state == STATE_BLOCKED && get_uniform(100) % 2) {
 					if (libc_unblock(p_rqs[rq].pid) == -1) {
 						libc_fprintf(STDERR, "test_processes: ERROR unblocking process\n");
 						return -1;
 					}
-					p_rqs[rq].state = RUNNING;
+					p_rqs[rq].state = STATE_RUNNING;
 				}
 		}
 	}
