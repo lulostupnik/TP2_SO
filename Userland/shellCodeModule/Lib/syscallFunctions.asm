@@ -24,6 +24,7 @@ GLOBAL sys_wait
 GLOBAL sys_sem_open
 GLOBAL sys_sem_wait
 GLOBAL sys_sem_post
+GLOBAL sys_sem_close
 
 section .text
 
