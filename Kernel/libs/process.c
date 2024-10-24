@@ -69,7 +69,10 @@ pid_t wait(pid_t pid, int64_t * ret){
 		return -1;
 	}
 	
-	*ret = pcb_to_wait->ret;
+	if(ret != NULL){
+		*ret = pcb_to_wait->ret;
+	}
+
 	if(set_free_pcb(pid) != -1){
 		amount_of_processes--;
 	}
