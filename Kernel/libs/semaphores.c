@@ -1,19 +1,19 @@
 #include <semaphores.h>
 
-#define SEM_AMOUNT 10
+#define SEM_AMOUNT 32
 
 typedef struct sem_structure{
     uint64_t value;
     uint8_t lock; 
-    uint8_t free;
+    uint8_t not_free;
     queue_adt queue;
 } sem_structure;
 
 sem_structure sem_array[SEM_AMOUNT] = {0};
 
 int64_t my_sem_open(int64_t sem_id, int value){
-    if(!sem_array[sem_id].free){
-        return 0; // todo -> ¿o 1?
+    if(sem_array[sem_id].not_free){
+        return 2; // el semaforo ya está creado
     }
 
     queue_adt queue;
@@ -21,6 +21,7 @@ int64_t my_sem_open(int64_t sem_id, int value){
         return 0;
     }
 
+    sem_array[sem_id].not_free = 1;
     sem_array[sem_id].lock = 1; // todo -> invertir para acquire / release
     sem_array[sem_id].value = value;
     sem_array[sem_id].queue = queue;
@@ -31,7 +32,7 @@ int64_t my_sem_open(int64_t sem_id, int value){
 
 int64_t my_sem_wait(int64_t sem_id){
 
-    if(sem_array[sem_id].free){ // todo -> ¿está bien?
+    if(!sem_array[sem_id].not_free){ // todo -> ¿está bien?
         return -1;
     }
 
@@ -39,7 +40,7 @@ int64_t my_sem_wait(int64_t sem_id){
 
         acquire(&sem_array[sem_id].lock);
 
-        if(sem_array[sem_id].free){ // todo -> ¿está bien? -> si se libera el semáforo mientras se espera
+        if(!sem_array[sem_id].not_free){ // todo -> ¿está bien? -> si se libera el semáforo mientras se espera
             release(&sem_array[sem_id].lock);
             return -1;
         }
@@ -78,7 +79,7 @@ int64_t my_sem_close(int64_t sem_id){
     PCB * pcb;
     acquire(&sem_array[sem_id].lock);
     //todo -> ¿retornar 0 si no existía?
-    sem_array[sem_id].free = 1;
+    sem_array[sem_id].not_free = 0;
     queue_adt queue = sem_array[sem_id].queue;
     
     while(!queue_is_empty(queue)){ // recordar que queue_is_empty devuelve 0 si queue es NULL
