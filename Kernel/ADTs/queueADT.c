@@ -1,7 +1,7 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
-#include "queueADT.h"
+#include <queueADT.h>
 
 typedef struct node {
     elem_type_ptr value;
@@ -30,7 +30,7 @@ queue_adt new_queue()
 
 uint64_t queue_is_empty(queue_adt queue){
     if(queue == NULL){
-        // todo -> manejar error
+        // @todo -> manejar error
         return 0;
     }
     return (queue->size == 0);
@@ -53,12 +53,12 @@ elem_type_ptr dequeue(queue_adt queue){
 
 void enqueue(queue_adt queue, elem_type_ptr value){
     if(queue == NULL){
-        // todo -> ¿manejar error?
+        // @todo -> ¿manejar error?
         return;
     }
     t_queue new_node = my_malloc(sizeof(*new_node));
     if(new_node == NULL){
-        // todo -> ¿manejar error?
+        // @todo -> ¿manejar error?
         return;
     }
     new_node->value = value;

@@ -42,6 +42,7 @@ typedef struct time {
 
 
 typedef int64_t pid_t;
+typedef int64_t sem_t;
 
 typedef enum { LOW = 0, MEDIUM, HIGH } priority_t;
 
