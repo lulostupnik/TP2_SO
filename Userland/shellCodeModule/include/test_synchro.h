@@ -11,7 +11,7 @@
 uint64_t my_process_inc(uint64_t argc, char *argv[]);
 
 
-#define SEM_ID "sem"
+#define SEM_ID 3
 #define TOTAL_PAIR_PROCESSES 2
 
 #endif
