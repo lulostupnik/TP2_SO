@@ -200,6 +200,9 @@ int64_t sys_block ( pid_t pid );
 int64_t sys_unblock ( pid_t pid );
 int64_t sys_yield();
 int64_t sys_wait ( int64_t pid, int64_t * ret );
+int64_t sys_sem_open ( int64_t sem_id, int value );
+int64_t sys_sem_wait ( int64_t sem_id );
+int64_t sys_sem_post ( int64_t sem_id );
 
 
 //int64_t sys_sem_open ( char *sem_id, uint64_t initialValue );

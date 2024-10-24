@@ -11,7 +11,7 @@ typedef struct sem_structure{
 
 sem_structure sem_array[SEM_AMOUNT] = {0};
 
-uint64_t my_sem_open(int64_t sem_id, int value){
+int64_t my_sem_open(int64_t sem_id, int value){
     if(!sem_array[sem_id].free){
         return 0; // todo -> ¿o 1?
     }
@@ -29,16 +29,25 @@ uint64_t my_sem_open(int64_t sem_id, int value){
 }
 
 
-void my_sem_wait(int64_t sem_id){
+int64_t my_sem_wait(int64_t sem_id){
+
+    if(sem_array[sem_id].free){ // todo -> ¿está bien?
+        return -1;
+    }
 
     while(1){
 
         acquire(&sem_array[sem_id].lock);
 
-        if(sem_array[sem_id].value != 0){
+        if(sem_array[sem_id].free){ // todo -> ¿está bien? -> si se libera el semáforo mientras se espera
+            release(&sem_array[sem_id].lock);
+            return -1;
+        }
+
+        if(sem_array[sem_id].value != 0){ // o > 0 ?
             sem_array[sem_id].value --;
             release(&sem_array[sem_id].lock);
-            return;
+            return 1;
         }
 
         PCB * running_pcb = get_running();
@@ -51,7 +60,7 @@ void my_sem_wait(int64_t sem_id){
     }
 }
 
-void my_sem_post(int64_t sem_id) {
+int64_t my_sem_post(int64_t sem_id) {
     acquire(&sem_array[sem_id].lock);
     sem_array[sem_id].value++;
 
@@ -61,6 +70,7 @@ void my_sem_post(int64_t sem_id) {
     }
 
     release(&sem_array[sem_id].lock);
+    return 1;
 }
 
 

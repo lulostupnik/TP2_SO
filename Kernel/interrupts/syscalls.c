@@ -251,21 +251,6 @@ int64_t sys_unblock ( pid_t pid )
 	return unblock_arbitrary ( pid );
 }
 
-int64_t sys_sem_open ( char * sem_id, uint64_t initial_value )
-{
-	return 0;
-}
-
-int64_t sys_sem_wait ( char * sem_id )
-{
-	return 0;
-}
-
-int64_t sys_sem_post ( char * sem_id )
-{
-	return 0;
-}
-
 int64_t sys_sem_close ( char * sem_id )
 {
 	return 0;
@@ -280,4 +265,19 @@ int64_t sys_yield()
 int64_t sys_wait ( pid_t pid, int64_t * ret )
 {
 	return wait(pid, ret);
+}
+
+int64_t sys_sem_open ( int64_t sem_id, int value )
+{
+	return my_sem_open(sem_id, value);
+}
+
+int64_t sys_sem_wait ( int64_t sem_id )
+{
+	return my_sem_wait(sem_id);
+}
+
+int64_t sys_sem_post ( int64_t sem_id )
+{
+	return my_sem_post(sem_id);
 }

@@ -17,6 +17,7 @@
 #include <memory_management.h>
 #include <process.h>
 #include <syscalls.h>
+#include <semaphores.h>
 
 #define NOT_VALID_SYS_ID -1
 

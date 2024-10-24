@@ -76,6 +76,7 @@ int64_t make_me_zombie(int64_t retval){
 	unschedule(pcb);
 	unblock_waiting_me();
 	pcb->status = ZOMBIE;
+	return 1; // todo ¿está bien?
 }
 
 
