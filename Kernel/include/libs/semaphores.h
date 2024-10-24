@@ -12,5 +12,6 @@ void release(uint8_t * lock);
 int64_t my_sem_open(int64_t sem_id, int value);
 int64_t my_sem_post(int64_t sem_id);
 int64_t my_sem_wait(int64_t sem_id);
+int64_t my_sem_close(int64_t sem_id);
 
 #endif

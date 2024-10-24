@@ -251,9 +251,9 @@ void * libc_malloc ( uint64_t size );
 
 void libc_free ( void * ptr );
 
-int64_t libc_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc);
+pid_t libc_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc);
 
-int64_t libc_get_pid();
+pid_t libc_get_pid();
 
 int64_t libc_nice ( pid_t pid, uint64_t newPrio );
 
@@ -266,5 +266,13 @@ int64_t libc_block ( pid_t pid );
 int64_t libc_unblock ( pid_t pid );
 
 pid_t libc_wait( pid_t pid, int64_t * ret);
+
+int64_t libc_sem_open ( int64_t sem_id, int64_t value );
+
+int64_t libc_sem_wait ( int64_t sem_id );
+
+int64_t libc_sem_post ( int64_t sem_id );
+
+int64_t libc_sem_close ( int64_t sem_id );
 
 #endif

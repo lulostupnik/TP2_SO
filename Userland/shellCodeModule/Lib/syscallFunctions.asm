@@ -21,6 +21,9 @@ GLOBAL sys_unblock
 GLOBAL sys_nice
 GLOBAL sys_kill
 GLOBAL sys_wait
+GLOBAL sys_sem_open
+GLOBAL sys_sem_wait
+GLOBAL sys_sem_post
 
 section .text
 
@@ -187,3 +190,15 @@ sys_wait:
 
 ;sys_ps:
 ;    simple_sys_handler 21
+
+sys_sem_open:
+    simple_sys_handler 23
+
+sys_sem_wait:
+    simple_sys_handler 24
+
+sys_sem_post:
+    simple_sys_handler 25
+
+sys_sem_close:
+    simple_sys_handler 26

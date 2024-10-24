@@ -73,6 +73,24 @@ int64_t my_sem_post(int64_t sem_id) {
     return 1;
 }
 
+// todo -> chequear está función !!!!
+int64_t my_sem_close(int64_t sem_id){
+    PCB * pcb;
+    acquire(&sem_array[sem_id].lock);
+    //todo -> ¿retornar 0 si no existía?
+    sem_array[sem_id].free = 1;
+    queue_adt queue = sem_array[sem_id].queue;
+    
+    while(!queue_is_empty(queue)){ // recordar que queue_is_empty devuelve 0 si queue es NULL
+        pcb = dequeue(queue);
+        pcb->status = READY;
+    }
+    my_free(queue);
+
+    release(&sem_array[sem_id].lock);
+    return 1;
+}
+
 
 // traete los semafaros
 /*

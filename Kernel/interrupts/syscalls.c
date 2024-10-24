@@ -81,6 +81,18 @@ int64_t sys_call_handler ( stack_registers * regs )
 		case 22:
 			return sys_wait( (int64_t) regs->rdi , (int64_t * ) regs->rsi);
 			break;
+		case 23:
+			return sys_sem_open( (int64_t) regs->rdi, regs->rsi);
+			break;
+		case 24:
+			return sys_sem_wait( (int64_t) regs->rdi);
+			break;
+		case 25:
+			return sys_sem_post( (int64_t) regs->rdi);
+			break;
+		case 26:
+			return sys_sem_close( (int64_t) regs->rdi);
+			break;
 
 		default:
 			return NOT_VALID_SYS_ID;
@@ -251,11 +263,6 @@ int64_t sys_unblock ( pid_t pid )
 	return unblock_arbitrary ( pid );
 }
 
-int64_t sys_sem_close ( char * sem_id )
-{
-	return 0;
-}
-
 int64_t sys_yield()
 {
 	scheduler_yield();
@@ -280,4 +287,9 @@ int64_t sys_sem_wait ( int64_t sem_id )
 int64_t sys_sem_post ( int64_t sem_id )
 {
 	return my_sem_post(sem_id);
+}
+
+int64_t sys_sem_close ( int64_t sem_id )
+{
+	return my_sem_close(sem_id);
 }

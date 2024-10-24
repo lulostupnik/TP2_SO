@@ -462,17 +462,17 @@ void libc_free ( void * p )
 	return sys_free ( p );
 }
 
-int64_t libc_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc)
+pid_t libc_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc)
 {
-	return sys_create_process(rip, priority, argv, argc);
+	return (pid_t) sys_create_process(rip, priority, argv, argc);
 }
 int64_t libc_get_time ( time_struct * time ){
 	return sys_get_time ( time );
 }
 
-int64_t libc_get_pid()
+pid_t libc_get_pid()
 {
-	return sys_get_pid();
+	return (pid_t) sys_get_pid();
 }
 
 int64_t libc_kill ( pid_t pid )
@@ -501,8 +501,21 @@ pid_t libc_wait ( pid_t pid, int64_t * ret){
 	return sys_wait(pid, ret);
 }
 
+int64_t libc_sem_open ( int64_t sem_id, int64_t value ){
+	return sys_sem_open(sem_id, value);
+}
 
+int64_t libc_sem_wait ( int64_t sem_id ){
+	return sys_sem_wait(sem_id);
+}
 
+int64_t libc_sem_post ( int64_t sem_id ){
+	return sys_sem_post(sem_id);
+}
+
+int64_t libc_sem_close ( int64_t sem_id ){
+	return sys_sem_close(sem_id);
+}
 
 
 /*
