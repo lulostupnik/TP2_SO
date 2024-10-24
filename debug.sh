@@ -11,4 +11,4 @@ sudo chmod -R 777 ./*
 qemu-system-x86_64 -s -S -hda Image/x64BareBonesImage.qcow2 -m 512       #run
 sudo docker exec -it SO   make clean -C/root/Toolchain                 #borra lo que habia
 sudo docker exec -it SO   make clean -C/root/                          #borra lo que habia
-sudo docker stop SO                                                  #stop
+#sudo docker stop SO                                                  #stop
