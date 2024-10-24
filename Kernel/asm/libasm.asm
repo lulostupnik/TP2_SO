@@ -17,7 +17,7 @@ acquire:
     jnz .retry
     ret
 
-realease:
+release:
     mov byte [rdi], 1
     ret
 

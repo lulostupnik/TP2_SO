@@ -1,15 +1,10 @@
 #include <semaphores.h>
 
-
-
-
 #define SEM_AMOUNT 10
-#define READY 1
 
 typedef struct sem_structure{
     uint64_t value;
     uint8_t lock; 
-   
     uint8_t free;
     queue_adt queue;
 } sem_structure;
@@ -22,43 +17,38 @@ uint64_t my_sem_open(int64_t sem_id, int value){
     }
 
     queue_adt queue;
-    if((queue = malloc(sizeof(*(void *)queue))) == NULL){
+    if((queue = my_malloc(sizeof(*(void *)queue))) == NULL){
         return 0;
     }
 
-    // sem_array[to_return].lock = 1; // todo -> invertir para acquire / release
-    sem_init(&sem_array[sem_id].lock, 0, 1);
+    sem_array[sem_id].lock = 1; // todo -> invertir para acquire / release
     sem_array[sem_id].value = value;
     sem_array[sem_id].queue = queue;
 
     return 1; // todo -> ??
 }
 
-int64_t acquire(sem_t * lock){
-    //return sem_wait(lock);
-}
-
-int64_t release(sem_t * lock){
-    //return sem_post(lock);
-}
 
 void my_sem_wait(int64_t sem_id){
 
-    acquire(&sem_array[sem_id].lock);
+    while(1){
 
-    if(sem_array[sem_id].value != 0){
-        sem_array[sem_id].value --;
-        release(&sem_array[sem_id].lock);
-        return;
+        acquire(&sem_array[sem_id].lock);
+
+        if(sem_array[sem_id].value != 0){
+            sem_array[sem_id].value --;
+            release(&sem_array[sem_id].lock);
+            return;
+        }
+
+        PCB * running_pcb = get_running();
+        running_pcb->status = BLOCKED;
+        enqueue(sem_array[sem_id].queue, running_pcb);
+        release(&sem_array[sem_id].lock); 
+
+        scheduler_yield(); // recién va a volver cuando sea desbloqueado por post
+        // todo -> ¿está bien esto?
     }
-
-    // running_pcb->status = BLOCKED;
-
-    // enqueue(sem_array[sem_id].queue, running_pcb);
-
-    release(&sem_array[sem_id].lock); // pasarle lock? -> ¿está bien está ubicación?
-
-    // yield(); // recién va a volver cuando sea desbloqueado por post
 }
 
 void my_sem_post(int64_t sem_id) {
