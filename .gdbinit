@@ -2578,6 +2578,16 @@ define plist
   end
 end
 
+define plist2
+  set var $n = $arg0->size
+  set var $current = $arg0->first
+  while $n
+    p *(PCB*) $current->head
+    set var $current = $current->tail
+    set var $n = $n - 1
+  end
+end
+
 
 
 # File variables ---------------------------------------------------------------

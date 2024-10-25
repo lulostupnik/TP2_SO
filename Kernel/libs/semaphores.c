@@ -102,10 +102,10 @@ int64_t my_sem_post(int64_t sem_id) {
 
     acquire(&sem_array[sem_id].lock);
     sem_array[sem_id].value++;
-
+    PCB * to_unblock ;
     if(!queue_is_empty(sem_array[sem_id].queue)){
-        PCB * to_unblock = dequeue(sem_array[sem_id].queue);
         // if(to_unblock->status == BLOCKED){
+        to_unblock = dequeue(sem_array[sem_id].queue);
            
         // }
         if(to_unblock->status != BLOCKED){
@@ -120,6 +120,7 @@ int64_t my_sem_post(int64_t sem_id) {
     }
 
     release(&sem_array[sem_id].lock);
+    PCB * p = get_pcb(get_pid());
     scheduler_yield();
     return 1;
 }

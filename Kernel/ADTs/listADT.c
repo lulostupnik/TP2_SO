@@ -69,17 +69,22 @@ int add_list(list_adt list, elem_type_ptr elem)
 	if (new_node == NULL) {
 		return -1;
 	}
-
-	new_node->head = elem;
+	
 
 	if (list->pre_next == NULL) {
 		list->pre_next = new_node;
 		list->pre_next->tail = new_node;
+		list->pre_next->head = elem;
 	} else {
+		new_node->head = list->pre_next->head;
+		list->pre_next->head = elem;
+
 		new_node->tail = list->pre_next->tail;
 		list->pre_next->tail = new_node;
 		list->pre_next = new_node;
 	}
+
+	
 
 	list->size++;
 	return 0;
