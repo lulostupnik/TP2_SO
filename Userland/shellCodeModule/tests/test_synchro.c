@@ -64,7 +64,6 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
     if (use_sem){
       libc_fprintf(STDERR, "%d is posting\n", libc_get_pid());
       libc_sem_post(SEM_ID);
-      libc_yield();
     }
   }
   libc_fprintf(STDERR, "%d has finished\n", libc_get_pid());

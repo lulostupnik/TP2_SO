@@ -8,7 +8,7 @@
 extern uint64_t regs_shot[17];
 extern uint64_t regs_shot_available;
 
-/*
+
 int64_t sys_call_handler ( stack_registers * regs )
 {
 	switch ( regs->rax ) {
@@ -98,104 +98,6 @@ int64_t sys_call_handler ( stack_registers * regs )
 			return NOT_VALID_SYS_ID;
 
 	}
-}
-*/
-
-int64_t sys_call_handler(stack_registers *regs) {
-    _cli();  // Disable interrupts at the start
-
-    int64_t result;  // Variable to hold the return value
-
-    switch (regs->rax) {
-        case 0:
-            result = sys_read(regs->rdi, (uint16_t *) regs->rsi, regs->rdx);
-            break;
-        case 1:
-            result = sys_write(regs->rdi, (char *) regs->rsi, regs->rdx);
-            break;
-        case 2:
-            result = sys_get_register_snapshot((snapshot *) regs->rdi);
-            break;
-        case 3:
-            result = sys_beep(regs->rdi, regs->rsi);
-            break;
-        case 4:
-            result = sys_set_font_size(regs->rdi);
-            break;
-        case 5:
-            result = sys_clear_screen();
-            break;
-        case 6:
-            result = sys_put_pixel(regs->rdi, regs->rsi, (color *) regs->rdx);
-            break;
-        case 7:
-            result = sys_put_rectangle(regs->rdi, regs->rsi, regs->rdx, regs->rcx, (color *) regs->r8);
-            break;
-        case 8:
-            result = sys_draw_letter(regs->rdi, regs->rsi, (char *) regs->rdx, (color *) regs->rcx, regs->r8);
-            break;
-        case 9:
-            result = sys_set_mode(regs->rdi);
-            break;
-        case 10:
-            result = sys_get_screen_information((screen_information *) regs->rdi);
-            break;
-        case 11:
-            result = sys_nano_sleep(regs->rdi);
-            break;
-        case 12:
-            result = sys_get_time((time_struct *) regs->rdi);
-            break;
-        case 13:
-            result = (int64_t) sys_malloc(regs->rdi);
-            break;
-        case 14:
-            sys_free((void *) regs->rdi);
-            result = 0;
-            break;
-        case 15:
-            result = sys_get_pid();
-            break;
-        case 16:
-            result = sys_create_process((main_function) regs->rdi, (priority_t) regs->rsi, (char **) regs->rdx, regs->rcx);
-            break;
-        case 17:
-            result = sys_block(regs->rdi);
-            break;
-        case 18:
-            result = sys_unblock(regs->rdi);
-            break;
-        case 19:
-            result = sys_yield();
-            break;
-        case 20:
-            result = sys_nice((int64_t) regs->rdi, regs->rsi);
-            break;
-        case 21:
-            result = sys_kill((int64_t) regs->rdi);
-            break;
-        case 22:
-            result = sys_wait((int64_t) regs->rdi, (int64_t *) regs->rsi);
-            break;
-        case 23:
-            result = sys_sem_open((int64_t) regs->rdi, regs->rsi);
-            break;
-        case 24:
-            result = sys_sem_wait((int64_t) regs->rdi);
-            break;
-        case 25:
-            result = sys_sem_post((int64_t) regs->rdi);
-            break;
-        case 26:
-            result = sys_sem_close((int64_t) regs->rdi);
-            break;
-        default:
-            result = NOT_VALID_SYS_ID;
-            break;
-    }
-
-    _sti();  // Re-enable interrupts before returning
-    return result;
 }
 
 
