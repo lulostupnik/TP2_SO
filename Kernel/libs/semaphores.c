@@ -146,14 +146,18 @@ int64_t my_sem_close(int64_t sem_id){
     // my_free(queue); 
 
     
-    // int del_result = delete_ordered_list(sem_array[sem_id].process_list, get_running());
+    int del_result = delete_ordered_list(sem_array[sem_id].process_list, get_running());
     /*
     if(del_result == -1){
         release(&sem_array[sem_id].lock);
         return -1;
     }
     */
-
+    if(is_empty_ordered_list(sem_array[sem_id].process_list)){
+        free_queue(sem_array[sem_id].queue);
+        free_ordered_list(sem_array[sem_id].process_list);
+        sem_array[sem_id].not_free = 0;
+    }
 
     /*
     del_from_ordered_list(sem_array[sem_id].process_list, get_running());

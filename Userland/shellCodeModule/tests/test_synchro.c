@@ -61,10 +61,13 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
   }
   libc_fprintf(STDERR, "%d has finished\n", libc_get_pid());
 
-  /*
-  if (use_sem)
+  
+  if (use_sem){
     libc_sem_close(SEM_ID);
-  */
+    // todo -> agregar chequeo
+  }
+    
+  
 
   
 // test_synchro.c line 72
