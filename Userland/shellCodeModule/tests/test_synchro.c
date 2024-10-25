@@ -31,19 +31,12 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
   if (use_sem){
     libc_fprintf(STDERR, "%d is trying to open semaphore %d\n", libc_get_pid(), SEM_ID);
     int64_t open_attempt = libc_sem_open(SEM_ID, 1);
-    if (!open_attempt) {
+    if (open_attempt == -1) {
       // printf("test_sync: ERROR opening semaphore\n");
       libc_fprintf(STDERR, "test_sync: ERROR opening semaphore\n");
       return -1;
     }
-    if (open_attempt == 2) {
-      // printf("test_sync: Semaphore already open\n");
-      // libc_fprintf(STDERR, "%d: semaphore was already open\n", libc_get_pid());
-    }
-    else{
-      // printf("test_sync: Semaphore opened\n");
-      // libc_fprintf(STDERR, "%d: process opened the semaphore\n", libc_get_pid());
-    }
+    
    // return 0;
   }
   

@@ -16,9 +16,13 @@ int64_t my_sem_open(int64_t sem_id, int value){
         return 2; // el semaforo ya está creado
     }
 
-    queue_adt queue;
-    if((queue = my_malloc(sizeof(*(void *)queue))) == NULL){
-        return 0;
+    // queue_adt queue;
+    // if((queue = my_malloc(sizeof(*(void *)queue))) == NULL){
+    //     return 0;
+    // }
+    queue_adt queue= new_queue();
+    if(queue == NULL){
+        return -1;
     }
 
     sem_array[sem_id].not_free = 1;
