@@ -121,16 +121,31 @@ int64_t my_sem_close(int64_t sem_id){
     //todo -> ¿retornar 0 si no existía?
 
     acquire(&sem_array[sem_id].lock);
-    sem_array[sem_id].not_free = 0;
-    queue_adt queue = sem_array[sem_id].queue;
+    /*
+    if(sem_array[sem_id].not_free == 0){ // ya estaba cerrado
+        release(&sem_array[sem_id].lock);
+        return -1;
+    }
+    */
     
+    /*
     while(!queue_is_empty(queue)){ // recordar que queue_is_empty devuelve 0 si queue es NULL
         pcb = dequeue(queue);
         ready(pcb);
     }
+    */
     //my_free(queue); 
-    free_queue(queue);
 
+    /* 
+    del_from_ordered_list(sem_array[sem_id].process_list, get_running());
+    if(ordered_list_is_empty(sem_array[sem_id].process_list)){
+        free_queue(sem_array[sem_id].queue);
+        sem_array[sem_id].not_free = 0;
+    }
+    */
+    
+
+    
     release(&sem_array[sem_id].lock);
     return 1;
 }
