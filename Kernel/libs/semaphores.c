@@ -21,23 +21,31 @@ int cmp(elem_type_ptr e1, elem_type_ptr e2)
 
 
 int64_t my_sem_open(int64_t sem_id, int value){
+    // TODO -> AGREGAR ACQUIRE Y RELEASE ??? !!!
+    // acquire(&sem_array[sem_id].lock);
     if(sem_array[sem_id].not_free){ 
+        // int to_return = add_ordered_list(sem_array[sem_id].process_list, get_running());
+        // release(&sem_array[sem_id].lock);
+        // return to_return;
         return add_ordered_list(sem_array[sem_id].process_list, get_running());
     }
     // Si es el primero en abrirlo crea el semáforo
 
     queue_adt queue = new_queue();
     if(queue == NULL){
+        // release(&sem_array[sem_id].lock);
         return -1;
     }
     ordered_list_adt list = new_ordered_list(cmp); // TODO -> CMP!!!!
     if(list == NULL){
         free_queue(queue);
+        // release(&sem_array[sem_id].lock);
         return -1;
     }
     if(add_ordered_list(list, get_running()) == -1){
         free_queue(queue);
         free_ordered_list(list);
+        // release(&sem_array[sem_id].lock);
         return -1;
     }
 
@@ -48,6 +56,7 @@ int64_t my_sem_open(int64_t sem_id, int value){
     sem_array[sem_id].queue = queue;
     sem_array[sem_id].process_list = list;
 
+    // release(&sem_array[sem_id].lock);
     return 1; // todo -> ??
 }
 
@@ -55,7 +64,7 @@ int64_t my_sem_open(int64_t sem_id, int value){
 int64_t my_sem_wait(int64_t sem_id){
 
     // todo -> chequear que el semaforo esté abierto para el proceso que quiere hacer wait
-    // todo -> ¿hacer acquire antes?
+    // todo -> ¿hacer acquire antes? ACQUIRE !!!
     //  acquire(&sem_array[sem_id].lock);
     if(!sem_array[sem_id].not_free){ // todo -> ¿está bien?
         // release(&sem_array[sem_id].lock);
@@ -134,9 +143,19 @@ int64_t my_sem_close(int64_t sem_id){
         ready(pcb);
     }
     */
-    //my_free(queue); 
+    // my_free(queue); 
 
-    /* 
+    
+    // int del_result = delete_ordered_list(sem_array[sem_id].process_list, get_running());
+    /*
+    if(del_result == -1){
+        release(&sem_array[sem_id].lock);
+        return -1;
+    }
+    */
+
+
+    /*
     del_from_ordered_list(sem_array[sem_id].process_list, get_running());
     if(ordered_list_is_empty(sem_array[sem_id].process_list)){
         free_queue(sem_array[sem_id].queue);
