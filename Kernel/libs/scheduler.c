@@ -35,6 +35,13 @@ void ready(PCB * process)
 
 }
 
+void block_current_no_yield(){
+	PCB * process = running;
+	process->status = BLOCKED;
+	delete_list(ready_list, process);
+	add_list(blocked_list, process);
+}
+
 void block(PCB * process)
 {
 	process->status = BLOCKED;
@@ -74,9 +81,9 @@ int64_t make_me_zombie(int64_t retval){
 	}
 	pcb->ret = retval;
 	unschedule(pcb);
-	unblock_waiting_me();
 	pcb->status = ZOMBIE;
-	return 1; // todo ¿está bien?
+	unblock_waiting_me();
+	return 0; // todo ¿está bien?
 }
 
 

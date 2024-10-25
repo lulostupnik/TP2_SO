@@ -10,6 +10,6 @@ uint64_t my_process_inc(char *argv[], uint64_t argc);
 uint64_t test_sync(char *argv[], uint64_t argc);
 
 #define SEM_ID 3
-#define TOTAL_PAIR_PROCESSES 2
+#define TOTAL_PAIR_PROCESSES 10
 
 #endif

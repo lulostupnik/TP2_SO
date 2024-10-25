@@ -49,5 +49,6 @@ void test_prio()
 	for (i = 0; i < TOTAL_PROCESSES; i++) {
 		libc_kill(pids[i]);
 	}
+	libc_kill(libc_get_pid());
 	return;
 }

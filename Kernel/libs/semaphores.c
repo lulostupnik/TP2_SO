@@ -45,14 +45,14 @@ int64_t my_sem_wait(int64_t sem_id){
             return -1;
         }
 
-        if(sem_array[sem_id].value != 0){ // o > 0 ?
+        if(sem_array[sem_id].value > 0){ // o > 0 ?
             sem_array[sem_id].value --;
             release(&sem_array[sem_id].lock);
             return 1;
         }
 
         PCB * running_pcb = get_running();
-        running_pcb->status = BLOCKED;
+        block_current_no_yield();
         enqueue(sem_array[sem_id].queue, running_pcb);
         release(&sem_array[sem_id].lock); 
 
@@ -67,10 +67,22 @@ int64_t my_sem_post(int64_t sem_id) {
 
     if(!queue_is_empty(sem_array[sem_id].queue)){
         PCB * to_unblock = dequeue(sem_array[sem_id].queue);
-        to_unblock->status = READY;
+        // if(to_unblock->status == BLOCKED){
+           
+        // }
+        if(to_unblock->status != BLOCKED){
+            sem_id++;
+            sem_id--;
+        }
+        if(to_unblock->pid == 5 ){
+            sem_id++;
+            sem_id--;
+        }
+        ready(to_unblock);
     }
 
     release(&sem_array[sem_id].lock);
+    scheduler_yield();
     return 1;
 }
 

@@ -44,7 +44,7 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
       // printf("test_sync: Semaphore opened\n");
       // libc_fprintf(STDERR, "%d: process opened the semaphore\n", libc_get_pid());
     }
-    
+   // return 0;
   }
   
   uint64_t i;
@@ -58,7 +58,7 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
         return -1;
       }
       // libc_fprintf(STDERR, "%d has passed semaphore %d\n", libc_get_pid(), SEM_ID);
-      libc_fprintf(STDERR, "%d is in critical zone\n", libc_get_pid());
+      libc_fprintf(STDOUT, "%d is in critical zone\n", libc_get_pid());
     }
     slowInc(&global, inc);
     if (use_sem){
@@ -73,6 +73,15 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
   if (use_sem)
     libc_sem_close(SEM_ID);
   */
+
+  
+// test_synchro.c line 72
+
+if(libc_get_pid() == 5){
+    libc_fprintf(STDERR, "Entre en el proceso 5 para debuggear\n");
+    // breakpoint acá para debuggear
+  
+  }
 
   return 0;
 }
@@ -100,13 +109,20 @@ uint64_t test_sync(char *argv[], uint64_t argc) { //{n, use_sem, 0}
   // libc_fprintf(STDERR, "Final value: %d\n", global);
   
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    libc_fprintf(STDERR, "Waiting for %d\n", pids[i]);
-    if(libc_wait(pids[i], NULL) == -1){
-      libc_fprintf(STDERR, "test_sync: ERROR waiting for process %d\n", pids[i]);
+    if((pids[i] == 5) || (pids[i] == 7) || (pids[i] == 8) || (pids[i + TOTAL_PAIR_PROCESSES] == 5) || (pids[i + TOTAL_PAIR_PROCESSES] == 7) || (pids[i + TOTAL_PAIR_PROCESSES]==8)){
+      libc_printf(".");
     }
-    libc_fprintf(STDERR, "Waiting for %d\n", pids[i + TOTAL_PAIR_PROCESSES]);
+    libc_fprintf(STDOUT, "Waiting for pids %d and %d\n", pids[i], pids[i + TOTAL_PAIR_PROCESSES]);
+    if(libc_wait(pids[i], NULL) == -1){
+      libc_fprintf(STDOUT, "test_sync: ERROR waiting for process %d\n", pids[i]);
+    }else{
+      libc_printf("Good wait %d (1) \n", pids[i]);
+    }
+    // libc_fprintf(STDOUT, "Waiting for %d\n", pids[i + TOTAL_PAIR_PROCESSES]);
     if(libc_wait(pids[i + TOTAL_PAIR_PROCESSES], NULL) == -1){
-      libc_fprintf(STDERR, "test_sync: ERROR waiting for process %d\n", pids[i + TOTAL_PAIR_PROCESSES]);
+      libc_fprintf(STDOUT, "test_sync: ERROR waiting for process (2) %d\n", pids[i + TOTAL_PAIR_PROCESSES]);
+    }else{
+      libc_printf("Good wait %d (2) \n", pids[i+ TOTAL_PAIR_PROCESSES]);
     }
   }
   
@@ -116,7 +132,7 @@ uint64_t test_sync(char *argv[], uint64_t argc) { //{n, use_sem, 0}
 
   // libc_sem_close(SEM_ID); // todo -> sacar esto !!!
 
-
+  libc_kill(libc_get_pid());
   return 0;
 }
 

@@ -13,6 +13,7 @@ typedef struct p_rq {
 	enum State state;
 } p_rq;
 
+
 int64_t test_processes( char * argv[], uint64_t argc)
 {
 	uint64_t rq;
@@ -22,11 +23,12 @@ int64_t test_processes( char * argv[], uint64_t argc)
 
 	if (argc != 2 || (max_processes = satoi(argv[1])) < 0) {
 		libc_fprintf(STDERR, "Usage: test_processes <max_processes>\n");
-		return -1;
+		return -1;	
 	}
 
 	if (max_processes > 20 || max_processes == 0) {
 		libc_fprintf(STDERR, "max_processes must be between 1 and 20\n");
+		return -1;	
 	}
 
 	p_rq p_rqs[max_processes];

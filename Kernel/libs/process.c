@@ -64,8 +64,12 @@ pid_t wait(pid_t pid, int64_t * ret){
 	if(!(pcb_to_wait->status == ZOMBIE)){
 		pcb_to_wait->waiting_me = get_running();
 		block_current();
+		if(pid == 5){
+			pid++;
+			pid--;
+		}
 	}
-	if(!(pcb_to_wait->status == ZOMBIE)){ // Esto podria pasar si lo mataron
+	if(!((pcb_to_wait->status == ZOMBIE))){ // Esto podria pasar si lo mataron
 		return -1;
 	}
 	
@@ -124,6 +128,13 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 
 	ready(&pcb_array[pid]);
 	amount_of_processes++;
+	// process.c line 133
+
+	if(pid == 5){
+    // break acá para debuggear -> obtener info de estructura
+    pid++;
+    pid--;
+}
 	return pid;
 }
 

@@ -4,7 +4,7 @@
 #include <queueADT.h>
 
 typedef struct node {
-    elem_type_ptr value;
+    elem_type_ptr head;
     struct node * tail;
 } t_node;
 
@@ -41,7 +41,7 @@ elem_type_ptr dequeue(queue_adt queue){
         return NULL;
     }
     queue->size--;
-    elem_type_ptr to_return = queue->first->value;
+    elem_type_ptr to_return = queue->first->head;
     t_queue aux = queue->first->tail;
     my_free(queue->first);
     queue->first = aux;
@@ -51,7 +51,7 @@ elem_type_ptr dequeue(queue_adt queue){
     return to_return;
 }
 
-void enqueue(queue_adt queue, elem_type_ptr value){
+void enqueue(queue_adt queue, elem_type_ptr head){
     if(queue == NULL){
         // @todo -> ¿manejar error?
         return;
@@ -61,7 +61,7 @@ void enqueue(queue_adt queue, elem_type_ptr value){
         // @todo -> ¿manejar error?
         return;
     }
-    new_node->value = value;
+    new_node->head = head;
     new_node->tail = NULL;
     if(queue_is_empty(queue)){
         queue->first = new_node;
