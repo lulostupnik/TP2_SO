@@ -82,10 +82,16 @@ static t_ordered_list add_ordered_list_rec(t_ordered_list list, elem_type elem, 
 }
 
 int add_ordered_list(ordered_list_adt list, elem_type elem){
+    if(list == NULL){
+        return -1;
+    }
     int flag = 0;
     list->first = add_ordered_list_rec(list->first, elem, list->cmp, &flag);
     list->size += flag;
-    return flag;
+    if(flag == 0){
+        return -1;
+    }
+    return 0;
 }
 
 static elem_type get_rec(t_ordered_list l, size_t idx){

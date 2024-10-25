@@ -7,35 +7,44 @@ typedef struct sem_structure{
     uint8_t lock; 
     uint8_t not_free;
     queue_adt queue;
+    ordered_list_ADT process_list;
 } sem_structure;
 
 sem_structure sem_array[SEM_AMOUNT] = {0};
 
 int64_t my_sem_open(int64_t sem_id, int value){
     if(sem_array[sem_id].not_free){
-        return 2; // el semaforo ya está creado
+        return add_ordered_list(sem_array[sem_id].list, get_running());
     }
 
-    // queue_adt queue;
-    // if((queue = my_malloc(sizeof(*(void *)queue))) == NULL){
-    //     return 0;
-    // }
     queue_adt queue= new_queue();
     if(queue == NULL){
         return -1;
     }
+    ordered_list_ADT list = new_ordered_list();
+    if(list == NULL){
+        free_queue(queue);
+        return -1;
+    }
+    if(add_ordered_list(list, get_running()) == -1){
+        free_queue(queue);
+        free_ordered_list(list);
+        return -1;
+    }
+
 
     sem_array[sem_id].not_free = 1;
     sem_array[sem_id].lock = 1; // todo -> invertir para acquire / release
     sem_array[sem_id].value = value;
     sem_array[sem_id].queue = queue;
+    sem_array[sem_id].list = list;
 
     return 1; // todo -> ??
 }
 
 
 int64_t my_sem_wait(int64_t sem_id){
-    
+
     if(!sem_array[sem_id].not_free){ // todo -> ¿está bien?
         return -1;
     }
@@ -100,9 +109,10 @@ int64_t my_sem_close(int64_t sem_id){
     
     while(!queue_is_empty(queue)){ // recordar que queue_is_empty devuelve 0 si queue es NULL
         pcb = dequeue(queue);
-        pcb->status = READY;
+        ready(pcb);
     }
-    my_free(queue);
+    //my_free(queue); 
+    free_queue(queue);
 
     release(&sem_array[sem_id].lock);
     return 1;
