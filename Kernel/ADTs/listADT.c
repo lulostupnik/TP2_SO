@@ -78,7 +78,7 @@ int add_list(list_adt list, elem_type_ptr elem)
 	} else {
 		new_node->head = list->pre_next->head;
 		list->pre_next->head = elem;
-
+		
 		new_node->tail = list->pre_next->tail;
 		list->pre_next->tail = new_node;
 		list->pre_next = new_node;

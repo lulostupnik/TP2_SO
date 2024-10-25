@@ -19,6 +19,7 @@ int cmp(elem_type_ptr e1, elem_type_ptr e2)
 	return e1 - e2;
 }
 
+//hay que verificar el valor de sem_id. 
 
 int64_t my_sem_open(int64_t sem_id, int value){
     // TODO -> AGREGAR ACQUIRE Y RELEASE ??? !!!
@@ -63,6 +64,7 @@ int64_t my_sem_open(int64_t sem_id, int value){
 
 int64_t my_sem_wait(int64_t sem_id){
 
+    
     // todo -> chequear que el semaforo esté abierto para el proceso que quiere hacer wait
     // todo -> ¿hacer acquire antes? ACQUIRE !!!
     //  acquire(&sem_array[sem_id].lock);
