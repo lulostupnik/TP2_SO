@@ -74,7 +74,7 @@ void enqueue(queue_adt queue, elem_type_ptr head){
     queue->last = new_node;
 }
 
-void free_queue(queue_adt queue){
+void free_queue(queue_adt queue){ //@todo check mem leak
     if(queue == NULL){
         return;
     }

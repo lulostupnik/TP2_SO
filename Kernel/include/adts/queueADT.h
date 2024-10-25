@@ -2,9 +2,8 @@
 #define _QUEUEADT_H_
 
 #include <stddef.h>
-#include <assert.h>
 #include <stdint.h>
-#include "PCB.h"
+#include <PCB.h>
 #include <memory_management.h>
 
 typedef struct queue_cdt * queue_adt;
