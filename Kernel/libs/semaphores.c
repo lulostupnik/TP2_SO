@@ -7,21 +7,29 @@ typedef struct sem_structure{
     uint8_t lock; 
     uint8_t not_free;
     queue_adt queue;
-    ordered_list_ADT process_list;
+    ordered_list_adt process_list;
+    
 } sem_structure;
 
 sem_structure sem_array[SEM_AMOUNT] = {0};
 
+
+int cmp(elem_type_ptr e1, elem_type_ptr e2)
+{
+	return e1 - e2;
+}
+
+
 int64_t my_sem_open(int64_t sem_id, int value){
     if(sem_array[sem_id].not_free){
-        return add_ordered_list(sem_array[sem_id].list, get_running());
+        return add_ordered_list(sem_array[sem_id].process_list, get_running());
     }
 
-    queue_adt queue= new_queue();
+    queue_adt queue = new_queue();
     if(queue == NULL){
         return -1;
     }
-    ordered_list_ADT list = new_ordered_list();
+    ordered_list_adt list = new_ordered_list(cmp); // TODO -> CMP!!!!
     if(list == NULL){
         free_queue(queue);
         return -1;
@@ -37,7 +45,7 @@ int64_t my_sem_open(int64_t sem_id, int value){
     sem_array[sem_id].lock = 1; // todo -> invertir para acquire / release
     sem_array[sem_id].value = value;
     sem_array[sem_id].queue = queue;
-    sem_array[sem_id].list = list;
+    sem_array[sem_id].process_list = list;
 
     return 1; // todo -> ??
 }

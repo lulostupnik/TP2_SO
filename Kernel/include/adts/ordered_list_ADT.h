@@ -16,7 +16,7 @@ typedef PCB * elem_type;
 
 typedef int (*t_compare)(elem_type e1, elem_type e2);
 
-ordered_list_adt new_ordered_ordered_list(t_compare cmp);
+ordered_list_adt new_ordered_list(t_compare cmp);
 
 void free_ordered_list(ordered_list_adt list);
 

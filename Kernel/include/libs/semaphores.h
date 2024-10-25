@@ -6,6 +6,7 @@
 #include <scheduler.h>
 #include <process.h>
 #include <memory_management.h>
+#include <ordered_list_ADT.h>
 
 void acquire(uint8_t * lock);
 void release(uint8_t * lock);
