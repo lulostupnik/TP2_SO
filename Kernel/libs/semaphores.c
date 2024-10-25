@@ -21,9 +21,10 @@ int cmp(elem_type_ptr e1, elem_type_ptr e2)
 
 
 int64_t my_sem_open(int64_t sem_id, int value){
-    if(sem_array[sem_id].not_free){
+    if(sem_array[sem_id].not_free){ 
         return add_ordered_list(sem_array[sem_id].process_list, get_running());
     }
+    // Si es el primero en abrirlo crea el semáforo
 
     queue_adt queue = new_queue();
     if(queue == NULL){
@@ -53,9 +54,14 @@ int64_t my_sem_open(int64_t sem_id, int value){
 
 int64_t my_sem_wait(int64_t sem_id){
 
+    // todo -> chequear que el semaforo esté abierto para el proceso que quiere hacer wait
+    // todo -> ¿hacer acquire antes?
+    //  acquire(&sem_array[sem_id].lock);
     if(!sem_array[sem_id].not_free){ // todo -> ¿está bien?
+        // release(&sem_array[sem_id].lock);
         return -1;
     }
+    // release(&sem_array[sem_id].lock);
 
     while(1){
 
@@ -83,6 +89,8 @@ int64_t my_sem_wait(int64_t sem_id){
 }
 
 int64_t my_sem_post(int64_t sem_id) {
+    // todo -> chequear que el semaforo esté abierto para el proceso que quiere hacer wait (hacer acquire antes?)
+
     acquire(&sem_array[sem_id].lock);
     sem_array[sem_id].value++;
 
@@ -110,8 +118,9 @@ int64_t my_sem_post(int64_t sem_id) {
 // todo -> chequear está función !!!!
 int64_t my_sem_close(int64_t sem_id){
     PCB * pcb;
-    acquire(&sem_array[sem_id].lock);
     //todo -> ¿retornar 0 si no existía?
+
+    acquire(&sem_array[sem_id].lock);
     sem_array[sem_id].not_free = 0;
     queue_adt queue = sem_array[sem_id].queue;
     
