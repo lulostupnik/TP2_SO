@@ -130,12 +130,12 @@ int64_t my_sem_close(int64_t sem_id){
     //todo -> ¿retornar 0 si no existía?
 
     acquire(&sem_array[sem_id].lock);
-    /*
+    
     if(sem_array[sem_id].not_free == 0){ // ya estaba cerrado
         release(&sem_array[sem_id].lock);
         return -1;
     }
-    */
+    
     
     /*
     while(!queue_is_empty(queue)){ // recordar que queue_is_empty devuelve 0 si queue es NULL

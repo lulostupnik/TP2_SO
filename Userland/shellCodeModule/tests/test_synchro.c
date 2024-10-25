@@ -57,13 +57,17 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
     if (use_sem){
       libc_fprintf(STDERR, "%d is posting\n", libc_get_pid());
       libc_sem_post(SEM_ID);
+      // libc_yield();
     }
   }
   libc_fprintf(STDERR, "%d has finished\n", libc_get_pid());
 
   
   if (use_sem){
-    libc_sem_close(SEM_ID);
+    if(libc_sem_close(SEM_ID) == -1){
+      // printf("test_sync: ERROR closing semaphore\n");
+      libc_fprintf(STDERR, "%d: ERROR closing semaphore\n", libc_get_pid());
+    }
     // todo -> agregar chequeo
   }
     
