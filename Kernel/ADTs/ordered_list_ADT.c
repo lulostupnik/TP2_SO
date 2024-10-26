@@ -49,16 +49,19 @@ size_t size_ordered_list(const ordered_list_adt list){
 
 
 int belongs_ordered_list(const ordered_list_adt list, elem_type elem){
+    if((list == NULL) || (list->first == NULL)){
+        return -1;
+    }
     t_ordered_list aux = list->first;
-    int comparacion; // uso un aux porque no se que tan compleja es la funcion.
-    while(aux != NULL && (comparacion = list->cmp(elem, aux->head)) <=0){
+    int comparacion; 
+    while((aux != NULL) && ((comparacion = list->cmp(elem, aux->head)) <= 0)){
         //cmp retorna 0 si son iguales
         if(!comparacion){
-            return 1;
+            return 0;
         }
         aux = aux->tail;
     }
-    return 0;
+    return -1;
 }
 
 

@@ -189,7 +189,7 @@ static void help(char ** args, uint64_t argc)
 	libc_puts ( "- testprio: Testea las prioridades del scheduler.\n" );
 	libc_puts ( "- killpid <pid>: Mata al pid numero pid.\n" );
 	libc_puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
-	libc_puts ( "- testsync <n> <use_sem>: Testea la sincronizacion de procesos.\n\n" );
+	libc_puts ( "- testsync <n> <use_sem (0 is false, other value is true)>: Testea la sincronizacion de procesos.\n" );
 	libc_puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n\n" );
 
 }

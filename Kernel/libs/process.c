@@ -128,13 +128,6 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 
 	ready(&pcb_array[pid]);
 	amount_of_processes++;
-	// process.c line 133
-
-	if(pid == 5){
-    // break acá para debuggear -> obtener info de estructura
-    pid++;
-    pid--;
-}
 	return pid;
 }
 

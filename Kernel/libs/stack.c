@@ -7,22 +7,13 @@
 
 void process_wrapper(main_function rip, char ** argv, uint64_t argc, pid_t pid)
 {
-	//_sti(); //innecesario ya que hago un timer tick
 	int ret = rip(argv, argc);
 	_cli();
 	PCB * pcb = get_pcb(pid);
-	// stack.c line 11
-
-	if(pid == 5){
-    // break acá para debuggear -> ver si getpcb lo encuentra
-    pid++;
-    pid--;
-}
 	if (pcb == NULL) {
 		return;
 	}
-	make_me_zombie(ret);
-	
+	make_me_zombie(ret);	
 	timer_tick();
 }
 
