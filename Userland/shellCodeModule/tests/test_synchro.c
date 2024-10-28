@@ -31,9 +31,7 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
     if (open_attempt == -1) {
       libc_fprintf(STDERR, "test_sync: ERROR opening semaphore\n");
       return -1;
-    } else if(open_attempt == 2){
-      libc_fprintf(STDERR, "%d: first to open semaphore\n", libc_get_pid());
-    }
+    } 
   }
   uint64_t i;
   for (i = 0; i < n; i++) {
@@ -86,8 +84,6 @@ uint64_t test_sync(char *argv[], uint64_t argc) { //{n, use_sem, 0}
   
 
   libc_fprintf(STDOUT, "Final value: %d\n", global);
-
-  //libc_kill(libc_get_pid()); es un zombie
   return 0;
 }
 

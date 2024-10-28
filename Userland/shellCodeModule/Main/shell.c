@@ -73,25 +73,21 @@ static void call_function_process(module m, char ** args, uint64_t argc)
 		return;
 	}
 
-	if(libc_strcmp(args[argc - 1], "&") == 0) {
+	uint8_t is_bckg = (libc_strcmp(args[argc - 1], "&") == 0);
+	if(is_bckg){
 		libc_free(args[argc - 1]);
 		argc--;
-		int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc);
-		if (ans < 0) {
-			libc_fprintf ( STDERR, "Could not create process\n" );
-		}
-		libc_printf("pid: %d in background\n", ans);
-		free_args(args, argc);
-		return;
 	}
 
 	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc);
 	if (ans < 0) {
 		libc_fprintf ( STDERR, "Could not create process\n" );
+	}else if (is_bckg){
+		libc_printf(PROMPT"pid: %d in background\n", ans);
 	}
 
 	free_args(args, argc);
-	libc_wait(ans, NULL);
+	if(!is_bckg) libc_wait(ans, NULL);
 	return;
 }
 
@@ -153,7 +149,6 @@ static void interpret()
 	uint64_t argc;
 	args = command_parse(shellBuffer, &argc);
 
-	/* */
 
 	if (argc == -1) {
 		libc_fprintf ( STDERR, "Not enough memory to create process\n" );

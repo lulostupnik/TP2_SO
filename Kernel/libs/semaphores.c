@@ -1,11 +1,11 @@
 #include <semaphores.h>
 
-#define SEM_AMOUNT 32
+
 
 typedef struct sem_structure{
     uint64_t value;
     uint8_t lock; 
-    uint8_t not_free; // cantidad de procesos que tienen abierto al semáforo
+    uint8_t qtty_open; 
     queue_adt queue;
 } sem_structure;
 
@@ -24,8 +24,8 @@ int64_t my_sem_open(int64_t sem_id, int value){
     }
 
     acquire(&sem_array[sem_id].lock);
-    if(sem_array[sem_id].not_free){ 
-        sem_array[sem_id].not_free++;
+    if(sem_array[sem_id].qtty_open){ 
+        sem_array[sem_id].qtty_open++;
         release(&sem_array[sem_id].lock);
         return 1; 
     }
@@ -38,13 +38,12 @@ int64_t my_sem_open(int64_t sem_id, int value){
         return -1;
     }
 
-    sem_array[sem_id].not_free = 1;
+    sem_array[sem_id].qtty_open = 1;
     sem_array[sem_id].lock = 1; 
     sem_array[sem_id].value = value;
     sem_array[sem_id].queue = queue;
     
     release(&sem_array[sem_id].lock);
-    // return 2; 
     return 1;
 }
 
@@ -59,7 +58,7 @@ int64_t my_sem_wait(int64_t sem_id){
 
         acquire(&sem_array[sem_id].lock);
 
-        if(!sem_array[sem_id].not_free){
+        if(!sem_array[sem_id].qtty_open){
             release(&sem_array[sem_id].lock);
             return -1;
         }
@@ -67,7 +66,7 @@ int64_t my_sem_wait(int64_t sem_id){
         if(sem_array[sem_id].value > 0){ 
             sem_array[sem_id].value --;
             release(&sem_array[sem_id].lock);
-            return 1;
+            return 0;                           
         }
 
         PCB * running_pcb = get_running();
@@ -87,7 +86,7 @@ int64_t my_sem_post(int64_t sem_id) {
 
     acquire(&sem_array[sem_id].lock);
 
-    if(!sem_array[sem_id].not_free){
+    if(!sem_array[sem_id].qtty_open){
         release(&sem_array[sem_id].lock);
         return -1;
     }
@@ -101,10 +100,8 @@ int64_t my_sem_post(int64_t sem_id) {
 
     release(&sem_array[sem_id].lock);
     scheduler_yield();
-    return 1;
-}
+    return 0;                             
 
-// todo -> chequear está función !!!!
 int64_t my_sem_close(int64_t sem_id){
 
     if((sem_id >= SEM_AMOUNT) || (sem_id < 0) ){
@@ -113,22 +110,20 @@ int64_t my_sem_close(int64_t sem_id){
 
     acquire(&sem_array[sem_id].lock);
     
-    if(sem_array[sem_id].not_free == 0){
+    if(sem_array[sem_id].qtty_open == 0){
         release(&sem_array[sem_id].lock);
         return -1;
     }
 
-    sem_array[sem_id].not_free --;
-    if(sem_array[sem_id].not_free == 0){
+    sem_array[sem_id].qtty_open --;
+    if(sem_array[sem_id].qtty_open == 0){
         while(!queue_is_empty(sem_array[sem_id].queue)){
             PCB * pcb = dequeue(sem_array[sem_id].queue);
             ready(pcb);
         }
         free_queue(sem_array[sem_id].queue);
-        // release(&sem_array[sem_id].lock);
-        // return 2;
     }
     
     release(&sem_array[sem_id].lock);
-    return 1;
+    return 0;                                                             
 }
