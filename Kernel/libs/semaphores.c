@@ -27,7 +27,7 @@ int64_t my_sem_open(int64_t sem_id, int value){
     if(sem_array[sem_id].not_free){ 
         sem_array[sem_id].not_free++;
         release(&sem_array[sem_id].lock);
-        return 1; // retornar otra cosa para ver que esté funcionando
+        return 1; 
     }
 
     // Si es el primero en abrirlo crea el semáforo
@@ -44,7 +44,8 @@ int64_t my_sem_open(int64_t sem_id, int value){
     sem_array[sem_id].queue = queue;
     
     release(&sem_array[sem_id].lock);
-    return 1; 
+    // return 2; 
+    return 1;
 }
 
 
@@ -53,16 +54,6 @@ int64_t my_sem_wait(int64_t sem_id){
     if((sem_id >= SEM_AMOUNT) || (sem_id < 0) ){
         return -1;
     }
-
-    // CREO QUE DESDE ACÁ
-    acquire(&sem_array[sem_id].lock);
-    if(!sem_array[sem_id].not_free ){ 
-        release(&sem_array[sem_id].lock);
-        return -1;
-    }
-
-    release(&sem_array[sem_id].lock); // todo -> creo que es innecesario
-    // HASTA ACÁ SE PUEDE BORRAR
 
     while(1){
 
@@ -102,15 +93,13 @@ int64_t my_sem_post(int64_t sem_id) {
     }
     
     sem_array[sem_id].value++;
-    PCB * to_unblock ;
 
     if(!queue_is_empty(sem_array[sem_id].queue)){
-        to_unblock = dequeue(sem_array[sem_id].queue);           
+        PCB * to_unblock = dequeue(sem_array[sem_id].queue);           
         ready(to_unblock);
     }
 
     release(&sem_array[sem_id].lock);
-    // PCB * p = get_pcb(get_pid());
     scheduler_yield();
     return 1;
 }
@@ -122,7 +111,6 @@ int64_t my_sem_close(int64_t sem_id){
         return -1;
     }
 
-    PCB * pcb;
 
     acquire(&sem_array[sem_id].lock);
     
@@ -134,10 +122,12 @@ int64_t my_sem_close(int64_t sem_id){
     sem_array[sem_id].not_free --;
     if(sem_array[sem_id].not_free == 0){
         while(!queue_is_empty(sem_array[sem_id].queue)){
-            pcb = dequeue(sem_array[sem_id].queue);
+            PCB * pcb = dequeue(sem_array[sem_id].queue);
             ready(pcb);
         }
         free_queue(sem_array[sem_id].queue);
+        // release(&sem_array[sem_id].lock);
+        // return 2;
     }
     
     // if(delete_ordered_list(sem_array[sem_id].process_list, get_running()) == -1){
