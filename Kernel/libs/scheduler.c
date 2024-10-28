@@ -17,6 +17,7 @@ int compare_elements(elem_type_ptr e1, elem_type_ptr e2)
 	return e1 - e2;
 }
 
+
 void initialize_scheduler(int64_t idle_process_pid)
 {
 	t_compare cmp = compare_elements;
@@ -33,6 +34,10 @@ void ready(PCB * process)
 	add_list(ready_list, process);
 	delete_list(blocked_list, process);
 
+}
+
+PCB * get_idle_pcb(){
+	return idle_pcb;
 }
 
 void block_current_no_yield(){
@@ -103,10 +108,9 @@ void unschedule(PCB * process)
 
 void scheduler_yield()
 {
-	if (running == NULL || is_empty_list(ready_list)) {
-		return;
+	if (!(running == NULL || is_empty_list(ready_list))) {
+		times_ran = running->priority;
 	}
-	times_ran = running->priority;
 	timer_tick();
 }
 

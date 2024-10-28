@@ -57,17 +57,14 @@ static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc)
 
 //Returns PID if it was succesfull and -1 if it wasnt. 
 pid_t wait(pid_t pid, int64_t * ret){
+
 	PCB * pcb_to_wait = get_pcb(pid);
-	if(pcb_to_wait == NULL || pcb_to_wait->status == FREE || pcb_to_wait->waiting_me != NULL){
+	if((pcb_to_wait == NULL) || (pcb_to_wait->status == FREE) || (pcb_to_wait->waiting_me != NULL) || (pid == get_pid()) /*|| (pcb_to_wait == get_idle_pcb())*/){
 		return -1;
 	}
 	if(!(pcb_to_wait->status == ZOMBIE)){
 		pcb_to_wait->waiting_me = get_running();
 		block_current();
-		if(pid == 5){
-			pid++;
-			pid--;
-		}
 	}
 	if(!((pcb_to_wait->status == ZOMBIE))){ // Esto podria pasar si lo mataron
 		return -1;
@@ -84,8 +81,6 @@ pid_t wait(pid_t pid, int64_t * ret){
 
 }
 
-// procesos bloqueados esperando
-// 
 
 
 int64_t new_process(main_function rip, priority_t priority, uint8_t killable, char ** argv, uint64_t argc)

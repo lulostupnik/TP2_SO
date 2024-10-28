@@ -15,6 +15,7 @@ static void zoom_in();
 static void zoom_out();
 static void show_current_time();
 static void get_regs();
+static void shell_wait_pid(char ** args, uint64_t argc);
 
 static uint64_t font_size = 1;
 
@@ -37,7 +38,8 @@ static module modules[] = {
 {"testprio", test_prio, !BUILT_IN},
 {"testproc", (void (*)(char **, uint64_t)) test_processes, !BUILT_IN},
 {"testsync", (void (*)(char **, uint64_t)) test_sync, !BUILT_IN},
-{"killpid", kill_pid, BUILT_IN}
+{"kill", kill_pid, BUILT_IN},
+{"wait",shell_wait_pid, BUILT_IN}
 };
 
 
@@ -81,7 +83,7 @@ static void call_function_process(module m, char ** args, uint64_t argc)
 
 	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc);
 	if (ans < 0) {
-		libc_fprintf ( STDERR, "Could not create process\n" );
+		libc_fprintf ( STDERR, "Error: Could not create process\n" );
 	}else if (is_bckg){
 		libc_printf(PROMPT"pid: %d in background\n", ans);
 	}
@@ -177,10 +179,32 @@ static void kill_pid(char ** argv, uint64_t argc)
 	}
 
 	if (libc_kill(pid) < 0) {
-		libc_fprintf(STDERR, "Could not kill process %d\n", pid);
+		libc_fprintf(STDERR, "Error: Could not kill process %d\n", pid);
 	}
 
 }
+
+static void shell_wait_pid(char ** args, uint64_t argc){
+	if(argc != 2){
+		libc_fprintf(STDERR, "Usage: wait <pid>\n");
+		return;
+	}
+	pid_t pid;
+	if((pid=satoi(args[1])) < 0 ){
+		libc_fprintf(STDERR, "Error: pid must be positive\n");
+		return;
+	} 
+	int64_t ret;
+	pid_t ans_pid;
+	ans_pid = libc_wait(pid, &ret);
+	if(ans_pid == -1){
+		libc_fprintf(STDERR, "Error: could not wait for pid %d\n", pid);
+		return;
+	}
+	libc_printf("Pid %d returned %d\n", ans_pid, ret);
+	return;
+}
+
 
 static void help(char ** args, uint64_t argc)
 {
@@ -197,9 +221,10 @@ static void help(char ** args, uint64_t argc)
 	libc_puts ( "- clear: Limpia la pantalla.\n" );
 	libc_puts ( "- ipod: Inicia el reproductor de musica.\n" );
 	libc_puts ( "- testprio: Testea las prioridades del scheduler.\n" );
-	libc_puts ( "- killpid <pid>: Mata al pid numero pid.\n" );
+	libc_puts ( "- kill <pid>: Mata al pid numero pid.\n" );
+	libc_puts ( "- wait <pid>: Espera al proceso numero pid.\n" );
 	libc_puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
-	libc_puts ( "- testsync <n> <use_sem (0 is false, other value is true)>: Testea la sincronizacion de procesos.\n" );
+	libc_puts ( "- testsync <n> <use_sem (0 es falso, otro valor es verdadero)>: Testea la sincronizacion de procesos.\n" );
 	libc_puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n\n" );
 
 }

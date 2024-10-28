@@ -20,4 +20,5 @@ int64_t make_me_zombie(int64_t retval);
 void unblock_waiting_me();
 void unblock_waiting_pid(pid_t pid);
 void block_current_no_yield();
+PCB * get_idle_pcb();
 #endif
