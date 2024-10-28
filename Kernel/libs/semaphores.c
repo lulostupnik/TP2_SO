@@ -111,7 +111,6 @@ int64_t my_sem_close(int64_t sem_id){
         return -1;
     }
 
-
     acquire(&sem_array[sem_id].lock);
     
     if(sem_array[sem_id].not_free == 0){
@@ -130,34 +129,6 @@ int64_t my_sem_close(int64_t sem_id){
         // return 2;
     }
     
-    // if(delete_ordered_list(sem_array[sem_id].process_list, get_running()) == -1){
-    //     release(&sem_array[sem_id].lock);
-    //     return -1;
-    // }
-    
-    // if(is_empty_ordered_list(sem_array[sem_id].process_list)){
-    //     free_queue(sem_array[sem_id].queue);
-    //     free_ordered_list(sem_array[sem_id].process_list);
-    //     sem_array[sem_id].not_free = 0;
-    // }
-    
     release(&sem_array[sem_id].lock);
     return 1;
 }
-
-
-// sem_t get_free_sem(){
-//     if(sems_used == SEM_AMOUNT){
-//         return -1;
-//     }
-//     for(int i = 0; i < SEM_AMOUNT; i++){
-//         acquire(&sem_array[i].lock);
-//         if(sem_array[i].free){
-//             sem_array[i].free = 0;
-//             return i;
-//         }
-//         release(&sem_array[i].lock);
-//     }
-//     return -1;
-// }
-
