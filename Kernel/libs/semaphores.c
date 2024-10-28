@@ -100,7 +100,8 @@ int64_t my_sem_post(int64_t sem_id) {
 
     release(&sem_array[sem_id].lock);
     scheduler_yield();
-    return 0;                             
+    return 0;
+}                
 
 int64_t my_sem_close(int64_t sem_id){
 

@@ -1,10 +1,10 @@
 #include <test_synchro.h>
 
-int64_t global; // shared memory
+int64_t global; 
 
 void slowInc(int64_t *p, int64_t inc) {
   uint64_t aux = *p;
-  libc_yield(); // This makes the race condition highly probable
+  libc_yield(); 
   aux += inc;
   *p = aux;
 }
@@ -27,8 +27,7 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
     return -1;
 
   if (use_sem){
-    int64_t open_attempt = libc_sem_open(SEM_ID, 1);
-    if (open_attempt == -1) {
+    if (libc_sem_open(SEM_ID, 1) == -1) {
       libc_fprintf(STDERR, "test_sync: ERROR opening semaphore\n");
       return -1;
     } 
@@ -43,7 +42,10 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
     }
     slowInc(&global, inc);
     if (use_sem){
-      libc_sem_post(SEM_ID);
+      if(libc_sem_post(SEM_ID) == -1){
+        libc_fprintf(STDERR, "test_sync: ERROR posting semaphore\n");
+        return -1;
+      }
     }
   }  
   if (use_sem){
