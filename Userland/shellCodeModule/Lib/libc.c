@@ -528,8 +528,8 @@ void libc_ps(){
 		libc_printf("PID: %d - ", process_list->processes[i].pid);
 		// libc_printf("PPID: %d - ", process_list->processes[i].ppid);
 		libc_printf("Prio: %d - ", process_list->processes[i].priority);
-		libc_printf("Base Pointer: %d - ", process_list->processes[i].base_pointer);
-		libc_printf("RSP: %d - ", process_list->processes[i].stack_pointer);
+		libc_printf("Base Pointer: %x - ", process_list->processes[i].base_pointer);
+		libc_printf("RSP: %x - ", process_list->processes[i].stack_pointer);
 		libc_printf("Status: %d\n", process_list->processes[i].status);
 	}
 }
