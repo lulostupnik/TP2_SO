@@ -185,17 +185,33 @@ int64_t kill_process(pid_t pid)
 	return 0;
 }
 
-/*
+
 void get_process_info(PCB * pcb, process_info * process)
 {
 	process->pid = pcb->pid;
-	process->ppid = pcb->ppid;
+	//process->ppid = pcb->ppid;
 	process->priority = pcb->priority;
 	process->stack_pointer = pcb->rsp;
 	process->status = pcb->status;
 }
 
+// int64_t ps(process_info ** process_list)
+/*
+int64_t ps(process_info ** process_list){
+	process_info * new_process_array = my_malloc(amount_of_processes * sizeof(process_info));
+	*process_list = new_process_array;
+	if(new_process_array == NULL){
+		return -1;
+	}
+	for(int i = 0, found = 0; i < PCB_AMOUNT && found < amount_of_processes; i++){
+		if(pcb_array[i].status != FREE){
+			get_process_info(&pcb_array[i], &new_process_array[found]);
+			found++;
+		}
+	}
 
+}
+*/
 process_info_list * ps()
 {
 	process_info_list * process_list = my_malloc(sizeof(process_info_list));
@@ -219,4 +235,4 @@ process_info_list * ps()
 	process_list->processes = processes;
 	return process_list;
 
-}*/
+}

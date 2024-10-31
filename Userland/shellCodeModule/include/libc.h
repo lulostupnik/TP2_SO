@@ -275,4 +275,6 @@ int64_t libc_sem_post ( int64_t sem_id );
 
 int64_t libc_sem_close ( int64_t sem_id );
 
+void libc_ps();
+
 #endif

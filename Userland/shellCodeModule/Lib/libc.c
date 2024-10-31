@@ -517,6 +517,22 @@ int64_t libc_sem_close ( int64_t sem_id ){
 	return sys_sem_close(sem_id);
 }
 
+void libc_ps(){
+	process_info_list * process_list = sys_ps();
+	if(process_list == NULL){
+		libc_printf("Error while getting process list\n");
+		return;
+	}
+	libc_printf("Amount of processes: %d\n", process_list->amount_of_processes);
+	for(int i = 0; i < process_list->amount_of_processes; i++){
+		libc_printf("PID: %d - ", process_list->processes[i].pid);
+		// libc_printf("PPID: %d - ", process_list->processes[i].ppid);
+		libc_printf("Prio: %d - ", process_list->processes[i].priority);
+		libc_printf("Base Pointer: %d - ", process_list->processes[i].base_pointer);
+		libc_printf("RSP: %d - ", process_list->processes[i].stack_pointer);
+		libc_printf("Status: %d\n", process_list->processes[i].status);
+	}
+}
 
 /*
 void ps(){

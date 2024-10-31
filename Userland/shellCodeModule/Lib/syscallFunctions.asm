@@ -25,6 +25,7 @@ GLOBAL sys_sem_open
 GLOBAL sys_sem_wait
 GLOBAL sys_sem_post
 GLOBAL sys_sem_close
+GLOBAL sys_ps
 
 section .text
 
@@ -203,3 +204,6 @@ sys_sem_post:
 
 sys_sem_close:
     simple_sys_handler 26
+
+sys_ps:
+    simple_sys_handler 27

@@ -93,6 +93,14 @@ int64_t sys_call_handler ( stack_registers * regs )
 		case 26:
 			return sys_sem_close( (int64_t) regs->rdi);
 			break;
+		case 27: 
+			return (int64_t) sys_ps();
+			break;
+		/*
+		case 27: 
+			return sys_ps( (process_info_list *) regs->rdi);
+			break;
+		*/
 
 		default:
 			return NOT_VALID_SYS_ID;
@@ -293,3 +301,15 @@ int64_t sys_sem_close ( int64_t sem_id )
 {
 	return my_sem_close(sem_id);
 }
+
+process_info_list * sys_ps ()
+{
+	return ps();
+}
+
+/*
+int64_t sys_ps ( process_info_list * list )
+{
+	return ps(list);
+}
+*/

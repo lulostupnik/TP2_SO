@@ -39,7 +39,8 @@ static module modules[] = {
 {"testproc", (void (*)(char **, uint64_t)) test_processes, !BUILT_IN},
 {"testsync", (void (*)(char **, uint64_t)) test_sync, !BUILT_IN},
 {"kill", kill_pid, BUILT_IN},
-{"wait",shell_wait_pid, BUILT_IN}
+{"wait",shell_wait_pid, BUILT_IN},
+{"ps", libc_ps, BUILT_IN}
 };
 
 
@@ -85,7 +86,7 @@ static void call_function_process(module m, char ** args, uint64_t argc)
 	if (ans < 0) {
 		libc_fprintf ( STDERR, "Error: Could not create process\n" );
 	}else if (is_bckg){
-		libc_printf(PROMPT"pid: %d in background\n", ans);
+		libc_printf("pid: %d in background\n", ans);
 	}
 
 	free_args(args, argc);
@@ -226,6 +227,7 @@ static void help(char ** args, uint64_t argc)
 	libc_puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
 	libc_puts ( "- testsync <n> <use_sem (0 es falso, otro valor es verdadero)>: Testea la sincronizacion de procesos.\n" );
 	libc_puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n\n" );
+	libc_puts ( "- ps: Muestra informacion de los procesos.\n\n" );
 
 }
 
