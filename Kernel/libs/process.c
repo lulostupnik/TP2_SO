@@ -197,6 +197,7 @@ int64_t kill_process(pid_t pid)
 
 void get_process_info(PCB * pcb, process_info * process)
 {
+	process->name = my_new_str_copy(pcb->name);
 	process->pid = pcb->pid;
 	//process->ppid = pcb->ppid;
 	process->priority = pcb->priority;
