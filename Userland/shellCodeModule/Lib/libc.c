@@ -526,11 +526,14 @@ void libc_ps(){
 	libc_printf("Amount of processes: %d\n", process_list->amount_of_processes);
 	for(int i = 0; i < process_list->amount_of_processes; i++){
 		libc_printf("PID: %d - ", process_list->processes[i].pid);
+		libc_printf("Name: %s - ", process_list->processes[i].name ? process_list->processes[i].name : "No name");
+		libc_printf("%sground - ", process_list->processes[i].is_background ? "Back" : "Fore");
 		// libc_printf("PPID: %d - ", process_list->processes[i].ppid);
 		libc_printf("Prio: %d - ", process_list->processes[i].priority);
 		libc_printf("Base Pointer: %x - ", process_list->processes[i].base_pointer);
 		libc_printf("RSP: %x - ", process_list->processes[i].stack_pointer);
 		libc_printf("Status: %d\n", process_list->processes[i].status);
+
 	}
 }
 

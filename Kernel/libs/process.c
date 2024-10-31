@@ -194,6 +194,7 @@ void get_process_info(PCB * pcb, process_info * process)
 	process->stack_pointer = pcb->rsp;
 	process->base_pointer = pcb->base_pointer;
 	process->status = pcb->status;
+	process->is_background = pcb->is_background;
 }
 
 // int64_t ps(process_info ** process_list)
