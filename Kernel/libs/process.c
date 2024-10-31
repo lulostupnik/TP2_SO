@@ -21,6 +21,18 @@ static uint64_t my_strlen ( const char * str )
 	return s - str;
 }
 
+char * my_new_str_copy(char * string){
+	if(string == NULL){
+		return NULL;
+	}
+	uint64_t len = my_strlen(string) + 1;
+	char * copy = my_malloc(len);
+	if(copy == NULL){
+		return NULL;
+	}
+	shared_libc_memcpy(copy, string, len);
+	return copy;
+}
 
 static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc)
 {
@@ -40,17 +52,14 @@ static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc)
 	}
 
 	for (uint64_t i = 0; i < argc; i++) {
-		uint64_t len = my_strlen(argv[i]) + 1;
-		char * p = my_malloc(len);
-		if (p == NULL) {
+		ans[i] = my_new_str_copy(argv[i]);
+		if (ans[i] == NULL) {
 			for (uint64_t j = 0; j < i; j++) {
 				my_free((void *)ans[j]);
 			}
 			my_free((void *)ans);
 			return NULL;
 		}
-		shared_libc_memcpy(p, argv[i], len);
-		ans[i] = p;
 	}
 	return ans;
 }
