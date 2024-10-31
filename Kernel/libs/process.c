@@ -192,6 +192,7 @@ void get_process_info(PCB * pcb, process_info * process)
 	//process->ppid = pcb->ppid;
 	process->priority = pcb->priority;
 	process->stack_pointer = pcb->rsp;
+	process->base_pointer = pcb->base_pointer;
 	process->status = pcb->status;
 }
 
