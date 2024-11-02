@@ -1,6 +1,8 @@
 #ifndef _SHARED_DEFS_H
 #define _SHARED_DEFS_H
 
+#define STACK_SIZE 0x0FFF
+
 typedef struct {
 	uint64_t rax;
 	uint64_t rbx;

@@ -5,7 +5,6 @@
 
 
 
-
 PCB pcb_array[PCB_AMOUNT] = {0};
 uint64_t amount_of_processes = 0;
 
@@ -120,6 +119,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 		return -1;
 	}
 
+	pcb_array[pid].base_pointer = rsp;
 	rsp = load_stack((uint64_t )rip, rsp, args_cpy, argc, pid);
 
 	pcb_array[pid].pid = pid;
@@ -128,7 +128,6 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	pcb_array[pid].argv = args_cpy;
 	pcb_array[pid].argc = argc;
 	pcb_array[pid].priority = priority;
-	pcb_array[pid].base_pointer = rsp_malloc;
 	pcb_array[pid].killable = killable;
 	pcb_array[pid].waiting_me = NULL;
 	pcb_array[pid].is_background = 0;
@@ -204,7 +203,7 @@ int64_t kill_process(pid_t pid)
 
 void get_process_info(PCB * pcb, process_info * process)
 {
-	process->name = my_new_str_copy(pcb->argv != NULL ? pcb->argv[0] : NULL); // pcb->argv != NULL ? pcb->argv[0] : "No name";
+	process->name = my_new_str_copy(pcb->argv != NULL ? pcb->argv[0] : NULL); // Si falla el malloc lo imprimimos como "No name" pero dejamos el resto del estado. 
 	process->pid = pcb->pid;
 	//process->ppid = pcb->ppid;
 	process->priority = pcb->priority;
@@ -214,34 +213,18 @@ void get_process_info(PCB * pcb, process_info * process)
 	process->is_background = pcb->is_background;
 }
 
-// int64_t ps(process_info ** process_list)
-/*
-int64_t ps(process_info ** process_list){
-	process_info * new_process_array = my_malloc(amount_of_processes * sizeof(process_info));
-	*process_list = new_process_array;
-	if(new_process_array == NULL){
-		return -1;
-	}
-	for(int i = 0, found = 0; i < PCB_AMOUNT && found < amount_of_processes; i++){
-		if(pcb_array[i].status != FREE){
-			get_process_info(&pcb_array[i], &new_process_array[found]);
-			found++;
-		}
-	}
 
-}
-*/
 process_info_list * ps()
 {
 	process_info_list * process_list = my_malloc(sizeof(process_info_list));
-	if (process_list == 0) {
-		return 0;
+	if (process_list == NULL) {
+		return NULL;
 	}
 	process_list->amount_of_processes = amount_of_processes;
 	process_info * processes = my_malloc(amount_of_processes * sizeof(process_info));
-	if (processes == 0) {
+	if (processes == NULL) {
 		my_free((void *) process_list);
-		return 0;
+		return NULL;
 	}
 
 	for (int i = 0, found = 0; i < PCB_AMOUNT && found < amount_of_processes; i++) {
@@ -253,9 +236,17 @@ process_info_list * ps()
 
 	process_list->processes = processes;
 	return process_list;
-
 }
 
-// int64_t free_ps(process_info_list * ps){
-
-// }
+void free_ps(process_info_list * ps){
+	if(ps == NULL || ps->processes == NULL){
+		return;
+	}
+	for(int i=0; i<ps->amount_of_processes ;i++){
+		if(ps->processes[i].name){
+			my_free(ps->processes[i].name);
+		}
+	}
+	my_free(ps->processes);
+	my_free(ps);
+}
