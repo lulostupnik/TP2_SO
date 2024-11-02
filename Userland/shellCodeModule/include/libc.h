@@ -278,4 +278,6 @@ int64_t libc_sem_close ( int64_t sem_id );
 
 void libc_ps();
 
+int8_t libc_get_status(pid_t pid);
+
 #endif

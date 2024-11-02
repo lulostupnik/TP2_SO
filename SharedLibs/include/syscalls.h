@@ -206,6 +206,7 @@ int64_t sys_sem_post ( int64_t sem_id );
 int64_t sys_sem_close ( int64_t sem_id );
 process_info_list * sys_ps();
 int8_t sys_get_status(pid_t pid);
+void sys_free_ps(process_info_list * ps);
 // int64_t sys_ps ( process_info_list * process_list );
 
 

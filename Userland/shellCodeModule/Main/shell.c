@@ -356,7 +356,7 @@ static void shell_block(char **argv, uint64_t argc){
 static void loop_process(char ** argv, uint64_t argc){
 	pid_t pid = libc_get_pid();
 	while(1){
-		sys_nano_sleep(pid^10 + pid*10 + 100);
+		sys_nano_sleep((pid^10) + pid*10 + 100);
 		libc_printf("\nHello my friend, my pid is %d, I hope you are well\n", pid);
 	}
 }
