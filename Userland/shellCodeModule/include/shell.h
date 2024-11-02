@@ -18,7 +18,7 @@
 #define MAX_ARGS_SIZE 20
 //Constants for the shell
 
-#define WELCOME "Bienvenido a BarriOS!\n"
+#define WELCOME "Bienvenido a BarriOS!\n\n"
 #define PROMPT "BarriOS>User> "
 #define MAX_FONT_SIZE 3
 #define MIN_FONT_SIZE 1
@@ -26,6 +26,7 @@
 typedef struct module
 {
 	char * name;
+	char * desc;
 	void ( *function )(char ** args, uint64_t argc);
 	uint8_t is_built_in;
 } module;

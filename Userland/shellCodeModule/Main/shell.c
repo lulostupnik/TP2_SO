@@ -27,26 +27,26 @@ static uint64_t font_size = 1;
 
 
 static module modules[] = {
-{"help", help, BUILT_IN},
-{"time", show_current_time, BUILT_IN},
-{"eliminator", eliminator, BUILT_IN},
-{"zoomin", zoom_in, BUILT_IN},
-{"zoomout", zoom_out, BUILT_IN},
-{"getregs", get_regs, BUILT_IN},
-{"dividebyzero", div0, BUILT_IN},
-{"opcode", op_code, BUILT_IN},
-{"clear", (void (*)(char **, uint64_t)) libc_clear_screen, BUILT_IN},
-{"ipod", ipod_menu, BUILT_IN},
-{"testmm", (void (*)(char **, uint64_t)) test_mm, !BUILT_IN},
-{"testprio", test_prio, !BUILT_IN},
-{"testproc", (void (*)(char **, uint64_t)) test_processes, !BUILT_IN},
-{"testsync", (void (*)(char **, uint64_t)) test_sync, !BUILT_IN},
-{"kill", kill_pid, BUILT_IN},
-{"wait",shell_wait_pid, BUILT_IN},
-{"ps", libc_ps, BUILT_IN},
-{"nice", shell_nice, BUILT_IN},
-{"loop", loop_process, !BUILT_IN},
-{"block", shell_block, BUILT_IN}
+    {"help", "Muestra todos los módulos disponibles del sistema operativo.", help, BUILT_IN},
+    {"time", "Muestra la hora actual del sistema.", show_current_time, BUILT_IN},
+    {"eliminator", "Inicia el juego Eliminator, un clásico.", eliminator, BUILT_IN},
+    {"zoomin", "Agranda los caracteres en pantalla.", zoom_in, BUILT_IN},
+    {"zoomout", "Achica la pantalla.", zoom_out, BUILT_IN},
+    {"getregs", "Muestra el estado actual de los registros.", get_regs, BUILT_IN},
+    {"dividebyzero", "Genera una excepción de división por cero.", div0, BUILT_IN},
+    {"opcode", "Genera una excepción de código de operación inválido.", op_code, BUILT_IN},
+    {"clear", "Limpia la pantalla.", (void (*)(char **, uint64_t))libc_clear_screen, BUILT_IN},
+    {"ipod", "Inicia el reproductor de música.", ipod_menu, BUILT_IN},
+    {"loop", "Crea un proceso que imprime un saludo.", loop_process, !BUILT_IN},
+    {"testprio", "Testea las prioridades del scheduler.", test_prio, !BUILT_IN},
+    {"kill", "Mata al proceso con el número pid.", kill_pid, BUILT_IN},
+    {"block", "Hace un swap entre ready y blocked para el proceso pid.", shell_block, BUILT_IN},
+    {"wait", "Espera al proceso número pid.", shell_wait_pid, BUILT_IN},
+    {"nice", "Cambia la prioridad del proceso pid a newprio.", shell_nice, BUILT_IN},
+    {"testproc", "Testea la creación de procesos.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
+    {"testsync", "Testea la sincronización de procesos.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
+    {"testmm", "Testea el uso del malloc y free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
+    {"ps", "Muestra información de los procesos.", libc_ps, BUILT_IN}
 };
 
 int main()
@@ -88,6 +88,7 @@ static void call_function_process(module m, char ** args, uint64_t argc)
 	}
 
 	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc);
+	
 	if (ans < 0) {
 		libc_fprintf ( STDERR, "Error: Could not create process\n" );
 	}else if (is_bckg){
@@ -211,33 +212,12 @@ static void shell_wait_pid(char ** args, uint64_t argc){
 	return;
 }
 
-
-static void help(char ** args, uint64_t argc)
-{
-
-	libc_puts ( "\nComandos disponibles:\n\n" );
-	libc_puts ( "- help: Muestra todos los modulos disponibles del sistema operativo.\n" );
-	libc_puts ( "- time: Muestra la hora actual del sistema.\n" );
-	libc_puts ( "- eliminator: Inicia el juego Eliminator, un clasico.\n" );
-	libc_puts ( "- zoomin: Agranda los caracteres en pantalla.\n" );
-	libc_puts ( "- zoomout: Achica  la pantalla.\n" );
-	libc_puts ( "- getregs: Muestra el estado actual de los registros.\n" );
-	libc_puts ( "- dividebyzero: Genera una excepcion de division por cero.\n" );
-	libc_puts ( "- opcode: Genera una excepcion de codigo de operacion invalido.\n" );
-	libc_puts ( "- clear: Limpia la pantalla.\n" );
-	libc_puts ( "- ipod: Inicia el reproductor de musica.\n" );
-	libc_puts ( "- loop: Crea un proceso que imprime un saludo\n" );
-	libc_puts ( "- testprio: Testea las prioridades del scheduler.\n" );
-	libc_puts ( "- kill <pid>: Mata al pid numero pid.\n" );
-	libc_puts ( "- block <pid>: Hace un swap entre el estado ready y blocked al proceso pid.\n" );
-	libc_puts ( "- wait <pid>: Espera al proceso numero pid.\n" );
-	libc_puts ( "- nice <pid> <newprio>: Le cambia la prioridad al proceso pid a newprio.\n" );
-	libc_puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
-	libc_puts ( "- testsync <n> <use_sem (0 es falso, otro valor es verdadero)>: Testea la sincronizacion de procesos.\n" );
-	libc_puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n" );
-	libc_puts ( "- ps: Muestra informacion de los procesos.\n\n" );
-
+void help(char **args, uint64_t argc) {
+    for (int i = 0; i < MAX_MODULES; i++) {
+        libc_printf("- %s: %s\n", modules[i].name, modules[i].desc);
+    }
 }
+
 
 
 static void zoom_in()
