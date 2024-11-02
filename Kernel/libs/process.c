@@ -129,6 +129,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	pcb_array[pid].base_pointer = rsp_malloc;
 	pcb_array[pid].killable = killable;
 	pcb_array[pid].waiting_me = NULL;
+	pcb_array[pid].is_background = 0;
 
 	ready(&pcb_array[pid]);
 	amount_of_processes++;
@@ -197,7 +198,7 @@ int64_t kill_process(pid_t pid)
 
 void get_process_info(PCB * pcb, process_info * process)
 {
-	process->name = my_new_str_copy(pcb->name);
+	process->name = my_new_str_copy(pcb->argv != NULL ? pcb->argv[0] : NULL); // pcb->argv != NULL ? pcb->argv[0] : "No name";
 	process->pid = pcb->pid;
 	//process->ppid = pcb->ppid;
 	process->priority = pcb->priority;
