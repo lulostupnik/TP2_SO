@@ -13,7 +13,7 @@
 #define MAX_COMMAND_SIZE 100
 #define MAX_ZOOM 3
 #define MIN_ZOOM 1
-#define MAX_MODULES 17
+#define MAX_MODULES 18
 #define MAX_ARGS 10
 #define MAX_ARGS_SIZE 20
 //Constants for the shell

@@ -175,6 +175,7 @@ char * libc_gets ( char * buffer, int n );
 int64_t libc_strcmp ( const char * str1, const char * str2 );
 
 
+int64_t libc_strnocasecmp(const char *str1, const char *str2);
 
 /**
  * @brief Prints the current state of the CPU registers. Use F1 to create snapshot. Only last snapshot will be shown.

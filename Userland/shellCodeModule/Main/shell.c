@@ -16,6 +16,7 @@ static void zoom_out();
 static void show_current_time();
 static void get_regs();
 static void shell_wait_pid(char ** args, uint64_t argc);
+static void shell_nice(char **argv, uint64_t argc);
 
 static uint64_t font_size = 1;
 
@@ -40,9 +41,9 @@ static module modules[] = {
 {"testsync", (void (*)(char **, uint64_t)) test_sync, !BUILT_IN},
 {"kill", kill_pid, BUILT_IN},
 {"wait",shell_wait_pid, BUILT_IN},
-{"ps", libc_ps, BUILT_IN}
+{"ps", libc_ps, BUILT_IN},
+{"nice", shell_nice, BUILT_IN}
 };
-
 
 int main()
 {
@@ -224,9 +225,10 @@ static void help(char ** args, uint64_t argc)
 	libc_puts ( "- testprio: Testea las prioridades del scheduler.\n" );
 	libc_puts ( "- kill <pid>: Mata al pid numero pid.\n" );
 	libc_puts ( "- wait <pid>: Espera al proceso numero pid.\n" );
+	libc_puts ( "- nice <pid> <newprio>: Le cambia la prioridad al proceso pid a newprio.\n" );
 	libc_puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
 	libc_puts ( "- testsync <n> <use_sem (0 es falso, otro valor es verdadero)>: Testea la sincronizacion de procesos.\n" );
-	libc_puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n\n" );
+	libc_puts ( "- testmm <maxmemory>: Testea el uso del malloc y free.\n" );
 	libc_puts ( "- ps: Muestra informacion de los procesos.\n\n" );
 
 }
@@ -304,3 +306,24 @@ static void get_regs()
 	return;
 }
 
+
+
+static void shell_nice(char **argv, uint64_t argc) {
+    pid_t pid;
+    if (argc != 3 || ((pid = satoi(argv[1])) < 0)) {
+        libc_fprintf(STDERR, "Usage: nice <pid> <new_prio>");
+        return;
+    }
+    priority_t prio;
+    if (libc_strnocasecmp(argv[2], "low") == 0) {
+        prio = LOW;
+    } else if (libc_strnocasecmp(argv[2], "medium") == 0) {
+        prio = MEDIUM;
+    } else if (libc_strnocasecmp(argv[2], "high") == 0) {
+        prio = HIGH;
+    } else {
+        libc_fprintf(STDERR, "Invalid priority. Use 'low', 'medium', or 'high' for <newprio>.\n");
+        return;
+    }
+    libc_nice(pid, prio);
+}

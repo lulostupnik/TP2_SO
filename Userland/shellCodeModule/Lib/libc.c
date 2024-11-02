@@ -338,6 +338,29 @@ int64_t libc_strcmp ( const char * str1, const char * str2 )
 }
 
 
+int64_t libc_strnocasecmp(const char *str1, const char *str2) {
+    while (*str1 && *str2) {
+        char c1 = *str1;
+        char c2 = *str2;
+
+        if (c1 >= 'A' && c1 <= 'Z') {
+            c1 = c1 + ('a' - 'A');
+        }
+        if (c2 >= 'A' && c2 <= 'Z') {
+            c2 = c2 + ('a' - 'A');
+        }
+
+        if (c1 != c2) {
+            return (int64_t)(unsigned char)c1 - (unsigned char)c2;
+        }
+
+        str1++;
+        str2++;
+    }
+
+    return (int64_t)(unsigned char)*str1 - (unsigned char)*str2;
+}
+
 
 /**
  * @brief Switches the system to video mode.
