@@ -132,7 +132,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 		return -1;
 	}
 
-	pcb_array[pid].base_pointer = rsp;
+
 	rsp = load_stack((uint64_t )rip, rsp, args_cpy, argc, pid);
 
 	pcb_array[pid].pid = pid;
@@ -144,7 +144,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	pcb_array[pid].killable = killable;
 	pcb_array[pid].waiting_me = NULL;
 	pcb_array[pid].is_background = 0;
-
+	pcb_array[pid].lowest_stack_address = rsp_malloc;
 	ready(&pcb_array[pid]);
 	amount_of_processes++;
 	return pid;
@@ -179,7 +179,7 @@ static int64_t set_free_pcb(pid_t pid)
 	if (process == NULL || process->status == FREE) {
 		return -1;
 	}
-	my_free((void *)process->base_pointer);
+	my_free((void *)process->lowest_stack_address);
 	if (process->argv == NULL) {
 		process->status = FREE;
 		return 0;
@@ -221,7 +221,7 @@ void get_process_info(PCB * pcb, process_info * process)
 	//process->ppid = pcb->ppid;
 	process->priority = pcb->priority;
 	process->stack_pointer = pcb->rsp;
-	process->base_pointer = pcb->base_pointer;
+	process->lowest_stack_address = pcb->lowest_stack_address;
 	process->status = pcb->status;
 	process->is_background = pcb->is_background;
 }
