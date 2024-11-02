@@ -6,7 +6,6 @@
 
 
 typedef struct PCB {
-	char * name;
 	// pid_t ppid;
 	uint8_t is_background; // puede que después nos convenga usar los file descriptors -> luego sabemos si es background fijandonos si si file_descriptors[stdin] == stdin (fd de la entrada de la shell)
 	pid_t pid;
@@ -19,6 +18,7 @@ typedef struct PCB {
 	priority_t priority;
 	uint8_t killable;
 	struct PCB * waiting_me;
+	struct PCB * waiting_for;
 } PCB;
 
 

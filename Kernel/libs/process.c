@@ -72,7 +72,9 @@ pid_t wait(pid_t pid, int64_t * ret){
 		return -1;
 	}
 	if(!(pcb_to_wait->status == ZOMBIE)){
-		pcb_to_wait->waiting_me = get_running();
+		PCB * running = get_running();
+		pcb_to_wait->waiting_me = running;
+		running->waiting_for = pcb_to_wait;
 		block_current();
 	}
 	if(!((pcb_to_wait->status == ZOMBIE))){ // Esto podria pasar si lo mataron
@@ -186,9 +188,13 @@ int64_t kill_process(pid_t pid)
 	if ( (pcb == NULL) || (pcb->status == FREE) || (!pcb->killable) ) {
 		return -1;
 	}
-	
+
 	unschedule(pcb);
 	unblock_waiting_pid(pid);
+	if(pcb->waiting_for && pcb->waiting_for->waiting_me){
+		pcb->waiting_for->waiting_me = NULL;
+	}
+     
 	if(set_free_pcb(pid) != -1){
 		amount_of_processes--;
 	}
@@ -249,3 +255,7 @@ process_info_list * ps()
 	return process_list;
 
 }
+
+// int64_t free_ps(process_info_list * ps){
+
+// }

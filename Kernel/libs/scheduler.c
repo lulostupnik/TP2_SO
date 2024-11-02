@@ -71,6 +71,7 @@ void unblock_waiting_me(){
 
 void unblock_waiting_pid(pid_t pid){
 	PCB * pcb = get_pcb(pid);
+
 	if(pcb == NULL || pcb->waiting_me == NULL || pcb->waiting_me->status == ZOMBIE || pcb->waiting_me->status == FREE){
 		return;
 	}
