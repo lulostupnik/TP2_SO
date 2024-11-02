@@ -63,7 +63,7 @@ void block_current(){
 
 void unblock_waiting_me(){
 	PCB * pcb = running;
-	if(pcb == NULL || pcb->waiting_me == NULL){
+	if(pcb == NULL || pcb->waiting_me == NULL || pcb->waiting_me->status == ZOMBIE || pcb->waiting_me->status == FREE){
 		return;
 	}
 	ready(pcb->waiting_me);
@@ -71,7 +71,8 @@ void unblock_waiting_me(){
 
 void unblock_waiting_pid(pid_t pid){
 	PCB * pcb = get_pcb(pid);
-	if(pcb == NULL || pcb->waiting_me == NULL){
+	// ¿esto de abajo no debería ser: pcb == NULL || pcb->status != BLOCKED ?
+	if(pcb == NULL || pcb->waiting_me == NULL || pcb->waiting_me->status == ZOMBIE || pcb->waiting_me->status == FREE){ // acá NULL no debería ser FREE?
 		return;
 	}
 	ready(pcb->waiting_me);
