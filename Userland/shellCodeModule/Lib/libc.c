@@ -552,7 +552,6 @@ void libc_ps(){
 		libc_printf("PID: %d - ", process_list->processes[i].pid);
 		libc_printf("Name: %s - ", process_list->processes[i].name ? process_list->processes[i].name : "No name");
 		libc_printf("%sground - ", process_list->processes[i].is_background ? "Back" : "Fore");
-		// libc_printf("PPID: %d - ", process_list->processes[i].ppid);
 		libc_printf("Prio: %d - ", process_list->processes[i].priority);
 		libc_printf("Stack Base Pointer: %x - ", process_list->processes[i].lowest_stack_address + STACK_SIZE);
 		libc_printf("Last stack address: %x - ", process_list->processes[i].lowest_stack_address );
@@ -566,18 +565,3 @@ int8_t libc_get_status(pid_t pid){
 	return sys_get_status(pid);
 }
 
-
-
-/*
-void ps(){
-	(process_info_list *) process_list = sys_ps();
-	if(process_list == NULL){
-		libc_printf("Error while getting process list\n");
-		return;
-	}
-	libc_printf("PID\tPPID\tPriority\tBase Pointer\tStack Pointer\tStatus\n");
-	for(int i = 0; i < process_list->amount_of_processes; i++){
-		libc_printf("%d\t%d\t%d\t%d\t%d\t%d\n", process_list->processes[i].pid, process_list->processes[i].ppid, process_list->processes[i].priority, process_list->processes[i].lowest_stack_address, process_list->processes[i].stack_pointer, process_list->processes[i].status);
-	}
-}
-*/

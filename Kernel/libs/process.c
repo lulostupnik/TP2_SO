@@ -218,7 +218,6 @@ void get_process_info(PCB * pcb, process_info * process)
 {
 	process->name = my_new_str_copy(pcb->argv != NULL ? pcb->argv[0] : NULL); // Si falla el malloc lo imprimimos como "No name" pero dejamos el resto del estado. 
 	process->pid = pcb->pid;
-	//process->ppid = pcb->ppid;
 	process->priority = pcb->priority;
 	process->stack_pointer = pcb->rsp;
 	process->lowest_stack_address = pcb->lowest_stack_address;

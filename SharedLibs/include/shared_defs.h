@@ -50,7 +50,6 @@ typedef enum { LOW = 0, MEDIUM, HIGH } priority_t;
 
 typedef struct process_info {
 	pid_t pid;
-	//pid_t ppid;
 	priority_t priority;
 	uint64_t lowest_stack_address;
 	uint64_t stack_pointer;
