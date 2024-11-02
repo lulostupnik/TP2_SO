@@ -61,8 +61,11 @@ int main()
 {
 	load_idt();
 	my_mm_init ( heap, HEAP_SIZE );
-	initialize_scheduler(new_process((main_function) idle_process, LOW, 0, 0, 0));
-	new_process((main_function) shellCodeModuleAddress, HIGH, 0, 0, 0);
+
+	char * argv_idle[] = {"idle"};
+	char * argv_shell[] = {"shell"};
+	initialize_scheduler(new_process((main_function) idle_process, LOW, 0, argv_idle, 1));
+	new_process((main_function) shellCodeModuleAddress, HIGH, 0, argv_shell, 1);
 	timer_tick();
 	return 0;
 }
