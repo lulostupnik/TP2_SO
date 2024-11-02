@@ -562,6 +562,10 @@ void libc_ps(){
 	sys_free_ps(process_list);
 }
 
+int8_t libc_get_status(pid_t pid){
+	return sys_get_status(pid);
+}
+
 
 
 /*

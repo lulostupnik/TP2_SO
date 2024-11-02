@@ -17,6 +17,8 @@ static void show_current_time();
 static void get_regs();
 static void shell_wait_pid(char ** args, uint64_t argc);
 static void shell_nice(char **argv, uint64_t argc);
+static void loop_process(char ** argv, uint64_t argc);
+static void shell_block(char **argv, uint64_t argc);
 
 static uint64_t font_size = 1;
 
@@ -42,7 +44,9 @@ static module modules[] = {
 {"kill", kill_pid, BUILT_IN},
 {"wait",shell_wait_pid, BUILT_IN},
 {"ps", libc_ps, BUILT_IN},
-{"nice", shell_nice, BUILT_IN}
+{"nice", shell_nice, BUILT_IN},
+{"loop", loop_process, !BUILT_IN},
+{"block", shell_block, BUILT_IN}
 };
 
 int main()
@@ -222,8 +226,10 @@ static void help(char ** args, uint64_t argc)
 	libc_puts ( "- opcode: Genera una excepcion de codigo de operacion invalido.\n" );
 	libc_puts ( "- clear: Limpia la pantalla.\n" );
 	libc_puts ( "- ipod: Inicia el reproductor de musica.\n" );
+	libc_puts ( "- loop: Crea un proceso que imprime un saludo\n" );
 	libc_puts ( "- testprio: Testea las prioridades del scheduler.\n" );
 	libc_puts ( "- kill <pid>: Mata al pid numero pid.\n" );
+	libc_puts ( "- block <pid>: Hace un swap entre el estado ready y blocked al proceso pid.\n" );
 	libc_puts ( "- wait <pid>: Espera al proceso numero pid.\n" );
 	libc_puts ( "- nice <pid> <newprio>: Le cambia la prioridad al proceso pid a newprio.\n" );
 	libc_puts ( "- testproc <maxprocesses>: Testea la creacion de procesos.\n" );
@@ -326,4 +332,31 @@ static void shell_nice(char **argv, uint64_t argc) {
         return;
     }
     libc_nice(pid, prio);
+}
+
+
+static void shell_block(char **argv, uint64_t argc){
+	pid_t pid;
+    if (argc != 2 || ((pid = satoi(argv[1])) < 0)) {
+        libc_fprintf(STDERR, "Usage: block <pid>");
+        return;
+    }
+	int8_t status = libc_get_status(pid);
+	if(	(status != BLOCKED) || (status != READY) ){
+		libc_fprintf(STDERR, "Error: The status of pid %d neither ready or blocked \n", pid);
+        return;
+	}
+	if(status == BLOCKED){
+		libc_unblock(pid);
+	}else if(status == READY){
+		libc_block(pid);
+	}
+}
+
+static void loop_process(char ** argv, uint64_t argc){
+	pid_t pid = libc_get_pid();
+	while(1){
+		sys_nano_sleep(pid^10 + pid*10 + 100);
+		libc_printf("\nHello my friend, my pid is %d, I hope you are well\n", pid);
+	}
 }

@@ -27,6 +27,7 @@ GLOBAL sys_sem_post
 GLOBAL sys_sem_close
 GLOBAL sys_ps
 GLOBAL sys_free_ps
+GLOBAL sys_get_status
 
 section .text
 
@@ -210,3 +211,6 @@ sys_ps:
     simple_sys_handler 27
 sys_free_ps:
     simple_sys_handler 28
+
+sys_get_status:
+    simple_sys_handler 29

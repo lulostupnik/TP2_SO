@@ -72,6 +72,9 @@ int64_t sys_call_handler ( stack_registers * regs )
 		case 28: 
 			sys_free_ps((process_info_list *) regs->rdi);
 			return 0;
+		case 29:
+			int8_t ans = sys_get_status((pid_t) regs->rdi);
+			return (int64_t) ans;
 		default:
 			return NOT_VALID_SYS_ID;
 
@@ -279,4 +282,8 @@ process_info_list * sys_ps ()
 
 void sys_free_ps(process_info_list * ps){
 	free_ps(ps);
+}
+
+int8_t sys_get_status(pid_t pid){
+	return get_status(pid);
 }

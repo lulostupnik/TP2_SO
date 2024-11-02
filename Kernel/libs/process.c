@@ -12,6 +12,8 @@ static int64_t find_free_pcb();
 static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc);
 static int64_t set_free_pcb(pid_t pid);
 
+
+//@TODO REFACTOR URGENTE!
 static uint64_t my_strlen ( const char * str )
 {
 	const char * s = str;
@@ -62,6 +64,17 @@ static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc)
 	}
 	return ans;
 }
+
+
+
+int8_t get_status(pid_t pid){
+	PCB * process = get_pcb(pid);
+	if (process == NULL) {
+		return -1;
+	}
+	return process->status;
+}
+
 
 //Returns PID if it was succesfull and -1 if it wasnt. 
 pid_t wait(pid_t pid, int64_t * ret){

@@ -26,5 +26,6 @@ void list_processes();
 int64_t kill_process(pid_t pid);
 pid_t wait(pid_t pid, int64_t * ret);
 process_info_list * ps();
+int8_t get_status(pid_t pid);
 
 #endif
