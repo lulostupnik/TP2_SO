@@ -85,7 +85,7 @@ int64_t sys_call_handler ( stack_registers * regs )
 int64_t sys_read ( uint64_t fd, uint16_t * buffer, uint64_t amount )
 {
 	uint64_t i = 0;
-
+	//if not buffer_has_next block. 
 	while ( i < amount && buffer_has_next() ) {
 		buffer[i] = get_current();
 		i++;

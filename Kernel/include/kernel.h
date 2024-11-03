@@ -13,6 +13,7 @@
 #include <shared_libc.h>
 #include <process.h>
 #include <scheduler.h>
+#include <pipeADT.h>
 
 int main();
 

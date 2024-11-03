@@ -66,6 +66,7 @@ int main()
 	char * argv_shell[] = {"shell"};
 	initialize_scheduler(new_process((main_function) idle_process, LOW, 0, argv_idle, 1));
 	new_process((main_function) shellCodeModuleAddress, HIGH, 0, argv_shell, 1);
+	pipe_init();
 	timer_tick();
 	return 0;
 }
