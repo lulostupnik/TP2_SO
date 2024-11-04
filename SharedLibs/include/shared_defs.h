@@ -47,6 +47,8 @@ typedef int64_t pid_t;
 typedef int64_t sem_t;
 
 typedef enum { LOW = 0, MEDIUM, HIGH } priority_t;
+typedef enum  {READER=0, WRITER} pipe_mode_t;
+#define EOF 0
 
 typedef struct process_info {
 	pid_t pid;

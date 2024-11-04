@@ -3,15 +3,12 @@
 //  SHELL / FOREGROUND un pipe especial que STDIN es KEYBOARD y STDOUT/STDERR es VIDEO
 //Array de pipe_adt[ ( NUMPROCESS/2 ) + 1 ] o similar
 
-#include <pipeADT.h>
+#include <pipe.h>
 
-#define PIPE_BUFFER_SIZE 508
-#define AMOUNT_OF_PIPES 100
-#define EOF 0
+
 
 #define BAD_ID(id) (((id) < 0) || ((id) >= AMOUNT_OF_PIPES))
 
-typedef enum  {READER=0, WRITER} pipe_mode_t;
 
 //Todo agregar get_available en semaphore
 
@@ -21,7 +18,14 @@ typedef struct pipe_cdt{
     uint32_t current_read; 
     uint32_t current_write;             // ¿o meter un único current?
     uint64_t data_available_sem; 	    //Todo cambiar los semaforos a sem_t
-	//sem_t mutex;			            //cambiar semaphore.c para que los primeros AMOUNT_OF_PIPES * 2 semaforos ID son del PIPE ADT.
+	
+    // uint64_t data_available_mutex; 	   opcion 2.
+	// uint8_t data_available;
+
+    // uint64_t blocker_sem;
+    
+    uint64_t can_write_sem; 
+    //sem_t mutex;			            //cambiar semaphore.c para que los primeros AMOUNT_OF_PIPES * 2 semaforos ID son del PIPE ADT.
 } pipe_cdt;
 
 static pipe_cdt pipes_array[AMOUNT_OF_PIPES];
@@ -30,8 +34,10 @@ static pipe_cdt pipes_array[AMOUNT_OF_PIPES];
 
 void pipe_init(){
 	for(int i=0; i<AMOUNT_OF_PIPES ; i++){
-		my_sem_open(SEM_AMOUNT-i-1, 0);  //@todo que hago si falla xd?   	//Los ultimos i semaforos
-		pipes_array[i].data_available_sem = SEM_AMOUNT-1-i;
+		my_sem_open(SEM_AMOUNT-2*i-1, 0);  //@todo que hago si falla xd?   	//Los ultimos i semaforos
+        my_sem_open(SEM_AMOUNT-2*i-2, 0);  //check range. 
+		pipes_array[i].data_available_sem = SEM_AMOUNT-2*i-1;
+        pipes_array[i].can_write_sem = SEM_AMOUNT-2*i-2;
         pipes_array[i].pids[WRITER] = pipes_array[i].pids[READER] = -1; 
 	}
 }
@@ -47,23 +53,28 @@ int64_t pipe_open(int64_t id, pipe_mode_t mode){
 
 
 
-// int64_t pipe_get_free(){
-
-// }
+int64_t pipe_get_free(){
+    for(int i=0; i<AMOUNT_OF_PIPES ; i++){
+        if(pipes_array[i].pids[READER] == -1 && pipes_array[i].pids[WRITER] == -1){
+            return i;
+        }
+    }
+    return -1;
+}
 
 int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
-	if( BAD_ID(id) ){
+	if( BAD_ID(id) || pipes_array[id].pids[READER] != get_pid()){
         return -1;
     }
     uint64_t i = 0;
     if(my_sem_wait(pipes_array[id].data_available_sem) == -1){
         return -1;
     }
-
-    //mutex down ?
+    //mutex wait ?
     int max_write = pipes_array[id].current_write;
-    //mutex up ?
-    while ( i < amount && (pipes_array[id].current_read != max_write)) { // race condition?? @todo test.....
+
+    //mutex post ?
+    /*while ( i < amount && (pipes_array[id].current_read != max_write)) { // race condition?? @todo test.....
 		buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read];
         pipes_array[id].current_read = (pipes_array[id].current_read + 1) % PIPE_BUFFER_SIZE;
 	}
@@ -71,6 +82,24 @@ int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
     if(pipes_array[id].current_read != max_write){
         //my_sem_post(pipes_array[id].data_available_sem);
         my_sem_set_value(pipes_array[id].data_available_sem, 1);
+    }*/
+    if(max_write > PIPE_BUFFER_SIZE){  //@todo borrar, es para debuggear
+        return -2;
+    }
+
+    while ( i < amount && (pipes_array[id].current_read < max_write) ) { // race condition?? @todo test.....
+		buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read++];
+        //pipes_array[id].current_read = (pipes_array[id].current_read + 1) % PIPE_BUFFER_SIZE;
+	}
+
+    
+    if(pipes_array[id].current_read < max_write){
+        //my_sem_post(pipes_array[id].data_available_sem);
+        my_sem_set_value(pipes_array[id].data_available_sem, 1);
+    }
+    if(pipes_array[id].current_read == PIPE_BUFFER_SIZE - 1){
+        my_sem_post(pipes_array[id].can_write_sem);
+        //my_sem_wait(pipes_array[id].data_available_sem);
     }
 	return i;
 }
@@ -78,12 +107,30 @@ int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
 //if not buffer_has_next block. 
 	
 int64_t pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
-    
+    if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid()){
+        return -1;
+    }
+    if(my_sem_wait(pipes_array[id].can_write_sem) == -1){
+        return -1;
+    }
+    int i=0;
+    for(; i<amount ; i++){
+        pipes_array[id].buffer[pipes_array[id].current_write ++] = buffer[i];
+        if( pipes_array[id].current_write == PIPE_BUFFER_SIZE ){ //checkear caso limite. 
+            my_sem_set_value(pipes_array[id].data_available_sem, 1);
+            my_sem_wait(pipes_array[id].can_write_sem);
+            pipes_array[id].current_write = 0;
+            pipes_array[id].current_read = 0;
+        }
+    }
+
+    my_sem_set_value(pipes_array[id].data_available_sem, 1);
+    return i;
 }
 
 
 int64_t pipe_close(int64_t id){
-    if( (id < 0) || (id >= AMOUNT_OF_PIPES) ){
+    if( BAD_ID(id) ){
         return -1;
     }
     int flag = -1;

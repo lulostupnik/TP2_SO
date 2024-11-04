@@ -17,13 +17,29 @@ int cmp(elem_type_ptr e1, elem_type_ptr e2)
 	return e1 - e2;
 }
 
-int64_t my_sem_set_value(int64_t sem_id, int value){
-    if((sem_id >= SEM_AMOUNT) || (sem_id < 0) || (value < 0) ){
+int64_t my_sem_set_value(int64_t sem_id, int value){ //@TODO test. 
+    
+    if((sem_id >= SEM_AMOUNT) || (sem_id < 0) || value < 0 ){
         return -1;
     }
+
     acquire(&sem_array[sem_id].lock);
+
+    if(!sem_array[sem_id].qtty_open){
+        release(&sem_array[sem_id].lock);
+        return -1;
+    }
+   
+    for(int i=sem_array[sem_id].value; i<value ; i++){
+        if(!queue_is_empty(sem_array[sem_id].queue)){
+        PCB * to_unblock = dequeue(sem_array[sem_id].queue);           
+        ready(to_unblock);
+        }
+    }
     sem_array[sem_id].value = value;
+
     release(&sem_array[sem_id].lock);
+    scheduler_yield();
     return 0;
 }
 

@@ -207,13 +207,17 @@ int64_t sys_sem_close ( int64_t sem_id );
 process_info_list * sys_ps();
 int8_t sys_get_status(pid_t pid);
 void sys_free_ps(process_info_list * ps);
-// int64_t sys_ps ( process_info_list * process_list );
 
 
-//int64_t sys_sem_open ( char *sem_id, uint64_t initialValue );
-//int64_t sys_sem_wait ( char *sem_id );
-//int64_t sys_sem_post ( char *sem_id );
-//int64_t sys_sem_close ( char *sem_id );
+int64_t sys_pipe_open(int64_t id, pipe_mode_t mode);
+int64_t sys_pipe_get_free();
+int64_t sys_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount);
+int64_t sys_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount);
+int64_t sys_pipe_close(int64_t id);
+
+
+
+
 
 #endif
 

@@ -75,10 +75,38 @@ int64_t sys_call_handler ( stack_registers * regs )
 		case 29:
 			int8_t ans = sys_get_status((pid_t) regs->rdi);
 			return (int64_t) ans;
+		case 30:
+			return sys_pipe_open(regs->rdi, (pipe_mode_t) regs->rsi);
+		case 31:
+			return sys_pipe_get_free();
+		case 32:
+			return sys_pipe_read(regs->rdi, (uint16_t *) regs->rsi, regs->rdx);
+		case 33:
+			return sys_pipe_write(regs->rdi, (uint16_t *) regs->rsi, regs->rdx);
+		case 34:
+			return sys_pipe_close(regs->rdi);
 		default:
 			return NOT_VALID_SYS_ID;
 
 	}
+}
+
+
+
+int64_t sys_pipe_open(int64_t id, pipe_mode_t mode){
+	return pipe_open(id, mode);
+}
+int64_t sys_pipe_get_free(){
+	return pipe_get_free();
+}
+int64_t sys_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
+	return pipe_read(id, buffer, amount);
+}
+int64_t sys_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
+	return pipe_write(id, buffer, amount);
+}
+int64_t sys_pipe_close(int64_t id){
+	return pipe_close(id);
 }
 
 

@@ -28,6 +28,11 @@ GLOBAL sys_sem_close
 GLOBAL sys_ps
 GLOBAL sys_free_ps
 GLOBAL sys_get_status
+GLOBAL sys_pipe_open
+GLOBAL sys_pipe_get_free
+GLOBAL sys_pipe_read
+GLOBAL sys_pipe_write
+GLOBAL sys_pipe_close
 
 section .text
 
@@ -214,3 +219,14 @@ sys_free_ps:
 
 sys_get_status:
     simple_sys_handler 29
+
+sys_pipe_open:
+    simple_sys_handler 30
+sys_pipe_get_free:
+    simple_sys_handler 31
+sys_pipe_read:
+    simple_sys_handler 32
+sys_pipe_write:
+    simple_sys_handler 33
+sys_pipe_close:
+    simple_sys_handler 34
