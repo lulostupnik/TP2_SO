@@ -49,6 +49,10 @@ static module modules[] = {
     {"ps", "Muestra información de los procesos.", libc_ps, BUILT_IN}
 };
 
+void process1(){
+	
+}
+
 int main()
 {
 

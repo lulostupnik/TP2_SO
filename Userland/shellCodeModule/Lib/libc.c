@@ -565,3 +565,21 @@ int8_t libc_get_status(pid_t pid){
 	return sys_get_status(pid);
 }
 
+
+int64_t libc_pipe_open(int64_t id, pipe_mode_t mode){
+	return sys_pipe_open(id, mode);
+}
+int64_t libc_pipe_get_free(){
+	return sys_pipe_get_free();
+}
+int64_t libc_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
+	return sys_pipe_read( id,  buffer,  amount);
+}
+int64_t libc_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
+	return sys_pipe_write( id,  buffer, amount);
+}
+int64_t libc_pipe_close(int64_t id){
+	return sys_pipe_close(id);
+}
+
+
