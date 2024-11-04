@@ -14,6 +14,7 @@
 
 typedef struct pipe_cdt{
     pid_t pids[2];
+    uint8_t initialized_qtty;
     uint16_t buffer[PIPE_BUFFER_SIZE];  //@TODO change vdriver_text_write para que is hay algo mayor a 255 no lo escriba. 
     uint32_t current_read; 
     uint32_t current_write;             // ¿o meter un único current?
@@ -47,6 +48,7 @@ int64_t pipe_open(int64_t id, pipe_mode_t mode){
         return -1;
     }
     pipes_array[id].pids[mode] = get_pid();
+    pipes_array[id].initialized_qtty++;
     return 0;
 }
 
@@ -73,21 +75,11 @@ int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
     //mutex wait ?
     int max_write = pipes_array[id].current_write;
 
-    //mutex post ?
-    /*while ( i < amount && (pipes_array[id].current_read != max_write)) { // race condition?? @todo test.....
-		buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read];
-        pipes_array[id].current_read = (pipes_array[id].current_read + 1) % PIPE_BUFFER_SIZE;
-	}
-    
-    if(pipes_array[id].current_read != max_write){
-        //my_sem_post(pipes_array[id].data_available_sem);
-        my_sem_set_value(pipes_array[id].data_available_sem, 1);
-    }*/
-    if(max_write > PIPE_BUFFER_SIZE){  //@todo borrar, es para debuggear
-        return -2;
-    }
+    // if(max_write > PIPE_BUFFER_SIZE){  //@todo borrar, es para debuggear
+    //     return -2;
+    // }
 
-    while ( i < amount && (pipes_array[id].current_read < max_write) ) { // race condition?? @todo test.....
+    while ( i < amount && (pipes_array[id].current_read < max_write) && pipes_array[id].buffer[pipes_array[id].current_read] != EOF  ) { // race condition?? @todo test.....
 		buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read++];
         //pipes_array[id].current_read = (pipes_array[id].current_read + 1) % PIPE_BUFFER_SIZE;
 	}
@@ -97,7 +89,7 @@ int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
         //my_sem_post(pipes_array[id].data_available_sem);
         my_sem_set_value(pipes_array[id].data_available_sem, 1);
     }
-    if(pipes_array[id].current_read == PIPE_BUFFER_SIZE - 1){
+    if(pipes_array[id].current_read == PIPE_BUFFER_SIZE ){
         my_sem_post(pipes_array[id].can_write_sem);
         //my_sem_wait(pipes_array[id].data_available_sem);
     }
@@ -110,15 +102,15 @@ int64_t pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
     if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid()){
         return -1;
     }
-    if(my_sem_wait(pipes_array[id].can_write_sem) == -1){
-        return -1;
-    }
+    // if(my_sem_wait(pipes_array[id].can_write_sem) == -1){
+    //     return -1;
+    // }
     int i=0;
     for(; i<amount ; i++){
         pipes_array[id].buffer[pipes_array[id].current_write ++] = buffer[i];
         if( pipes_array[id].current_write == PIPE_BUFFER_SIZE ){ //checkear caso limite. 
             my_sem_set_value(pipes_array[id].data_available_sem, 1);
-            my_sem_wait(pipes_array[id].can_write_sem);
+            my_sem_wait(pipes_array[id].can_write_sem); //agregar checkeo
             pipes_array[id].current_write = 0;
             pipes_array[id].current_read = 0;
         }
@@ -136,16 +128,16 @@ int64_t pipe_close(int64_t id){
     int flag = -1;
     pid_t pid = get_pid();
     if(pipes_array[id].pids[WRITER] == pid){
-        pipes_array[id].pids[WRITER] = -1;
         uint16_t end_of_file[] = {EOF};
         pipe_write(id, end_of_file , 1 );           // @todo y si me da -1?????? lcdm
         flag = 0;
+        pipes_array[id].pids[WRITER] = -1;
     }
     if(pipes_array[id].pids[READER] == pid){
         pipes_array[id].pids[READER] = -1;
         flag = 0;
     }
-    if(!flag && pipes_array[id].pids[WRITER] == -1 &&  pipes_array[id].pids[READER] == -1){
+    if(pipes_array[id].initialized_qtty == 2 && !flag && pipes_array[id].pids[WRITER] == -1 &&  pipes_array[id].pids[READER] == -1){
         pipes_array[id].current_read = pipes_array[id].current_write = 0;
         my_sem_set_value(pipes_array[id].data_available_sem, 0);
     }

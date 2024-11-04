@@ -25,6 +25,50 @@ static uint64_t font_size = 1;
 #define BUILT_IN 1
 
 
+void reader(){
+	libc_pipe_open(0, READER);
+	uint16_t buff[1000];
+	char char_buff[1001];
+
+	// for(int i=0; i<1000; i++){
+	// 	buff[i] = 0;
+	// }
+	while(1){
+		sys_nano_sleep(100);
+		
+		int amount;
+		amount = libc_pipe_read(0, buff, 999);
+		if(amount == 0){
+			libc_fprintf(STDERR, "EOF read: %s\n",amount, char_buff);
+			libc_pipe_close(0);
+			break;
+		}
+		int i=0;
+		for( ;i<amount && i<1001;i++){
+			char_buff[i] = (char) buff[i];
+		}
+		char_buff[i] = 0;
+		libc_fprintf(STDERR, "I read %d bytes: %s\n",amount, char_buff);
+	}
+}
+void writter(){
+	libc_pipe_open(0, WRITER);
+	int i = 0;
+	while(1){
+		uint16_t c = 0;
+		//c = libc_get_char();
+		uint16_t abc[] = {'1','2','3', '4', '5', '6', '7'};
+		//char abc[] = "abcdefghijklmnopqrstuvwxyz";
+		libc_pipe_write(0, abc, 3);
+
+		if(i == 3){
+			libc_pipe_close(0);
+			break;
+		}
+		i++;
+		//libc_pipe_write(0, abc, 20);
+	}
+}
 
 static module modules[] = {
     {"help", "Muestra todos los módulos disponibles del sistema operativo.", help, BUILT_IN},
@@ -46,12 +90,11 @@ static module modules[] = {
     {"testproc", "Testea la creación de procesos.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
     {"testsync", "Testea la sincronización de procesos.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
     {"testmm", "Testea el uso del malloc y free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
-    {"ps", "Muestra información de los procesos.", libc_ps, BUILT_IN}
+    {"ps", "Muestra información de los procesos.", libc_ps, BUILT_IN},
+	{"reader", "Tests pipe reader.", reader, !BUILT_IN},
+	{"writter", "Tests pipe writter. (use in foreground)", writter, !BUILT_IN}
 };
 
-void process1(){
-	
-}
 
 int main()
 {
@@ -325,7 +368,7 @@ static void shell_block(char **argv, uint64_t argc){
         return;
     }
 	int8_t status = libc_get_status(pid);
-	if(	(status != BLOCKED) || (status != READY) ){
+	if(	(status != BLOCKED) && (status != READY) ){
 		libc_fprintf(STDERR, "Error: The status of pid %d neither ready or blocked \n", pid);
         return;
 	}

@@ -5,7 +5,7 @@
 #include <semaphores.h>
 #include <shared_defs.h>
 
-#define PIPE_BUFFER_SIZE 508
+#define PIPE_BUFFER_SIZE 500
 #define AMOUNT_OF_PIPES 100
 
 
