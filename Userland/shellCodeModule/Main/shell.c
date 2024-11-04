@@ -56,7 +56,6 @@ int main()
 
 	libc_puts ( WELCOME );
 	help();
-	
 	while ( 1 ) {
 		interpret();
 	}
