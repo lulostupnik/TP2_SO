@@ -29,7 +29,7 @@ GLOBAL sys_ps
 GLOBAL sys_free_ps
 GLOBAL sys_get_status
 GLOBAL sys_pipe_open
-GLOBAL sys_pipe_get_free
+GLOBAL sys_pipe_open_free
 GLOBAL sys_pipe_read
 GLOBAL sys_pipe_write
 GLOBAL sys_pipe_close
@@ -222,7 +222,7 @@ sys_get_status:
 
 sys_pipe_open:
     simple_sys_handler 30
-sys_pipe_get_free:
+sys_pipe_open_free:
     simple_sys_handler 31
 sys_pipe_read:
     simple_sys_handler 32

@@ -152,8 +152,6 @@ static int64_t post_if_condition(int64_t sem_id, int (*condition)(sem_structure 
     return 0;
 }
 
-
-
 static int is_value_zero(sem_structure *sem) {
     return sem->value == 0;
 }

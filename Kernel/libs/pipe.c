@@ -20,6 +20,9 @@ typedef struct pipe_cdt{
 } pipe_cdt;
 
 static pipe_cdt pipes_array[AMOUNT_OF_PIPES];
+static int64_t pipe_get_free();
+
+
 
 
 
@@ -45,15 +48,14 @@ int64_t pipe_open(int64_t id, pipe_mode_t mode){
     return 0;
 }
 
-
-int64_t pipe_get_free(){
-    for(int i=0; i<AMOUNT_OF_PIPES ; i++){
-        if(pipes_array[i].pids[READER] == -1 && pipes_array[i].pids[WRITER] == -1){
-            return i;
-        }
+int64_t pipe_open_free(pipe_mode_t mode){
+    int64_t id = pipe_get_free();
+    if(pipe_open(id, mode) == 0){
+        return id;
     }
     return -1;
 }
+
 
 int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
 	if( BAD_ID(id) || pipes_array[id].pids[READER] != get_pid()){
@@ -119,6 +121,14 @@ int64_t pipe_close(int64_t id){
     return flag;
 }
 
+static int64_t pipe_get_free(){
+    for(int i=0; i<AMOUNT_OF_PIPES ; i++){
+        if(pipes_array[i].pids[READER] == -1 && pipes_array[i].pids[WRITER] == -1){
+            return i;
+        }
+    }
+    return -1;
+}
 
 //Hacemos un write: si la salida es pantalla, escribe en pantalla. Si la salida es un proceso lo escribimos en el buffer. 
 //Cambio la syscall read para que si FD es STDIN llama a keyboard driver y si no es STDIN llama al ADT. 

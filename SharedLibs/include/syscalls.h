@@ -210,7 +210,7 @@ void sys_free_ps(process_info_list * ps);
 
 
 int64_t sys_pipe_open(int64_t id, pipe_mode_t mode);
-int64_t sys_pipe_get_free();
+int64_t sys_pipe_open_free( pipe_mode_t mode);
 int64_t sys_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount);
 int64_t sys_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount);
 int64_t sys_pipe_close(int64_t id);
