@@ -29,7 +29,6 @@ size_t size_ordered_list(const ordered_list_adt list);
 
 int is_empty_ordered_list(const ordered_list_adt list);
 
-int belongs_ordered_list(const ordered_list_adt list, elem_type elem);
 
 elem_type get(const ordered_list_adt list, size_t idx);
 

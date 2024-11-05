@@ -7,13 +7,6 @@ typedef struct node{
 
 typedef t_node * t_ordered_list;
 
-// struct list_cdt {
-//     t_ordered_list first;   // puntero al primer nodo
-//     size_t size;            // cant de elementos en la lista
-//     t_compare cmp;
-//     t_ordered_list next;
-// };
-
 struct list_cdt {
     t_ordered_list first;   
     size_t size;            
@@ -57,21 +50,6 @@ size_t size_ordered_list(const ordered_list_adt list){
 }
 
 
-int belongs_ordered_list(const ordered_list_adt list, elem_type elem){
-    if((list == NULL) || (list->first == NULL)){
-        return -1;
-    }
-    t_ordered_list aux = list->first;
-    int comparacion; 
-    while((aux != NULL) && ((comparacion = list->cmp(elem, aux->head)) <= 0)){
-        //cmp retorna 0 si son iguales
-        if(!comparacion){
-            return 0;
-        }
-        aux = aux->tail;
-    }
-    return -1;
-}
 
 
 static t_ordered_list add_ordered_list_rec(t_ordered_list list, elem_type elem, t_compare cmp, int * flag){
@@ -94,7 +72,7 @@ static t_ordered_list add_ordered_list_rec(t_ordered_list list, elem_type elem, 
 }
 
 int add_ordered_list(ordered_list_adt list, elem_type elem){
-    if(list == NULL){
+    if(list == NULL || elem == NULL){
         return -1;
     }
     int flag = 0;
@@ -114,7 +92,7 @@ static elem_type get_rec(t_ordered_list l, size_t idx){
 }
 
 elem_type get(const ordered_list_adt list, size_t idx){
-    if( idx >= list->size){
+    if( list == NULL || idx >= list->size){
         return NULL;
     }
     return get_rec(list->first, idx);
@@ -140,10 +118,13 @@ static t_ordered_list delete_rec(t_ordered_list list, elem_type elem, t_compare 
 }
 
 int delete_ordered_list(ordered_list_adt list, elem_type elem){
+    if(list == NULL || list->first == NULL || elem == NULL){
+        return -1;
+    }
     int aux;
     list->first = delete_rec(list->first, elem, list->cmp, &aux);
     list->size -= aux;
-    return aux;
+    return !aux;
 }
 
 
