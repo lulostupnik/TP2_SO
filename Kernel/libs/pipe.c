@@ -6,12 +6,8 @@
 
 #include <pipe.h>
 
-
-
 #define BAD_ID(id) (((id) < 0) || ((id) >= AMOUNT_OF_PIPES))
 
-
-//Todo agregar get_available en semaphore
 
 typedef struct pipe_cdt{
     pid_t pids[2];
@@ -33,8 +29,6 @@ void pipe_init(){
 	}
 }
 
-
-
 int64_t pipe_open(int64_t id, pipe_mode_t mode){
     if( ! ((mode == READER) || (mode == WRITER)) || BAD_ID(id) || (pipes_array[id].pids[mode] != -1)){
         return -1;
@@ -50,8 +44,6 @@ int64_t pipe_open(int64_t id, pipe_mode_t mode){
     pipes_array[id].initialized_qtty++;
     return 0;
 }
-
-
 
 
 int64_t pipe_get_free(){
@@ -71,51 +63,34 @@ int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
     if(my_sem_wait(pipes_array[id].data_available_sem, 1) == -1){
         return -1;
     }
-    //mutex wait ?
     int max_write = pipes_array[id].current_write;
-
-    // if(max_write > PIPE_BUFFER_SIZE){  //@todo borrar, es para debuggear
-    //     return -2;
-    // }
-
     while ( i < amount && (pipes_array[id].current_read < max_write) && pipes_array[id].buffer[pipes_array[id].current_read] != EOF  ) { // race condition?? @todo test.....
 		buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read++];
-        //pipes_array[id].current_read = (pipes_array[id].current_read + 1) % PIPE_BUFFER_SIZE;
 	}
-
-    
     if(pipes_array[id].current_read < max_write){
-        //my_sem_post(pipes_array[id].data_available_sem);
-        //my_sem_set_value(pipes_array[id].data_available_sem, 1);
-        sem_post_if_value_is_zero(pipes_array[id].data_available_sem);
+        sem_post_if_value_is_zero(pipes_array[id].data_available_sem,1);
     }
     if(pipes_array[id].current_read == PIPE_BUFFER_SIZE ){
         my_sem_post(pipes_array[id].can_write_sem, 1);
-        //my_sem_wait(pipes_array[id].data_available_sem);
     }
 	return i;
 }
-
-//if not buffer_has_next block. 
 	
 int64_t pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
     if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid()){
         return -1;
     }
-    // if(my_sem_wait(pipes_array[id].can_write_sem) == -1){
-    //     return -1;
-    // }
     int i=0;
     for(; i<amount ; i++){
         pipes_array[id].buffer[pipes_array[id].current_write ++] = buffer[i];
         if( pipes_array[id].current_write == PIPE_BUFFER_SIZE ){ //checkear caso limite. 
-            sem_post_if_value_is_zero(pipes_array[id].data_available_sem);
+            sem_post_if_value_is_zero(pipes_array[id].data_available_sem,1 );
             my_sem_wait(pipes_array[id].can_write_sem, 1); //agregar checkeo
             pipes_array[id].current_write = 0;
             pipes_array[id].current_read = 0;
         }
     }
-    sem_post_if_value_is_zero(pipes_array[id].data_available_sem);
+    sem_post_if_value_is_zero(pipes_array[id].data_available_sem, 1);
     return i;
 }
 
