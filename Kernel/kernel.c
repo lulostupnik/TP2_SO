@@ -69,6 +69,7 @@ int main()
 	initialize_scheduler(new_process((main_function) idle_process, LOW, 0, argv_idle, 1, idle_fds));
 	new_process((main_function) shellCodeModuleAddress, HIGH, 0, argv_shell, 1, shell_fds);
 	pipe_init();
+	init_timer_handler();
 	timer_tick();
 	return 0;
 }

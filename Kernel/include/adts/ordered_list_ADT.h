@@ -41,6 +41,6 @@ int ordered_list_has_next(const ordered_list_adt list);
 
 //me devuelve el siguiente. precondicion, has_next debe devolver true
 elem_type ordered_list_next(ordered_list_adt list);
-
+int ordered_list_delete_current(ordered_list_adt list);
 
 #endif

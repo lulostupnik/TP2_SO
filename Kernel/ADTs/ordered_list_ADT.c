@@ -7,11 +7,20 @@ typedef struct node{
 
 typedef t_node * t_ordered_list;
 
+// struct list_cdt {
+//     t_ordered_list first;   // puntero al primer nodo
+//     size_t size;            // cant de elementos en la lista
+//     t_compare cmp;
+//     t_ordered_list next;
+// };
+
 struct list_cdt {
-    t_ordered_list first;   // puntero al primer nodo
-    size_t size;            // cant de elementos en la lista
+    t_ordered_list first;   
+    size_t size;            
     t_compare cmp;
-    t_ordered_list next;
+    t_ordered_list next;    
+    t_ordered_list current; 
+    t_ordered_list previous;
 };
 
 
@@ -138,19 +147,56 @@ int delete_ordered_list(ordered_list_adt list, elem_type elem){
 }
 
 
-void ordered_list_to_begin(ordered_list_adt list){
+// void ordered_list_to_begin(ordered_list_adt list){
+//     list->next = list->first;
+// }
+
+void ordered_list_to_begin(ordered_list_adt list) {
     list->next = list->first;
+    list->current = NULL;
+    list->previous = NULL;
 }
+
 
 int ordered_list_has_next(const ordered_list_adt list){
     return list->next != NULL;
 }
 
-elem_type ordered_list_next(ordered_list_adt list){
-    if(!ordered_list_has_next(list)){
+// elem_type ordered_list_next(ordered_list_adt list){
+//     if(!ordered_list_has_next(list)){
+//         return NULL;
+//     }
+//     elem_type aux = list->next->head;
+//     list->next = list->next->tail;
+//     return aux;
+// }
+
+elem_type ordered_list_next(ordered_list_adt list) {
+    if (!ordered_list_has_next(list)) {
         return NULL;
     }
-    elem_type aux = list->next->head;
+    list->previous = list->current;
+    list->current = list->next;
     list->next = list->next->tail;
-    return aux;
+    return list->current->head;
 }
+
+int ordered_list_delete_current(ordered_list_adt list) {
+    if (list->current == NULL) {
+        return -1;
+    }
+
+    if (list->previous == NULL) {
+        list->first = list->next; 
+    } else {
+        list->previous->tail = list->next;  
+    }
+
+    my_free(list->current);
+    list->size--;
+
+    list->current = NULL;
+
+    return 0;
+}
+
