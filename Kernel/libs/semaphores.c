@@ -29,9 +29,8 @@ int64_t delete_from_blocked_queue(PCB * pcb){
     return 0;
 }
 
-int64_t my_sem_set_value(int64_t sem_id, int value){ //@TODO test. 
-    
-    if((sem_id >= SEM_AMOUNT) || (sem_id < 0) || value < 0 ){
+int64_t sem_post_if_value_is_zero(int64_t sem_id){
+    if((sem_id >= SEM_AMOUNT) || (sem_id < 0) ){
         return -1;
     }
 
@@ -41,25 +40,52 @@ int64_t my_sem_set_value(int64_t sem_id, int value){ //@TODO test.
         release(&sem_array[sem_id].lock);
         return -1;
     }
-   
-   if(value > 0){
-        while(!queue_is_empty(sem_array[sem_id].queue)){
-            PCB * to_unblock = dequeue(sem_array[sem_id].queue);           
+    
+    if(sem_array[sem_id].value == 0){
+        if(queue_is_empty(sem_array[sem_id].queue)){
+            sem_array[sem_id].value++;
+        }else{
+            PCB * to_unblock = dequeue(sem_array[sem_id].queue);          //si haces un kill revive.  
             ready(to_unblock);
         }
-   }
-    /*for(int i=sem_array[sem_id].value; i<value ; i++){
-        if(!queue_is_empty(sem_array[sem_id].queue)){
-        PCB * to_unblock = dequeue(sem_array[sem_id].queue);           
-        ready(to_unblock);
-        }
-    }*/
-    sem_array[sem_id].value = value;
+    }
 
     release(&sem_array[sem_id].lock);
     scheduler_yield();
     return 0;
 }
+
+// int64_t my_sem_set_value(int64_t sem_id, int value){ //@TODO test. 
+    
+//     if((sem_id >= SEM_AMOUNT) || (sem_id < 0) || value < 0 ){
+//         return -1;
+//     }
+
+//     acquire(&sem_array[sem_id].lock);
+
+//     if(!sem_array[sem_id].qtty_open){
+//         release(&sem_array[sem_id].lock);
+//         return -1;
+//     }
+   
+//    if(value > 0){
+//         while(!queue_is_empty(sem_array[sem_id].queue)){
+//             PCB * to_unblock = dequeue(sem_array[sem_id].queue);           
+//             ready(to_unblock);
+//         }
+//    }
+//     /*for(int i=sem_array[sem_id].value; i<value ; i++){
+//         if(!queue_is_empty(sem_array[sem_id].queue)){
+//         PCB * to_unblock = dequeue(sem_array[sem_id].queue);           
+//         ready(to_unblock);
+//         }
+//     }*/
+//     sem_array[sem_id].value = value;
+
+//     release(&sem_array[sem_id].lock);
+//     scheduler_yield();
+//     return 0;
+// }
 
 
 int64_t my_sem_open(int64_t sem_id, int value){
