@@ -285,22 +285,22 @@ int64_t sys_wait ( pid_t pid, int64_t * ret )
 
 int64_t sys_sem_open ( int64_t sem_id, int value )
 {
-	return my_sem_open(sem_id, value);
+	return my_sem_open(sem_id, value, 0);
 }
 
 int64_t sys_sem_wait ( int64_t sem_id )
 {
-	return my_sem_wait(sem_id);
+	return my_sem_wait(sem_id, 0);
 }
 
 int64_t sys_sem_post ( int64_t sem_id )
 {
-	return my_sem_post(sem_id);
+	return my_sem_post(sem_id, 0);
 }
 
 int64_t sys_sem_close ( int64_t sem_id )
 {
-	return my_sem_close(sem_id);
+	return my_sem_close(sem_id, 0);
 }
 
 process_info_list * sys_ps ()

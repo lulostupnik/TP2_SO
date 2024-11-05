@@ -29,9 +29,8 @@ void reader(){
 	libc_pipe_open(0, READER);
 	uint16_t buff[1000];
 	char char_buff[1001];
-
-	// for(int i=0; i<1000; i++){
-	// 	buff[i] = 0;
+	// if(libc_pipe_open(0, READER) == -1){
+	// 	libc_fprintf(STDERR, "-1 as expected\n");
 	// }
 	while(1){
 		sys_nano_sleep(100);
