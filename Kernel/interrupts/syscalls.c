@@ -113,13 +113,15 @@ int64_t sys_pipe_close(int64_t id){
 
 int64_t sys_read ( uint64_t fd, uint16_t * buffer, uint64_t amount )
 {
-	uint64_t i = 0;
-	//if not buffer_has_next block. 
-	while ( i < amount && buffer_has_next() ) {
-		buffer[i] = get_current();
-		i++;
-	}
-	return i;
+	return stdin_read(buffer, amount);
+
+	// uint64_t i = 0;
+	// //if not buffer_has_next block. 
+	// while ( i < amount && buffer_has_next() ) {
+	// 	buffer[i] = get_current();
+	// 	i++;
+	// }
+	// return i;
 }
 
 

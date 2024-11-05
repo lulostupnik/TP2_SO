@@ -14,9 +14,14 @@
  */
 char libc_get_char()
 {
-	uint16_t c;
-	while ( sys_read ( STDIN, &c, 1 ) == 0 || c > 255 );
-	return ( char ) c;
+    int64_t ans = 0;
+	uint16_t c = 0;
+    do {
+        ans = sys_read(STDIN, &c, 1);  
+    } while (c > 255);                 
+
+
+    return ans == 0 ? ans:(char)c;
 }
 
 

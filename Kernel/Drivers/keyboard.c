@@ -23,10 +23,38 @@ extern uint16_t pressed_key_shift_map[][2];
 #define cant_function_keys 12
 static void f1key ( void );
 static function_key function_key_fun_array[cant_function_keys] = {f1key, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+static PCB * blocked;
+
 static void f1key ( void )
 {
 	reg_shot_flag = 1;
 }
+
+
+
+int64_t stdin_read (uint16_t * buffer, uint64_t amount )
+{
+	if(blocked != NULL){	// un proceso ya esta esperando...
+		return -1;
+	}
+
+	uint64_t i = 0;
+	
+	if(!buffer_has_next()){
+		blocked = get_running();
+		block_current();
+	}
+	
+	//if not buffer_has_next block. 
+	while ( i < amount && buffer_has_next()) {
+		buffer[i] = get_current();
+		i++;
+	}
+
+	return i;
+}
+
 
 void set_f_key_function ( uint64_t key_number, function_key f )
 {
@@ -176,13 +204,21 @@ void keyboard_handler()
 	buffer[buffer_dim] = code;
 	if ( buffer_dim < BUFFER_SIZE ) {
 		buffer_dim++;
-	} else {
+	} else if (buffer_current == buffer_dim){
+		buffer[0] = code;
 		buffer_dim = 1;
+		buffer_current = 0;
+	}else{
+		return;
 	}
+	if(blocked != NULL){
+		ready(blocked);
+		blocked = NULL;
+	}
+
 }
 
 uint8_t should_take_reg_shot()
 {
 	return reg_shot_flag;
 }
-
