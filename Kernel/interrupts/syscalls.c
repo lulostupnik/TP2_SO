@@ -87,7 +87,6 @@ int64_t sys_call_handler ( stack_registers * regs )
 			return sys_pipe_close(regs->rdi);
 		default:
 			return NOT_VALID_SYS_ID;
-
 	}
 }
 
@@ -246,7 +245,8 @@ void sys_free ( void * p )
 
 int64_t sys_create_process (main_function rip, priority_t priority, char ** argv, uint64_t argc)
 {
-	return (int64_t) new_process( rip, priority, 1, argv, argc );
+	fd_t fds[3] = {STDOUT, STDERR, STDIN};
+	return (int64_t) new_process( rip, priority, 1, argv, argc, fds);
 }
 
 int64_t sys_get_pid()

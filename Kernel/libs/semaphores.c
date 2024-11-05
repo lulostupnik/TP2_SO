@@ -162,7 +162,7 @@ static int always_true(sem_structure *sem) {
 
 static int8_t is_valid_id(int64_t sem_id, uint8_t is_kernel){
     if(is_kernel){
-        return (sem_id >= SEM_AMOUNT) && (sem_id < KERNEL_SEM_AMOUNT);
+        return sem_id >= SEM_AMOUNT && sem_id < KERNEL_SEM_AMOUNT;
     }
-    return !((sem_id >= SEM_AMOUNT) || (sem_id < 0)) ;
+    return  sem_id < SEM_AMOUNT && sem_id >= 0; 
 }

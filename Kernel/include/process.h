@@ -21,7 +21,7 @@ typedef int (*main_function)(char ** argv, uint64_t argc);
 // extern uint64_t amount_of_processes;
 
 
-int64_t new_process(main_function rip, priority_t priority, uint8_t killable, char ** argv, uint64_t argc);
+int64_t new_process(main_function rip, priority_t priority, uint8_t killable, char ** argv, uint64_t argc, fd_t fds[]);
 PCB * get_pcb(pid_t pid);
 void list_processes();
 int64_t kill_process(pid_t pid);

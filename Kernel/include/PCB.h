@@ -19,7 +19,7 @@ typedef struct PCB {
 	struct PCB * waiting_me;
 	struct PCB * waiting_for;
 	int64_t blocked_by_sem;
-//	pipeADT fds[3];
+  	fd_t fds[3];
 } PCB;
 
 

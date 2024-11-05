@@ -30,10 +30,12 @@ void initialize_scheduler(int64_t idle_process_pid)
 
 void ready(PCB * process)
 {
+	if(process == NULL){
+		return;
+	}
 	process->status = READY;
 	add_list(ready_list, process);
 	delete_list(blocked_list, process);
-
 }
 
 PCB * get_idle_pcb(){
@@ -42,6 +44,9 @@ PCB * get_idle_pcb(){
 
 void block_current_no_yield(){
 	PCB * process = running;
+	if(process == NULL){
+		return;
+	}
 	process->status = BLOCKED;
 	delete_list(ready_list, process);
 	add_list(blocked_list, process);
@@ -49,6 +54,9 @@ void block_current_no_yield(){
 
 void block(PCB * process)
 {
+	if(process == NULL){
+		return;
+	}
 	process->status = BLOCKED;
 	delete_list(ready_list, process);
 	add_list(blocked_list, process);
