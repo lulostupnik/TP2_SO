@@ -18,6 +18,7 @@ typedef struct PCB {
 	uint8_t killable;
 	struct PCB * waiting_me;
 	struct PCB * waiting_for;
+	int64_t blocked_by_sem;
 //	pipeADT fds[3];
 } PCB;
 

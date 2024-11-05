@@ -9,6 +9,7 @@
 #include <PCB.h>
 #include <shared_libc.h>
 #include <shared_defs.h>
+#include <semaphores.h>
 
 #define PCB_AMOUNT 100
 

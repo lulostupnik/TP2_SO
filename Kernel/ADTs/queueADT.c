@@ -31,13 +31,13 @@ queue_adt new_queue()
 uint64_t queue_is_empty(queue_adt queue){
     if(queue == NULL){
         // @todo -> manejar error
-        return 0;
+        return 1;
     }
     return (queue->size == 0);
 }
 
 elem_type_ptr dequeue(queue_adt queue){
-    if(queue == NULL || queue_is_empty(queue)){
+    if(queue_is_empty(queue)){
         return NULL;
     }
     queue->size--;
@@ -50,6 +50,43 @@ elem_type_ptr dequeue(queue_adt queue){
     }
     return to_return;
 }
+
+//@todo test. 
+int64_t delete_from_queue(queue_adt queue, elem_type_ptr head) {
+    if (queue_is_empty(queue)) {
+        return -1; 
+    }
+
+    t_queue current = queue->first;
+    t_queue previous = NULL;
+
+    while (current != NULL && current->head != head) {
+        previous = current;
+        current = current->tail;
+    }
+
+    if (current == NULL) {
+        return -1;
+    }
+
+    if (previous == NULL) { 
+        queue->first = current->tail;
+    } else { 
+        previous->tail = current->tail;
+    }
+
+    if (current->tail == NULL) {
+        queue->last = previous;
+    }
+
+    my_free(current);
+    queue->size--;
+
+    return 0; 
+}
+
+
+
 
 void enqueue(queue_adt queue, elem_type_ptr head){
     if(queue == NULL){

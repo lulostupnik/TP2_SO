@@ -17,6 +17,18 @@ int cmp(elem_type_ptr e1, elem_type_ptr e2)
 	return e1 - e2;
 }
 
+
+int64_t delete_from_blocked_queue(PCB * pcb){
+    
+    if( pcb == NULL){
+        return -1;
+    }
+    if(pcb->blocked_by_sem != -1){
+        delete_from_queue(sem_array[pcb->blocked_by_sem ].queue, pcb);
+	}
+    return 0;
+}
+
 int64_t my_sem_set_value(int64_t sem_id, int value){ //@TODO test. 
     
     if((sem_id >= SEM_AMOUNT) || (sem_id < 0) || value < 0 ){
@@ -30,12 +42,18 @@ int64_t my_sem_set_value(int64_t sem_id, int value){ //@TODO test.
         return -1;
     }
    
-    for(int i=sem_array[sem_id].value; i<value ; i++){
+   if(value > 0){
+        while(!queue_is_empty(sem_array[sem_id].queue)){
+            PCB * to_unblock = dequeue(sem_array[sem_id].queue);           
+            ready(to_unblock);
+        }
+   }
+    /*for(int i=sem_array[sem_id].value; i<value ; i++){
         if(!queue_is_empty(sem_array[sem_id].queue)){
         PCB * to_unblock = dequeue(sem_array[sem_id].queue);           
         ready(to_unblock);
         }
-    }
+    }*/
     sem_array[sem_id].value = value;
 
     release(&sem_array[sem_id].lock);
@@ -80,7 +98,7 @@ int64_t my_sem_wait(int64_t sem_id){
         return -1;
     }
 
-    while(1){
+    // while(1){
 
         acquire(&sem_array[sem_id].lock);
 
@@ -97,11 +115,12 @@ int64_t my_sem_wait(int64_t sem_id){
 
         PCB * running_pcb = get_running();
         block_current_no_yield();
+        running_pcb->blocked_by_sem = sem_id;
         enqueue(sem_array[sem_id].queue, running_pcb);
         release(&sem_array[sem_id].lock); 
-
         scheduler_yield(); 
-    }
+        running_pcb->blocked_by_sem = -1;
+    //}
 }
 
 int64_t my_sem_post(int64_t sem_id) {
@@ -116,10 +135,12 @@ int64_t my_sem_post(int64_t sem_id) {
         return -1;
     }
     
-    sem_array[sem_id].value++;
+  
 
-    if(!queue_is_empty(sem_array[sem_id].queue)){
-        PCB * to_unblock = dequeue(sem_array[sem_id].queue);           
+    if(queue_is_empty(sem_array[sem_id].queue)){
+        sem_array[sem_id].value++;
+    }else{
+        PCB * to_unblock = dequeue(sem_array[sem_id].queue);          //si haces un kill revive.  
         ready(to_unblock);
     }
 

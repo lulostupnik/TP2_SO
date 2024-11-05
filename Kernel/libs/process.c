@@ -145,6 +145,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	pcb_array[pid].waiting_me = NULL;
 	pcb_array[pid].is_background = 0;
 	pcb_array[pid].lowest_stack_address = rsp_malloc;
+	pcb_array[pid].blocked_by_sem = -1;
 	ready(&pcb_array[pid]);
 	amount_of_processes++;
 	return pid;
@@ -206,10 +207,11 @@ int64_t kill_process(pid_t pid)
 	if(pcb->waiting_for && pcb->waiting_for->waiting_me){
 		pcb->waiting_for->waiting_me = NULL;
 	}
-     
+	delete_from_blocked_queue(pcb);
 	if(set_free_pcb(pid) != -1){
 		amount_of_processes--;
 	}
+
 	return 0;
 }
 
