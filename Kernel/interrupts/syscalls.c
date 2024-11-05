@@ -209,10 +209,9 @@ int64_t sys_clear_screen()
 	} );
 }
 
-int64_t sys_nano_sleep ( uint32_t ns )
+int64_t sys_nano_sleep ( uint64_t ns )
 {
-	nano_sleep ( ns );
-	return 0;
+	return nano_sleep ( ns );
 }
 
 

@@ -74,7 +74,13 @@ void ps_loop(){
 		sys_nano_sleep(100);
 		libc_ps();
 	}
-	
+}
+
+void long_sleep(){
+	while(1){
+		sys_nano_sleep(1000);
+		libc_printf("Long sleep pid %d\n", libc_get_pid());
+	}
 }
 
 static module modules[] = {
@@ -100,7 +106,8 @@ static module modules[] = {
     {"ps", "Muestra información de los procesos.", libc_ps, BUILT_IN},
 	{"reader", "Tests pipe reader.", reader, !BUILT_IN},
 	{"writter", "Tests pipe writter. (use in foreground)", writter, !BUILT_IN},
-	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN}
+	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN},
+	{"long_sleep", "sleeps for a long time", long_sleep, !BUILT_IN}
 };
 
 

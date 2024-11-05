@@ -171,7 +171,7 @@ int64_t sys_get_screen_information ( screen_information * screen_information );
  * @param ticks The number of ticks to sleep. A tick is a unit of time defined by the system clock. The actual duration of a tick can vary depending on the system's hardware and configuration.
  * @return int64_t Returns 0 if the sleep was successfully initiated, or -1 if an error occurred.
  */
-int64_t sys_nano_sleep ( uint32_t ticks );
+int64_t sys_nano_sleep ( uint64_t ticks );
 
 
 

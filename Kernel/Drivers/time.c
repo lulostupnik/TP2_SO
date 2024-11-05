@@ -43,13 +43,16 @@ int seconds_elapsed()
 	return ticks / 18;
 }
 
-void nano_sleep ( int time )
+int64_t nano_sleep ( int time )
 {	
 	PCB * pcb  = get_running();
 	pcb->start = ticks;
 	pcb->time = time;
-	add_ordered_list(sleeping_list, pcb); //@todo handle error
+	if(add_ordered_list(sleeping_list, pcb) != 0){
+		return -1;
+	}
 	block_current();
 	pcb->start = 0;
 	pcb->time = 0;
+	return 0;
 }
