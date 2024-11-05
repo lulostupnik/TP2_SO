@@ -69,6 +69,14 @@ void writter(){
 	}
 }
 
+void ps_loop(){
+	while(1){
+		sys_nano_sleep(100);
+		libc_ps();
+	}
+	
+}
+
 static module modules[] = {
     {"help", "Muestra todos los módulos disponibles del sistema operativo.", help, BUILT_IN},
     {"time", "Muestra la hora actual del sistema.", show_current_time, BUILT_IN},
@@ -91,7 +99,8 @@ static module modules[] = {
     {"testmm", "Testea el uso del malloc y free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
     {"ps", "Muestra información de los procesos.", libc_ps, BUILT_IN},
 	{"reader", "Tests pipe reader.", reader, !BUILT_IN},
-	{"writter", "Tests pipe writter. (use in foreground)", writter, !BUILT_IN}
+	{"writter", "Tests pipe writter. (use in foreground)", writter, !BUILT_IN},
+	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN}
 };
 
 
