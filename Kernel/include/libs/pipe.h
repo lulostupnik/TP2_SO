@@ -5,7 +5,7 @@
 #include <semaphores.h>
 #include <shared_defs.h>
 
-#define PIPE_BUFFER_SIZE 2
+#define PIPE_BUFFER_SIZE 2048
 #define AMOUNT_OF_PIPES 100
 
 
@@ -16,5 +16,7 @@ int64_t pipe_write(int64_t id, uint16_t * buffer, uint64_t amount);
 int64_t pipe_close(int64_t id);
 int64_t pipe_open_free(pipe_mode_t mode);
 pid_t pipe_get_pid(int64_t id, pipe_mode_t mode);
+pid_t pipe_reserve();
+int64_t pipe_open_pid(int64_t id, pipe_mode_t mode, pid_t pid);
 
 #endif

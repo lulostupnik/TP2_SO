@@ -546,7 +546,7 @@ void libc_ps(){
         libc_printf("0x%x    | ", process_list->processes[i].lowest_stack_address + STACK_SIZE); 
         libc_printf("0x%x      | ", process_list->processes[i].lowest_stack_address);        
         libc_printf("0x%x | ", process_list->processes[i].stack_pointer);          
-        libc_printf("%d      | ", process_list->processes[i].status);
+        libc_printf("%s| ", process_list->processes[i].status == READY ? "Ready  ":(process_list->processes[i].status == ZOMBIE ? "Zombie ":"Blocked"));
 		for(int j = 0; j < 3; j++){
 			if(process_list->processes[i].fds[j] == -1){
 				libc_printf("  -  | ");
