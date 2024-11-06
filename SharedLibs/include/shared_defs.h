@@ -1,6 +1,6 @@
 #ifndef _SHARED_DEFS_H
 #define _SHARED_DEFS_H
-
+#include <stddef.h>
 #define STACK_SIZE 0x0FFF
 
 typedef struct {

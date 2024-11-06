@@ -80,7 +80,7 @@ int64_t libc_set_font_size ( uint64_t size );
  * @param str The string whose length is to be calculated.
  * @return size_t Returns the number of characters in the string pointed to by `str`.
  */
-uint64_t libc_strlen ( const char * str );
+uint64_t shared_libc_strlen ( const char * str );
 
 
 

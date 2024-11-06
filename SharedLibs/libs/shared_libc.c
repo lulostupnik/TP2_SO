@@ -47,3 +47,62 @@ void * shared_libc_memcpy ( void * destination, const void * source, uint64_t le
 
 	return destination;
 }
+
+
+/**
+ * @brief Calculates the length of a string.
+ *
+ * This function calculates the length of the null terminated string pointed to by `str`, excluding the terminating null byte ('\0').
+ *
+ * @param str The string whose length is to be calculated.
+ * @return size_t Returns the number of characters in the string pointed to by `str`.
+ */
+
+
+uint64_t shared_libc_strlen ( const char * str )
+{
+	const char * s = str;
+	while ( *s )
+		++s;
+	return s - str;
+}
+
+
+
+char * shared_libc_new_str_copy(char * string, void *(*malloc_fun)(uint64_t)){
+	if(string == NULL || malloc_fun == NULL ){
+		return NULL;
+	}
+	uint64_t len = shared_libc_strlen(string) + 1;
+	char * copy = malloc_fun(len);
+	if(copy == NULL){
+		return NULL;
+	}
+	shared_libc_memcpy(copy, string, len);
+	return copy;
+}
+
+char ** shared_libc_copy_argv(pid_t pid, char ** argv, uint64_t argc, void *(*malloc_fun)(uint64_t), void (*free_fun)(void *))
+{
+	if (argc == 0 || argv == NULL || malloc_fun == NULL || free_fun == NULL) {
+		return NULL;
+	}
+
+	char ** ans = malloc_fun(sizeof(char *) * (argc + 1));
+
+	if (ans == NULL) {
+		return NULL;
+	}
+
+	for (uint64_t i = 0; i < argc; i++) {
+		ans[i] = shared_libc_new_str_copy(argv[i], malloc_fun);
+		if (ans[i] == NULL) {
+			for (uint64_t j = 0; j < i; j++) {
+				free_fun((void *)ans[j]);
+			}
+			free_fun((void *)ans);
+			return NULL;
+		}
+	}
+	return ans;
+}
