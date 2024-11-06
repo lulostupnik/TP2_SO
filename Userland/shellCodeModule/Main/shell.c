@@ -142,7 +142,7 @@ static module modules[] = {
     {"testproc", "Testea la creación de procesos.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
     {"testsync", "Testea la sincronización de procesos.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
     {"testmm", "Testea el uso del malloc y free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
-    {"ps", "Muestra información de los procesos.", libc_ps, BUILT_IN},
+    {"ps", "Muestra información de los procesos.", libc_ps, !BUILT_IN},
 	{"reader", "Tests pipe reader.", reader, !BUILT_IN},
 	{"escritor", "Tests pipe writer.", escritor, !BUILT_IN},
 	{"lector", "Tests pipe reader. (use in foreground)", lector, !BUILT_IN},

@@ -71,8 +71,6 @@ void exception_dispatcher ( uint64_t exception )
 	vdriver_text_write ( STDERR, "\nPress any key to continue", 30 );
 	uint16_t buffer;
 
-
-
 	pic_master_mask ( 0xfd );                 //solo habilito interrupciones de teclado
 	_sti();
 	while(!buffer_has_next()){
@@ -81,6 +79,7 @@ void exception_dispatcher ( uint64_t exception )
 	buffer = get_current();
 	_cli();
 	pic_master_mask ( DEFAULT_MASTER_MASK );  // restores to default
+
 
 	color c = {0, 0, 0};
 	vdriver_clear_screen ( c );
