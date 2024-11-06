@@ -35,7 +35,8 @@ int64_t test_processes( char * argv[], uint64_t argc)
 
 	while (1) {
 		for (rq = 0; rq < max_processes; rq++) {
-			p_rqs[rq].pid = libc_create_process((main_function)endless_loop, 0, NULL, 0);
+			fd_t fds[] = {STDOUT, STDERR, -1};
+			p_rqs[rq].pid = libc_create_process((main_function)endless_loop, 0, NULL, 0, fds);
 			if (p_rqs[rq].pid < 0) {
 				libc_fprintf(STDERR, "test_processes: ERROR creating process\n");
 				return -1;

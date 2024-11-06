@@ -46,7 +46,7 @@ int64_t sys_call_handler ( stack_registers * regs )
 		case 15:
 			return sys_get_pid();
 		case 16:
-			return sys_create_process ( ( main_function ) regs->rdi, ( priority_t ) regs->rsi, ( char ** ) regs->rdx, regs->rcx );
+			return sys_create_process ( ( main_function ) regs->rdi, ( priority_t ) regs->rsi, ( char ** ) regs->rdx, regs->rcx, (fd_t *) regs->r8);
 		case 17:
 			return sys_block ( regs->rdi );
 		case 18:
@@ -244,9 +244,9 @@ void sys_free ( void * p )
 
 
 
-int64_t sys_create_process (main_function rip, priority_t priority, char ** argv, uint64_t argc)
+int64_t sys_create_process (main_function rip, priority_t priority, char ** argv, uint64_t argc, fd_t fds[])
 {
-	fd_t fds[3] = {STDOUT, STDERR, STDIN};
+	// fd_t fds[3] = {STDOUT, STDERR, STDIN};
 	return (int64_t) new_process( rip, priority, 1, argv, argc, fds);
 }
 

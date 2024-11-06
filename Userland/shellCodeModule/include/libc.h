@@ -252,7 +252,7 @@ void * libc_malloc ( uint64_t size );
 
 void libc_free ( void * ptr );
 
-pid_t libc_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc);
+pid_t libc_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc, fd_t fds[]);
 
 pid_t libc_get_pid();
 

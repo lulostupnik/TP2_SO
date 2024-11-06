@@ -14,7 +14,8 @@ void test_prio()
 
 	libc_printf("\n");
 	for (i = 0; i < TOTAL_PROCESSES; i++) {
-		pids[i] = libc_create_process((main_function)endless_loop_print_main, 0, argv, 1);
+		fd_t fds[] = {STDOUT, STDERR, -1};
+		pids[i] = libc_create_process((main_function)endless_loop_print_main, 0, argv, 1, fds);
 		if (pids[i] < 0) {
 			libc_fprintf ( STDERR, "Failed to create process number %d\n", i + 1 );
 		}

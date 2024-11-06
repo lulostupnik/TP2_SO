@@ -147,8 +147,8 @@ static void call_function_process(module m, char ** args, uint64_t argc)
 		libc_free(args[argc - 1]);
 		argc--;
 	}
-
-	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc);
+	fd_t fds[] = {STDOUT, STDERR, STDIN}; // todo -> diferenciar según si es background o no
+	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc, fds);
 	
 	if (ans < 0) {
 		libc_fprintf ( STDERR, "Error: Could not create process\n" );

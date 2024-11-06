@@ -490,9 +490,9 @@ void libc_free ( void * p )
 	return sys_free ( p );
 }
 
-pid_t libc_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc)
+pid_t libc_create_process( main_function rip, uint64_t priority, char ** argv, uint64_t argc, fd_t fds[])
 {
-	return (pid_t) sys_create_process(rip, priority, argv, argc);
+	return (pid_t) sys_create_process(rip, priority, argv, argc, fds);
 }
 int64_t libc_get_time ( time_struct * time ){
 	return sys_get_time ( time );
