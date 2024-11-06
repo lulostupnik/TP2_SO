@@ -177,6 +177,9 @@ void get_process_info(PCB * pcb, process_info * process)
 	process->status = pcb->status;
 	PCB * pcb2;
 	process->is_background = !(pcb->fds[STDIN] == STDIN || (pcb->fds[STDIN] > 2 && (pcb2 = (get_pcb(pipe_get_pid(pcb2->fds[STDIN], WRITER)) != NULL)) && pcb2->fds[STDIN] == STDIN) );
+	for(int i = 0; i < 3; i++){
+		process->fds[i] = pcb->fds ? pcb->fds[i] : -1;
+	}
 }
 
 
@@ -208,7 +211,7 @@ void free_ps(process_info_list * ps){
 	if(ps == NULL || ps->processes == NULL){
 		return;
 	}
-	for(int i=0; i<ps->amount_of_processes ;i++){
+	for(int i=0; i < ps->amount_of_processes ;i++){
 		if(ps->processes[i].name){
 			my_free(ps->processes[i].name);
 		}

@@ -535,18 +535,31 @@ void libc_ps(){
 		return;
 	}
 	libc_printf("Amount of processes: %d\n", process_list->amount_of_processes);
-	for(int i = 0; i < process_list->amount_of_processes; i++){
-		libc_printf("PID: %d - ", process_list->processes[i].pid);
-		libc_printf("Name: %s - ", process_list->processes[i].name ? process_list->processes[i].name : "No name");
-		libc_printf("%sground - ", process_list->processes[i].is_background ? "Back" : "Fore");
-		libc_printf("Prio: %d - ", process_list->processes[i].priority);
-		libc_printf("Stack Base Pointer: %x - ", process_list->processes[i].lowest_stack_address + STACK_SIZE);
-		libc_printf("Last stack address: %x - ", process_list->processes[i].lowest_stack_address );
-		libc_printf("RSP: %x - ", process_list->processes[i].stack_pointer);
-		libc_printf("Status: %d\n", process_list->processes[i].status);
-	}
+	// Encabezado de la tabla
+    libc_printf("PID | Ground      | Prio | Stack Base Ptr| Last Stack Addr |    RSP     | Status | fd_0 | fd_1 | fd_2 | Name       \n");
+    libc_printf("----|-------------|------|---------------|-----------------|------------|--------|------|------|------|-----------\n");
+
+    for (int i = 0; i < process_list->amount_of_processes; i++) {
+        libc_printf("%d   | ", process_list->processes[i].pid);                                
+        libc_printf("%s  | ", process_list->processes[i].is_background ? "Background" : "Foreground");     
+        libc_printf("%d    | ", process_list->processes[i].priority); 
+        libc_printf("0x%x    | ", process_list->processes[i].lowest_stack_address + STACK_SIZE); 
+        libc_printf("0x%x      | ", process_list->processes[i].lowest_stack_address);        
+        libc_printf("0x%x | ", process_list->processes[i].stack_pointer);          
+        libc_printf("%d      | ", process_list->processes[i].status);
+		for(int j = 0; j < 3; j++){
+			if(process_list->processes[i].fds[j] == -1){
+				libc_printf("  -  | ");
+				continue;
+			}
+			libc_printf(" %d   | ", process_list->processes[i].fds[j]);
+		}                  
+		libc_printf("%s\n", process_list->processes[i].name ? process_list->processes[i].name : "No name"); 
+
+    }
 	sys_free_ps(process_list);
 }
+
 
 int8_t libc_get_status(pid_t pid){
 	return sys_get_status(pid);

@@ -59,6 +59,7 @@ typedef struct process_info {
 	uint64_t stack_pointer;
 	uint8_t status;
 	uint8_t is_background;
+	fd_t fds[3];
 	char * name;
 } process_info;
 
