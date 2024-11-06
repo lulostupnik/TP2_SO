@@ -35,7 +35,7 @@ static uint64_t font_size = 1;
 
 
 void reader(){
-	libc_pipe_open(0, READER);
+	libc_pipe_open(3, READER);
 	uint16_t buff[1000];
 	char char_buff[1001];
 	// if(libc_pipe_open(0, READER) == -1){
@@ -48,7 +48,7 @@ void reader(){
 		amount = libc_pipe_read(3, buff, 999);
 		if(amount == 0){
 			libc_fprintf(STDERR, "EOF read: %s\n",amount, char_buff);
-			libc_pipe_close(0);
+			libc_pipe_close(3);
 			break;
 		}
 		int i=0;
@@ -60,7 +60,7 @@ void reader(){
 	}
 }
 void writter(){
-	libc_pipe_open(0, WRITER);
+	libc_pipe_open(3, WRITER);
 	int i = 0;
 	while(1){
 		uint16_t c = 0;
@@ -70,7 +70,7 @@ void writter(){
 		libc_pipe_write(3, abc, 3);
 
 		if(i == 3){
-			libc_pipe_close(0);
+			libc_pipe_close(3);
 			break;
 		}
 		i++;
@@ -99,14 +99,16 @@ void cat(){
 		buff[amount] = 0;
 		libc_fprintf(STDERR, "%s", buff);
 	}
+	libc_pipe_close(3);
 }
 
 void escritor(){
-	char string[] = "\0Probando por favor uncionaaaa, :)";
+	char string[] = "P\0robando por favor uncionaaaa, :)";
 	for(int i = 0; i < 20; i++){
 		sys_nano_sleep(10);
 		if(sys_write(STDOUT, string+i, 1) == -1){
 			libc_fprintf(STDERR, "Error writing\n");
+			break;
 		}
 	}
 }

@@ -12,6 +12,7 @@
 typedef struct pipe_cdt{
     pid_t pids[2];
     uint8_t reserved;
+    uint8_t was_closed_by_reader;
     uint8_t initialized_qtty;
     uint16_t buffer[PIPE_BUFFER_SIZE];  //@TODO change vdriver_text_write para que is hay algo mayor a 255 no lo escriba. 
     uint32_t current_read; 
@@ -69,19 +70,21 @@ int64_t pipe_open_free(pipe_mode_t mode){
 
 
 int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
-	if( BAD_ID(id) || pipes_array[id].pids[READER] != get_pid()){
+	if( BAD_ID(id) || pipes_array[id].pids[READER] != get_pid() ){
         return -1;
     }
+
     uint64_t i = 0;
     if(my_sem_wait(pipes_array[id].data_available_sem, 1) == -1){
         return -1;
     }
     int max_write = pipes_array[id].current_write;
+
     while ( i < amount && (pipes_array[id].current_read < max_write) && pipes_array[id].buffer[pipes_array[id].current_read] != EOF  ) { // race condition?? @todo test.....
-		buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read++];
+        buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read++];
 	}
-  
-    if(pipes_array[id].current_read < max_write){
+
+    if(pipes_array[id].current_read < max_write || (pipes_array[id].buffer[pipes_array[id].current_read] == EOF)){
         sem_post_if_value_is_zero(pipes_array[id].data_available_sem,1);
     }
     if(pipes_array[id].current_read == PIPE_BUFFER_SIZE ){
@@ -93,21 +96,50 @@ int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
 }
 	
 int64_t pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
-    if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid()){
+    if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid() || pipes_array[id].was_closed_by_reader){
         return -1;
     }
     int i=0;
-    for(; i<amount ; i++){
+    for(; i<amount; i++){
         pipes_array[id].buffer[pipes_array[id].current_write ++] = buffer[i];
         if( pipes_array[id].current_write == PIPE_BUFFER_SIZE ){ //checkear caso limite. 
             sem_post_if_value_is_zero(pipes_array[id].data_available_sem,1 );
             my_sem_wait(pipes_array[id].can_write_sem, 1); //agregar checkeo
             pipes_array[id].current_write = 0;
             pipes_array[id].current_read = 0;
+            if( pipes_array[id].was_closed_by_reader ){
+                return -1;
+            }
         }
     }
     if(pipes_array[id].current_write != 0){
          sem_post_if_value_is_zero(pipes_array[id].data_available_sem, 1);
+    }
+    
+    return i;
+}
+
+
+
+int64_t pipe_write2(int64_t id, uint16_t * buffer, uint64_t amount){
+    if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid() || pipes_array[id].was_closed_by_reader){
+        return -1;
+    }
+    int i=0;
+    for(; i<amount; i++){
+        pipes_array[id].buffer[pipes_array[id].current_write ++] = buffer[i];
+        if( pipes_array[id].current_write == PIPE_BUFFER_SIZE ){ //checkear caso limite. 
+            my_sem_post(pipes_array[id].data_available_sem,1 );
+            my_sem_wait(pipes_array[id].can_write_sem, 1); //agregar checkeo
+            pipes_array[id].current_write = 0;
+            pipes_array[id].current_read = 0;
+            if( pipes_array[id].was_closed_by_reader ){
+                return -1;
+            }
+        }
+    }
+    if(pipes_array[id].current_write != 0){
+        my_sem_post(pipes_array[id].data_available_sem, 1);
     }
     
     return i;
@@ -128,10 +160,12 @@ int64_t pipe_close(int64_t id){
     }
     if(pipes_array[id].pids[READER] == pid){
         pipes_array[id].pids[READER] = -1;
+        my_sem_post(pipes_array[id].can_write_sem, 1);
+        pipes_array[id].was_closed_by_reader = 1;
         flag = 0;
     }
     if(pipes_array[id].initialized_qtty == 2 && !flag && pipes_array[id].pids[WRITER] == -1 &&  pipes_array[id].pids[READER] == -1){
-        pipes_array[id].current_read = pipes_array[id].current_write = 0;        
+        pipes_array[id].current_read = pipes_array[id].current_write = pipes_array[id].was_closed_by_reader = 0;        
     }
     my_sem_close(pipes_array[id].data_available_sem , 1);
     my_sem_close(pipes_array[id].can_write_sem, 1);
