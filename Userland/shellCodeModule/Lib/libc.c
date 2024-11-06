@@ -540,14 +540,14 @@ void libc_ps(){
     libc_printf("----|-------------|------|---------------|-----------------|------------|--------|-----------\n");
 
     for (int i = 0; i < process_list->amount_of_processes; i++) {
-        libc_printf("%d   | ", process_list->processes[i].pid);                                 // PID
-        libc_printf("%s  | ", process_list->processes[i].is_background ? "Background" : "Foreground");       // Ground
-        libc_printf("%d    | ", process_list->processes[i].priority);                            // Prio
-        libc_printf("0x%x    | ", process_list->processes[i].lowest_stack_address + STACK_SIZE); // Stack Base Ptr
-        libc_printf("0x%x      | ", process_list->processes[i].lowest_stack_address);              // Last Stack Addr
-        libc_printf("0x%x | ", process_list->processes[i].stack_pointer);                     // RSP
-        libc_printf("%d      | ", process_list->processes[i].status);                               // Status
-		libc_printf("%s\n", process_list->processes[i].name ? process_list->processes[i].name : "No name"); // Name
+        libc_printf("%d   | ", process_list->processes[i].pid);                                
+        libc_printf("%s  | ", process_list->processes[i].is_background ? "Background" : "Foreground");     
+        libc_printf("%d    | ", process_list->processes[i].priority); 
+        libc_printf("0x%x    | ", process_list->processes[i].lowest_stack_address + STACK_SIZE); 
+        libc_printf("0x%x      | ", process_list->processes[i].lowest_stack_address);        
+        libc_printf("0x%x | ", process_list->processes[i].stack_pointer);          
+        libc_printf("%d      | ", process_list->processes[i].status);                        
+		libc_printf("%s\n", process_list->processes[i].name ? process_list->processes[i].name : "No name"); 
 
     }
 	sys_free_ps(process_list);
