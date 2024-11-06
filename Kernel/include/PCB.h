@@ -2,6 +2,7 @@
 #define _PCB_H
 
 #include <shared_defs.h>
+#include <driversInformation.h>
 
 
 
@@ -19,7 +20,7 @@ typedef struct PCB {
 	struct PCB * waiting_me;
 	struct PCB * waiting_for;
 	int64_t blocked_by_sem;
-  	fd_t fds[3];
+  	fd_t fds[COMMON_FDS];
 	uint64_t time;
 	uint64_t start;
 } PCB;

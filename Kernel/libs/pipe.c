@@ -23,7 +23,12 @@ static pipe_cdt pipes_array[AMOUNT_OF_PIPES];
 static int64_t pipe_get_free();
 
 
-
+pid_t pipe_get_pid(int64_t id, pipe_mode_t mode){
+    if( (!((mode == READER) || (mode == WRITER)) || BAD_ID(id))){
+        return -1;
+    }
+    return pipes_array[id].pids[mode];
+}
 
 
 void pipe_init(){

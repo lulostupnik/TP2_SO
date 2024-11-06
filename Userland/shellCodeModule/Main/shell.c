@@ -3,13 +3,21 @@
 
 #include <shell.h>
 
+typedef struct {
+    char **args[2];   
+    uint64_t argc[2]; 
+} Command;
+
 
 static void help();
 static void kill_pid(char ** argv, uint64_t argc);
 static void to_utc_minus_3 ( time_struct * time );
 static void free_args(char ** args, uint64_t argc);
-static void call_function_process(module m, char ** args, uint64_t argc);
-static char ** command_parse(char shellBuffer[], uint64_t * argc);
+static void free_cmd_args(Command * cmd);
+// static void call_function_process(module m, char ** args, uint64_t argc);
+static void call_function_process(module m, char ** args, uint64_t argc, fd_t fds[COMMON_FDS]);
+static int64_t piped_command_parse(char shellBuffer[], Command *cmd);
+static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count);
 static void interpret();
 static void zoom_in();
 static void zoom_out();
@@ -19,6 +27,7 @@ static void shell_wait_pid(char ** args, uint64_t argc);
 static void shell_nice(char **argv, uint64_t argc);
 static void loop_process(char ** argv, uint64_t argc);
 static void shell_block(char **argv, uint64_t argc);
+
 
 static uint64_t font_size = 1;
 
@@ -83,6 +92,15 @@ void long_sleep(){
 	}
 }
 
+void cat(){
+	char buff[1000];
+	int amount = 0;
+	while( (amount = sys_read(buff, 999)) != 0){
+		buff[amount] = 0;
+		libc_fprintf(STDERR, "%s", buff);
+	}
+}
+
 static module modules[] = {
     {"help", "Muestra todos los módulos disponibles del sistema operativo.", help, BUILT_IN},
     {"time", "Muestra la hora actual del sistema.", show_current_time, BUILT_IN},
@@ -107,7 +125,8 @@ static module modules[] = {
 	{"reader", "Tests pipe reader.", reader, !BUILT_IN},
 	{"writter", "Tests pipe writter. (use in foreground)", writter, !BUILT_IN},
 	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN},
-	{"long_sleep", "sleeps for a long time", long_sleep, !BUILT_IN}
+	{"long_sleep", "sleeps for a long time", long_sleep, !BUILT_IN},
+	{"cat", "cat like linux", cat, !BUILT_IN}
 };
 
 
@@ -126,6 +145,9 @@ int main()
 
 static void free_args(char ** args, uint64_t argc)
 {
+	if(args == NULL){
+		return;
+	}
 	for (int i = 0; i < argc; i++) {
 		libc_free(args[i]);
 	}
@@ -133,21 +155,30 @@ static void free_args(char ** args, uint64_t argc)
 	return;
 }
 
+static void free_cmd_args(Command * cmd){
+    if(cmd == NULL){
+        return;
+    }    
+    free_args(cmd->args[0], cmd->argc[0]);
+    free_args(cmd->args[1], cmd->argc[1]);
+}
 
-static void call_function_process(module m, char ** args, uint64_t argc)
+
+static void call_function_process(module m, char ** args, uint64_t argc, fd_t fds[COMMON_FDS])
 {
 	if (m.is_built_in) {
 		m.function(args, argc);
 		free_args(args, argc);
 		return;
 	}
-
+	// fd_t fds[] = {STDOUT, STDERR, STDIN}; //@todo STDOUT se deja o no?
 	uint8_t is_bckg = (libc_strcmp(args[argc - 1], "&") == 0);
 	if(is_bckg){
 		libc_free(args[argc - 1]);
 		argc--;
+		fds[STDIN] = -1;
 	}
-	fd_t fds[] = {STDOUT, STDERR, STDIN}; // todo -> diferenciar según si es background o no
+	
 	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc, fds);
 	
 	if (ans < 0) {
@@ -162,50 +193,97 @@ static void call_function_process(module m, char ** args, uint64_t argc)
 }
 
 
-static char ** command_parse(char shellBuffer[], uint64_t * argc)
-{
-	char ** args = libc_malloc(MAX_ARGS * sizeof(char *));
-	if (args == NULL) {
-		*argc = -1;
-		return NULL;
-	}
-	uint64_t args_count = 0;
+static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count) {
+    if (argc == NULL || pipe_pos == NULL || pipe_count == NULL) {
+        return NULL;
+    }
+    *pipe_pos = 0;
 
-	for (int i = 0; shellBuffer[i] != '\0';) {
-		if (shellBuffer[i] == ' ') {
-			i++;
-			continue;
-		}
+    if (shellBuffer[0] == '|') {
+        (*pipe_count)++;
+        return NULL;
+    }
 
-		args[args_count] = libc_malloc(MAX_ARGS_SIZE * sizeof(char));
+    char **args = libc_malloc(MAX_ARGS * sizeof(char *));
+    if (args == NULL) {
+        *argc = -1;
+        return NULL;
+    }
 
-		if (args[args_count] == NULL) {
-			for (int n = 0; n < args_count; n++) {
-				libc_free(args[n]);
-			}
-			libc_free(args);
-			*argc = -1;
-			return NULL;
-		}
+    uint64_t args_count = 0;
+    int i = 0;
 
-		int j;
-		for (j = 0; shellBuffer[i] != ' ' && shellBuffer[i] != '\0'; i++, j++) {
-			args[args_count][j] = shellBuffer[i];
-		}
+    while (shellBuffer[i] != '\0') {
+        while (shellBuffer[i] == ' ') {
+            i++;
+        }
+        if (shellBuffer[i] == '|') {
+            (*pipe_count)++;
+			*pipe_pos = i + 1;
+            break;
+        }
 
-		args[args_count][j] = '\0';
-		args_count++;
-	}
+        if (shellBuffer[i] == '\0') {
+            break;
+        }
 
-	*argc = args_count;
+        args[args_count] = libc_malloc(MAX_ARGS_SIZE * sizeof(char));
+        if (args[args_count] == NULL) {
+            for (int n = 0; n < args_count; n++) {
+                libc_free(args[n]);
+            }
+            libc_free(args);
+            *argc = -1;
+            return NULL;
+        }
 
-	if (args_count == 0) {
-		libc_free(args);
-		args = NULL;
-	}
+        int j = 0;
+        while (shellBuffer[i] != ' ' && shellBuffer[i] != '\0' && shellBuffer[i] != '|') {
+            args[args_count][j++] = shellBuffer[i++];
+        }
+        args[args_count][j] = '\0';
+        args_count++;
+    }
 
-	return args;
+    *argc = args_count;
+
+    if (args_count == 0) {
+        libc_free(args);
+        args = NULL;
+    }
+
+    return args;
 }
+
+static int64_t piped_command_parse(char shellBuffer[], Command *cmd) {
+    if (cmd == NULL) {
+        return -1;
+    }
+    cmd->args[0] = cmd->args[1] = NULL;
+    cmd->argc[0] = cmd->argc[1] = 0;
+
+    int64_t pipe_pos = -1, pipe_count = 0;
+
+    cmd->args[0] = command_parse(shellBuffer, &cmd->argc[0], &pipe_pos, &pipe_count);
+    if (cmd->args[0] == NULL) {
+        return -1;
+    }
+
+    if (pipe_pos > 0) {
+        cmd->args[1] = command_parse(shellBuffer + pipe_pos, &cmd->argc[1], &pipe_pos, &pipe_count);
+        if (cmd->args[1] == NULL || cmd->argc[1] == 0) {
+			free_cmd_args(cmd);
+            return -1;
+        }
+    } 
+    if (pipe_count > 1) {
+		free_cmd_args(cmd);
+        return -1;
+    }
+
+    return 0;
+}
+
 
 static void interpret()
 {
@@ -215,24 +293,55 @@ static void interpret()
 	if ( shared_libc_strlen ( shellBuffer ) == 0 ) {
 		return;
 	}
-	char ** args;
-	uint64_t argc;
-	args = command_parse(shellBuffer, &argc);
+	// char ** args;
+	// uint64_t argc;
+	//args = command_parse(shellBuffer, &argc);
 
+	Command cmd;
+	if(piped_command_parse(shellBuffer, &cmd) != 0){
+		libc_fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
+		return;
+	}
+	int has_pipe = cmd.args[1] != NULL; //@todo check
 
-	if (argc == -1) {
+	if (cmd.argc[0] == -1 || cmd.argc[1] == -1) {
 		libc_fprintf ( STDERR, "Not enough memory to create process\n" );
 	}
 
-	for ( int i = 0; i < MAX_MODULES && ((args != NULL) || (argc != 0)); i++ ) {
-		if ( libc_strcmp (args[0], modules[i].name ) == 0 ) {
-			call_function_process(modules[i], args, argc);
+	int found_idx[2] = {-1,-1};
+	int look_for_max = has_pipe ? 2:1;
+	for(int j=0; j<look_for_max ; j++){
+		for ( int i = 0; i < MAX_MODULES && ((cmd.args[j] != NULL) || (cmd.argc[j] != 0)); i++ ) {
+			if ( libc_strcmp (cmd.args[j][0], modules[i].name ) == 0 ) {
+			//call_function_process(modules[i], args, argc);
+			found_idx[j] = i;
+			break;
+			}
+		}
+	}
+	fd_t fds[] = {STDOUT,STDERR, STDIN};
+	if(found_idx[0] != -1){
+		if(!has_pipe){
+			call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
+			return;
+		}
+		if(found_idx[1] != -1){
+			fd_t fd = libc_pipe_open_free(WRITER);
+			if(fd < 0){
+				libc_fprintf ( STDERR, "Could not open pipe\n" );
+				free_cmd_args(&cmd);
+				return;
+			}
+			fds[0] = fd;
+			call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
+			fds[0] = STDOUT;
+			fds[2] = fd;
+			call_function_process(modules[found_idx[1]], cmd.args[1], cmd.argc[1], fds);
 			return;
 		}
 	}
 
 	libc_fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
-
 }
 
 

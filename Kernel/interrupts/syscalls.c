@@ -13,7 +13,7 @@ int64_t sys_call_handler ( stack_registers * regs )
 {
 	switch ( regs->rax ) {
 		case 0:
-			return sys_read ( regs->rdi, ( uint16_t * ) regs->rsi, regs->rdx );
+			return sys_read ( ( uint16_t * ) regs->rdi,  regs->rsi);
 		case 1:
 			return sys_write ( regs->rdi, ( char * ) regs->rsi, regs->rdx );
 		case 2:
@@ -93,42 +93,49 @@ int64_t sys_call_handler ( stack_registers * regs )
 
 
 int64_t sys_pipe_open(int64_t id, pipe_mode_t mode){
+	id-=COMMON_FDS;
 	return pipe_open(id, mode);
 }
 
 int64_t sys_pipe_open_free(pipe_mode_t mode){
-	return pipe_open_free(mode);
+	return pipe_open_free(mode) + COMMON_FDS;
 }
 
 int64_t sys_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
+	id-=COMMON_FDS;
 	return pipe_read(id, buffer, amount);
 }
 int64_t sys_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
+	id-=COMMON_FDS;
 	return pipe_write(id, buffer, amount);
 }
 int64_t sys_pipe_close(int64_t id){
+	id-=COMMON_FDS;
 	return pipe_close(id);
 }
 
 
-int64_t sys_read ( uint64_t fd, uint16_t * buffer, uint64_t amount )
+int64_t sys_read (  uint16_t * buffer, uint64_t amount )
 {
-	return stdin_read(buffer, amount);
-
-	// uint64_t i = 0;
-	// //if not buffer_has_next block. 
-	// while ( i < amount && buffer_has_next() ) {
-	// 	buffer[i] = get_current();
-	// 	i++;
-	// }
-	// return i;
+	fd_t fd = get_running()->fds[STDIN];
+	if(fd == STDIN) {
+		return stdin_read(buffer, amount);
+	}
+	return sys_pipe_read(fd,buffer, amount);
 }
 
 
 //modo texto:
 int64_t sys_write ( uint64_t fd, const char * buffer, uint64_t amount )
 {
-	return vdriver_text_write ( fd, buffer, amount );
+	if(fd != STDOUT && fd != STDERR){
+		return -1;
+	}
+	fd_t actual_fd = get_running()->fds[fd];
+	if(actual_fd == STDOUT || actual_fd == STDERR){
+		return vdriver_text_write ( fd, buffer, amount );
+	}
+	return sys_pipe_write(actual_fd,buffer, amount);
 }
 
 //modo texto:

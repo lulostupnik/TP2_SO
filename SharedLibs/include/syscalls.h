@@ -24,7 +24,7 @@
  * @return int64_t Returns the number of characters actually read. This may be less than 'amount' if fewer characters are available.
  *                 Returns -1 if an error occurred (for example, if 'fd' is not a valid file descriptor).
  */
-int64_t sys_read ( uint64_t fd, uint16_t * buffer, uint64_t amount );
+int64_t sys_read (  uint16_t * buffer, uint64_t amount );
 
 
 

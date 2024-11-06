@@ -92,15 +92,11 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	pcb_array[pid].is_background = 0;
 	pcb_array[pid].lowest_stack_address = rsp_malloc;
 	pcb_array[pid].blocked_by_sem = -1;
-	if(fds){ // ¿Hace falta esto?
-		for(int i = 0; i < 3; i++){
-			pcb_array[pid].fds[i] = fds;
-		}
-	} else {
-		for(int i = 0; i < 3; i++){
-			pcb_array[pid].fds[i] = -1;
-		}
+
+	for(int i = 0; i < 3; i++){
+			pcb_array[pid].fds[i] = fds ? fds[i]:-1;
 	}
+
 	ready(&pcb_array[pid]);
 	amount_of_processes++;
 	return pid;
@@ -179,7 +175,8 @@ void get_process_info(PCB * pcb, process_info * process)
 	process->stack_pointer = pcb->rsp;
 	process->lowest_stack_address = pcb->lowest_stack_address;
 	process->status = pcb->status;
-	process->is_background = pcb->is_background;
+	PCB * pcb2;
+	process->is_background = !(pcb->fds[STDIN] == STDIN || (pcb->fds[STDIN] > 2 && (pcb2 = (get_pcb(pipe_get_pid(pcb2->fds[STDIN], WRITER)) != NULL)) && pcb2->fds[STDIN] == STDIN) );
 }
 
 

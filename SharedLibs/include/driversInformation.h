@@ -5,6 +5,7 @@
 #define STDOUT 0
 #define STDERR 1
 #define STDIN 2
+#define COMMON_FDS 3
 
 #define TEXT_MODE 0
 #define VIDEO_MODE 1

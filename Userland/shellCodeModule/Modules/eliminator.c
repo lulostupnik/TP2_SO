@@ -85,7 +85,7 @@ static void singlePlayer()
 
 	while ( 1 ) {
 		sys_nano_sleep ( 1 );
-		buffer_size = sys_read ( 0, buffer, 1 );
+		buffer_size = sys_read ( buffer, 1 );
 
 
 		if ( buffer_size > 0 ) {
@@ -166,7 +166,7 @@ static void multiPlayer()
 
 	while ( 1 ) {
 		sys_nano_sleep ( 1 );
-		buffer_size = sys_read ( 0, buffer, 1 );
+		buffer_size = sys_read ( buffer, 1 );
 
 
 		if ( buffer_size > 0 ) {

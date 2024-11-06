@@ -118,22 +118,10 @@ section .text
 
 
 sys_read:
-    push rbp
-    mov rbp, rsp
-    mov rax, 0
-    int 80h
-    mov rsp, rbp
-    pop rbp
-    ret
+    simple_sys_handler 0
 
 sys_write:
-    push rbp
-    mov rbp, rsp
-    mov rax, 1
-    int 80h
-    mov rsp, rbp
-    pop rbp
-    ret
+    simple_sys_handler 1
 
 sys_get_register_snapshot:
     simple_sys_handler 2

@@ -17,7 +17,7 @@ char libc_get_char()
     int64_t ans = 0;
 	uint16_t c = 0;
     do {
-        ans = sys_read(STDIN, &c, 1);  
+        ans = sys_read( &c, 1);  
     } while (c > 255);                 
 
 
