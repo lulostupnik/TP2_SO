@@ -93,24 +93,20 @@ int64_t sys_call_handler ( stack_registers * regs )
 
 
 int64_t sys_pipe_open(int64_t id, pipe_mode_t mode){
-	id-=COMMON_FDS;
 	return pipe_open(id, mode);
 }
 
 int64_t sys_pipe_open_free(pipe_mode_t mode){
-	return pipe_open_free(mode) + COMMON_FDS;
+	return pipe_open_free(mode) ;
 }
 
 int64_t sys_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
-	id-=COMMON_FDS;
 	return pipe_read(id, buffer, amount);
 }
 int64_t sys_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
-	id-=COMMON_FDS;
 	return pipe_write(id, buffer, amount);
 }
 int64_t sys_pipe_close(int64_t id){
-	id-=COMMON_FDS;
 	return pipe_close(id);
 }
 

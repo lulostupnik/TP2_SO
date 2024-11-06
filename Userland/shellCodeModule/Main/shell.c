@@ -95,7 +95,7 @@ void long_sleep(){
 void cat(){
 	char buff[1000];
 	int amount = 0;
-	while( (amount = sys_read(buff, 999)) != 0){
+	while( (amount = sys_read(buff, 999)) > 0){
 		buff[amount] = 0;
 		libc_fprintf(STDERR, "%s", buff);
 	}
@@ -326,9 +326,10 @@ static void interpret()
 			return;
 		}
 		if(found_idx[1] != -1){
-			fd_t fd = libc_pipe_open_free(WRITER);
+			fd_t fd = libc_pipe_open_free(WRITER);  //mover a create process, agregar el open del otro proceso yt cerrar
 			if(fd < 0){
 				libc_fprintf ( STDERR, "Could not open pipe\n" );
+
 				free_cmd_args(&cmd);
 				return;
 			}
