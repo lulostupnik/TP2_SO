@@ -7,6 +7,7 @@
 #include <idtLoader.h>
 #include <syscallsKernel.h>
 #include <interrupts.h>
+#include <keyboard.h>
 
 void exception_dispatcher ( uint64_t exception );
 

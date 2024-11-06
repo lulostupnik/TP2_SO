@@ -75,7 +75,10 @@ void exception_dispatcher ( uint64_t exception )
 
 	pic_master_mask ( 0xfd );                 //solo habilito interrupciones de teclado
 	_sti();
-	while ( sys_read ( &buffer, 1 ) == 0 );
+	while(!buffer_has_next()){
+		_hlt();
+	}
+	buffer = get_current();
 	_cli();
 	pic_master_mask ( DEFAULT_MASTER_MASK );  // restores to default
 
