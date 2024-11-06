@@ -97,12 +97,12 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	}
 
 	if(fds){
-		for(int i = 0; i < 3; i++){
-			if(fds[i] < 3){
+		for(int i = 0; i < CANT_FDS; i++){
+			if(fds[i] <= MAX_COMMON_FD){
 				continue;
 			}
 			pipe_mode_t mode = i == STDIN ? READER : WRITER;
-			if(pipe_open(fds[i] - 3, mode) == -1){
+			if(pipe_open_pid(fds[i] - 3, mode, pid) == -1){
 				// my_free((void *)rsp_malloc);
 				// pcb_array[pid].status = FREE;
 				// return -1;
@@ -231,4 +231,15 @@ void free_ps(process_info_list * ps){
 	}
 	my_free(ps->processes);
 	my_free(ps);
+}
+
+void close_fds(PCB * pcb){
+	if(pcb == NULL){
+		return;
+	}
+	for(int i=0; i<CANT_FDS ; i++){
+		if(pcb->fds[i] > MAX_COMMON_FD){
+			pipe_close(pcb->fds[i]);
+		}	
+	}
 }

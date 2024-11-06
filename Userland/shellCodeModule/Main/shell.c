@@ -15,7 +15,7 @@ static void to_utc_minus_3 ( time_struct * time );
 static void free_args(char ** args, uint64_t argc);
 static void free_cmd_args(Command * cmd);
 // static void call_function_process(module m, char ** args, uint64_t argc);
-static void call_function_process(module m, char ** args, uint64_t argc, fd_t fds[COMMON_FDS]);
+static void call_function_process(module m, char ** args, uint64_t argc, fd_t fds[CANT_FDS]);
 static int64_t piped_command_parse(char shellBuffer[], Command *cmd);
 static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count);
 static void interpret();
@@ -95,16 +95,16 @@ void long_sleep(){
 void cat(){
 	char buff[1000];
 	int amount = 0;
-	while( (amount = sys_read(buff, 999)) > 0){
+	while((amount = sys_read(buff, 999)) > 0 ){
 		buff[amount] = 0;
 		libc_fprintf(STDERR, "%s", buff);
 	}
 }
 
 void escritor(){
+	char string[] = "\0Probando por favor uncionaaaa, :)";
 	for(int i = 0; i < 20; i++){
 		sys_nano_sleep(10);
-		char string[] = "Probando por favor funcionaaaa, :)";
 		if(sys_write(STDOUT, string+i, 1) == -1){
 			libc_fprintf(STDERR, "Error writing\n");
 		}
@@ -185,7 +185,7 @@ static void free_cmd_args(Command * cmd){
 }
 
 
-static void call_function_process(module m, char ** args, uint64_t argc, fd_t fds[COMMON_FDS])
+static void call_function_process(module m, char ** args, uint64_t argc, fd_t fds[CANT_FDS])
 {
 	if (m.is_built_in) {
 		m.function(args, argc);

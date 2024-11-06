@@ -25,6 +25,7 @@ int64_t my_sem_post(int64_t sem_id, uint8_t is_kernel) {
     return post_if_condition(sem_id, always_true, is_kernel);
 }                
 
+
 int64_t sem_post_if_value_is_zero(int64_t sem_id, uint8_t is_kernel){
    return post_if_condition(sem_id, is_value_zero, is_kernel);
 }
@@ -60,6 +61,10 @@ int64_t my_sem_open(int64_t sem_id, int value, uint8_t is_kernel){
 
 
 int64_t my_sem_wait(int64_t sem_id, uint8_t is_kernel){
+    if(sem_id > 100 && (sem_id % 2 == 1)){
+        sem_id++;
+        sem_id--;
+    }
 
     if(!is_valid_id(sem_id, is_kernel)){
         return -1;
@@ -127,6 +132,11 @@ int64_t delete_from_blocked_queue(PCB * pcb){
 }
 
 static int64_t post_if_condition(int64_t sem_id, int (*condition)(sem_structure *), uint8_t is_kernel) {
+    if(sem_id > 100 && (sem_id % 2 == 1)){
+        sem_id++;
+        sem_id--;
+    }
+
     if (!is_valid_id(sem_id, is_kernel)) {
         return -1;
     }

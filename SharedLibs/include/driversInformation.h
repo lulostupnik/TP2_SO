@@ -5,7 +5,8 @@
 #define STDOUT 0
 #define STDERR 1
 #define STDIN 2
-#define COMMON_FDS 3
+#define CANT_FDS 3
+#define MAX_COMMON_FD 2
 
 #define TEXT_MODE 0
 #define VIDEO_MODE 1

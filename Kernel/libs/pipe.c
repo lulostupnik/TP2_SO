@@ -38,7 +38,8 @@ void pipe_init(){
 	}
 }
 
-int64_t pipe_open(int64_t id, pipe_mode_t mode){
+
+int64_t pipe_open_pid(int64_t id, pipe_mode_t mode, pid_t pid){
     if( ! ((mode == READER) || (mode == WRITER)) || BAD_ID(id) || (pipes_array[id].pids[mode] != -1)){
         return -1;
     }
@@ -49,9 +50,13 @@ int64_t pipe_open(int64_t id, pipe_mode_t mode){
     pipes_array[id].can_write_sem = 2*id+1 + SEM_AMOUNT;
     
 
-    pipes_array[id].pids[mode] = get_pid();
+    pipes_array[id].pids[mode] = pid;
     pipes_array[id].initialized_qtty++;
     return 0;
+}
+
+int64_t pipe_open(int64_t id, pipe_mode_t mode){
+    return pipe_open_pid(id, mode, get_pid());
 }
 
 int64_t pipe_open_free(pipe_mode_t mode){
@@ -75,12 +80,15 @@ int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
     while ( i < amount && (pipes_array[id].current_read < max_write) && pipes_array[id].buffer[pipes_array[id].current_read] != EOF  ) { // race condition?? @todo test.....
 		buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read++];
 	}
+  
     if(pipes_array[id].current_read < max_write){
         sem_post_if_value_is_zero(pipes_array[id].data_available_sem,1);
     }
     if(pipes_array[id].current_read == PIPE_BUFFER_SIZE ){
+        process_info_list * p = sys_ps();
         my_sem_post(pipes_array[id].can_write_sem, 1);
     }
+   
 	return i;
 }
 	
@@ -98,7 +106,10 @@ int64_t pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
             pipes_array[id].current_read = 0;
         }
     }
-    sem_post_if_value_is_zero(pipes_array[id].data_available_sem, 1);
+    if(pipes_array[id].current_write != 0){
+         sem_post_if_value_is_zero(pipes_array[id].data_available_sem, 1);
+    }
+    
     return i;
 }
 
