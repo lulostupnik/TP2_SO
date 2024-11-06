@@ -212,7 +212,7 @@ static void interpret()
 	libc_puts ( PROMPT );
 	char shellBuffer[MAX_COMMAND_SIZE];
 	libc_gets ( shellBuffer, MAX_COMMAND_SIZE );
-	if ( libc_strlen ( shellBuffer ) == 0 ) {
+	if ( shared_libc_strlen ( shellBuffer ) == 0 ) {
 		return;
 	}
 	char ** args;

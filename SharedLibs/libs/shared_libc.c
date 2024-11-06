@@ -47,3 +47,25 @@ void * shared_libc_memcpy ( void * destination, const void * source, uint64_t le
 
 	return destination;
 }
+
+
+/**
+ * @brief Calculates the length of a string.
+ *
+ * This function calculates the length of the null terminated string pointed to by `str`, excluding the terminating null byte ('\0').
+ *
+ * @param str The string whose length is to be calculated.
+ * @return size_t Returns the number of characters in the string pointed to by `str`.
+ */
+
+
+uint64_t shared_libc_strlen ( const char * str )
+{
+	const char * s = str;
+	while ( *s )
+		++s;
+	return s - str;
+}
+
+
+

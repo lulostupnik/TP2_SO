@@ -9,61 +9,7 @@ PCB pcb_array[PCB_AMOUNT] = {0};
 uint64_t amount_of_processes = 0;
 
 static int64_t find_free_pcb();
-static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc);
 static int64_t set_free_pcb(pid_t pid);
-
-
-//@TODO REFACTOR URGENTE!
-static uint64_t my_strlen ( const char * str )
-{
-	const char * s = str;
-	while ( *s )
-		++s;
-	return s - str;
-}
-
-char * my_new_str_copy(char * string){
-	if(string == NULL){
-		return NULL;
-	}
-	uint64_t len = my_strlen(string) + 1;
-	char * copy = my_malloc(len);
-	if(copy == NULL){
-		return NULL;
-	}
-	shared_libc_memcpy(copy, string, len);
-	return copy;
-}
-
-static char ** copy_argv(pid_t pid, char ** argv, uint64_t argc)
-{
-
-	if ( (argc == 0 && argv != NULL) || (argc > 0 && argv == NULL)) {
-		return NULL;
-	}
-
-	if (argc == 0) {
-		return NULL;
-	}
-
-	char ** ans = my_malloc(sizeof(char *) * (argc + 1));
-
-	if (ans == NULL) {
-		return NULL;
-	}
-
-	for (uint64_t i = 0; i < argc; i++) {
-		ans[i] = my_new_str_copy(argv[i]);
-		if (ans[i] == NULL) {
-			for (uint64_t j = 0; j < i; j++) {
-				my_free((void *)ans[j]);
-			}
-			my_free((void *)ans);
-			return NULL;
-		}
-	}
-	return ans;
-}
 
 
 
@@ -227,7 +173,7 @@ int64_t kill_process(pid_t pid)
 
 void get_process_info(PCB * pcb, process_info * process)
 {
-	process->name = my_new_str_copy(pcb->argv != NULL ? pcb->argv[0] : NULL); // Si falla el malloc lo imprimimos como "No name" pero dejamos el resto del estado. 
+	process->name = new_str_copy(pcb->argv != NULL ? pcb->argv[0] : NULL); // Si falla el malloc lo imprimimos como "No name" pero dejamos el resto del estado. 
 	process->pid = pcb->pid;
 	process->priority = pcb->priority;
 	process->stack_pointer = pcb->rsp;

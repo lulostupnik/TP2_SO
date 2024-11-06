@@ -296,7 +296,7 @@ void eliminator()
 
 static void print_centered_string ( uint64_t x, uint64_t y, const char * str, uint64_t font_size )
 {
-	uint64_t len = libc_strlen ( str );
+	uint64_t len = shared_libc_strlen ( str );
 	uint64_t start_x = x - ( len / 2 ) * CHARACTER_WIDTH * font_size;
 	uint64_t start_y = y;
 	print_string ( start_x, start_y, str, font_size );

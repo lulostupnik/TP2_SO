@@ -90,24 +90,6 @@ int64_t libc_set_font_size ( uint64_t size )
 
 
 /**
- * @brief Calculates the length of a string.
- *
- * This function calculates the length of the null terminated string pointed to by `str`, excluding the terminating null byte ('\0').
- *
- * @param str The string whose length is to be calculated.
- * @return size_t Returns the number of characters in the string pointed to by `str`.
- */
-uint64_t libc_strlen ( const char * str )
-{
-	const char * s = str;
-	while ( *s )
-		++s;
-	return s - str;
-}
-
-
-
-/**
  * @brief Converts a number to a string representation in a specified base.
  *
  * This function converts a number to its string representation in a specified base.
@@ -162,7 +144,7 @@ char * libc_num_to_string(uint64_t num, uint64_t base, char *buffer, size_t buff
  */
 int64_t libc_puts ( const char * str )
 {
-	return sys_write ( STDOUT, str, libc_strlen ( str ) );
+	return sys_write ( STDOUT, str, shared_libc_strlen ( str ) );
 }
 
 
