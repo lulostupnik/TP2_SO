@@ -92,9 +92,22 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	pcb_array[pid].is_background = 0;
 	pcb_array[pid].lowest_stack_address = rsp_malloc;
 	pcb_array[pid].blocked_by_sem = -1;
-
 	for(int i = 0; i < 3; i++){
-			pcb_array[pid].fds[i] = fds ? fds[i]:-1;
+		pcb_array[pid].fds[i] = fds ? fds[i]:-1;
+	}
+
+	if(fds){
+		for(int i = 0; i < 3; i++){
+			if(fds[i] < 3){
+				continue;
+			}
+			pipe_mode_t mode = i == STDIN ? READER : WRITER;
+			if(pipe_open(fds[i] - 3, mode) == -1){
+				// my_free((void *)rsp_malloc);
+				// pcb_array[pid].status = FREE;
+				// return -1;
+			}
+		}
 	}
 
 	ready(&pcb_array[pid]);

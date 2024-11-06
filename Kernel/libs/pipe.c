@@ -11,6 +11,7 @@
 
 typedef struct pipe_cdt{
     pid_t pids[2];
+    uint8_t reserved;
     uint8_t initialized_qtty;
     uint16_t buffer[PIPE_BUFFER_SIZE];  //@TODO change vdriver_text_write para que is hay algo mayor a 255 no lo escriba. 
     uint32_t current_read; 
@@ -127,8 +128,18 @@ int64_t pipe_close(int64_t id){
 }
 
 static int64_t pipe_get_free(){
-    for(int i=0; i<AMOUNT_OF_PIPES ; i++){
-        if(pipes_array[i].pids[READER] == -1 && pipes_array[i].pids[WRITER] == -1){
+    for(int i = 0; i < AMOUNT_OF_PIPES ; i++){
+        if(pipes_array[i].pids[READER] == -1 && pipes_array[i].pids[WRITER] == -1 && !pipes_array[i].reserved){
+            return i;
+        }
+    }
+    return -1;
+}
+
+pid_t pipe_reserve(){
+    for(int i = 0; i < AMOUNT_OF_PIPES ; i++){
+        if(pipes_array[i].pids[READER] == -1 && pipes_array[i].pids[WRITER] == -1 && !pipes_array[i].reserved){
+            pipes_array[i].reserved = 1;
             return i;
         }
     }

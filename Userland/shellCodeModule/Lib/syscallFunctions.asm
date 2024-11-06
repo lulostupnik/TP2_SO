@@ -33,6 +33,7 @@ GLOBAL sys_pipe_open_free
 GLOBAL sys_pipe_read
 GLOBAL sys_pipe_write
 GLOBAL sys_pipe_close
+GLOBAL sys_pipe_reserve
 
 section .text
 
@@ -218,3 +219,6 @@ sys_pipe_write:
     simple_sys_handler 33
 sys_pipe_close:
     simple_sys_handler 34
+
+sys_pipe_reserve:
+    simple_sys_handler 35

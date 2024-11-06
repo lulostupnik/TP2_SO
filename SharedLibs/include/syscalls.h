@@ -214,8 +214,7 @@ int64_t sys_pipe_open_free( pipe_mode_t mode);
 int64_t sys_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount);
 int64_t sys_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount);
 int64_t sys_pipe_close(int64_t id);
-
-
+int64_t sys_pipe_reserve();
 
 
 

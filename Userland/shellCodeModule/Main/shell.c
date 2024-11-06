@@ -45,7 +45,7 @@ void reader(){
 		sys_nano_sleep(100);
 		
 		int amount;
-		amount = libc_pipe_read(0, buff, 999);
+		amount = libc_pipe_read(3, buff, 999);
 		if(amount == 0){
 			libc_fprintf(STDERR, "EOF read: %s\n",amount, char_buff);
 			libc_pipe_close(0);
@@ -67,7 +67,7 @@ void writter(){
 		//c = libc_get_char();
 		uint16_t abc[] = {'1','2','3', '4', '5', '6', '7'};
 		//char abc[] = "abcdefghijklmnopqrstuvwxyz";
-		libc_pipe_write(0, abc, 3);
+		libc_pipe_write(3, abc, 3);
 
 		if(i == 3){
 			libc_pipe_close(0);
@@ -101,6 +101,25 @@ void cat(){
 	}
 }
 
+void escritor(){
+	for(int i = 0; i < 20; i++){
+		sys_nano_sleep(10);
+		char string[] = "Probando por favor funcionaaaa, :)";
+		if(sys_write(STDOUT, string+i, 1) == -1){
+			libc_fprintf(STDERR, "Error writing\n");
+		}
+	}
+}
+
+void lector(){
+	while(1){
+		sys_nano_sleep(1000);
+		char buff[100];
+		libc_gets(buff, 100);
+		libc_fprintf(STDERR, "Read: %s\n", buff);
+	}
+}
+
 static module modules[] = {
     {"help", "Muestra todos los módulos disponibles del sistema operativo.", help, BUILT_IN},
     {"time", "Muestra la hora actual del sistema.", show_current_time, BUILT_IN},
@@ -123,7 +142,9 @@ static module modules[] = {
     {"testmm", "Testea el uso del malloc y free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
     {"ps", "Muestra información de los procesos.", libc_ps, BUILT_IN},
 	{"reader", "Tests pipe reader.", reader, !BUILT_IN},
-	{"writter", "Tests pipe writter. (use in foreground)", writter, !BUILT_IN},
+	{"escritor", "Tests pipe writer.", escritor, !BUILT_IN},
+	{"lector", "Tests pipe reader. (use in foreground)", lector, !BUILT_IN},
+	{"writer", "Tests pipe writer. (use in foreground)", writter, !BUILT_IN},
 	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN},
 	{"long_sleep", "sleeps for a long time", long_sleep, !BUILT_IN},
 	{"cat", "cat like linux", cat, !BUILT_IN}
@@ -176,9 +197,15 @@ static void call_function_process(module m, char ** args, uint64_t argc, fd_t fd
 	if(is_bckg){
 		libc_free(args[argc - 1]);
 		argc--;
-		fds[STDIN] = -1;
+		// fds[STDIN] = -1;
 	}
-	
+	for(int i = 0; i < 3; i++){
+		if(fds[i] == -1){
+			libc_fprintf(STDERR, "fd[%d] : -1\n", i);
+			continue;
+		}
+		libc_printf("fd[%d] : %d\n", i, fds[i]);
+	}
 	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc, fds);
 	
 	if (ans < 0) {
@@ -320,24 +347,32 @@ static void interpret()
 		}
 	}
 	fd_t fds[] = {STDOUT,STDERR, STDIN};
+	fd_t writer_fds[] = {STDOUT,STDERR, STDIN};
+	fd_t reader_fds[] = {STDOUT,STDERR, STDIN};
+
 	if(found_idx[0] != -1){
 		if(!has_pipe){
 			call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
 			return;
 		}
 		if(found_idx[1] != -1){
-			fd_t fd = libc_pipe_open_free(WRITER);  //mover a create process, agregar el open del otro proceso yt cerrar
+			fd_t fd = sys_pipe_reserve();
+			if(fd >= 0){
+				libc_printf("pipe fd: %d\n", fd);
+			}
+			else{
+				libc_printf("pipe fd: -%d\n", fd*-1);
+			}
 			if(fd < 0){
 				libc_fprintf ( STDERR, "Could not open pipe\n" );
 
 				free_cmd_args(&cmd);
 				return;
 			}
-			fds[0] = fd;
-			call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
-			fds[0] = STDOUT;
-			fds[2] = fd;
-			call_function_process(modules[found_idx[1]], cmd.args[1], cmd.argc[1], fds);
+			writer_fds[STDOUT] = fd;
+			call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], writer_fds);
+			reader_fds[STDIN] = fd;
+			call_function_process(modules[found_idx[1]], cmd.args[1], cmd.argc[1], reader_fds);
 			return;
 		}
 	}

@@ -85,6 +85,8 @@ int64_t sys_call_handler ( stack_registers * regs )
 			return sys_pipe_write(regs->rdi, (uint16_t *) regs->rsi, regs->rdx);
 		case 34:
 			return sys_pipe_close(regs->rdi);
+		case 35:
+			return sys_pipe_reserve();
 		default:
 			return NOT_VALID_SYS_ID;
 	}
@@ -93,21 +95,36 @@ int64_t sys_call_handler ( stack_registers * regs )
 
 
 int64_t sys_pipe_open(int64_t id, pipe_mode_t mode){
-	return pipe_open(id, mode);
+	if(id < 3){
+		return -1;
+	}
+	return pipe_open(id - 3, mode);
 }
 
 int64_t sys_pipe_open_free(pipe_mode_t mode){
-	return pipe_open_free(mode) ;
+	return pipe_open_free(mode) + 3 ;
 }
 
 int64_t sys_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
-	return pipe_read(id, buffer, amount);
+	if(id < 3){
+		return -1;
+	}
+	return pipe_read(id - 3, buffer, amount);
 }
 int64_t sys_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
-	return pipe_write(id, buffer, amount);
+	if(id < 3){
+		return -1;
+	}
+	return pipe_write(id - 3, buffer, amount);
 }
 int64_t sys_pipe_close(int64_t id){
-	return pipe_close(id);
+	if(id < 3){
+		return -1;
+	}
+	return pipe_close(id - 3);
+}
+int64_t sys_pipe_reserve(){
+	return pipe_reserve() + 3;
 }
 
 
