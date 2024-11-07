@@ -58,6 +58,6 @@ void keyboard_handler();
 void set_f_key_function ( uint64_t key_number, function_key f );
 uint64_t get_current();
 uint64_t buffer_has_next();
-int64_t stdin_read (uint16_t * buffer, uint64_t amount );
+int64_t stdin_read (uint16_t * buff, uint64_t amount );
 
 #endif

@@ -10,20 +10,18 @@
 /*
  * buffer --> es "circular". si se llena, pisa lo que primero se puso.
  */
+#define cant_function_keys 12
+#define special_key_pressed_map_idx(code) ((code) -FIRST_SPECIAL_KEY)
 
+#define EOF_KEYBOARD_DRIVER NONE1
 
 static uint16_t buffer[BUFFER_SIZE];
 static uint64_t buffer_dim = 0;
 static uint64_t buffer_current = 0;
 static uint8_t reg_shot_flag = 0;
-
-
 extern uint16_t pressed_key_shift_map[][2];
-
-#define cant_function_keys 12
 static void f1key ( void );
 static function_key function_key_fun_array[cant_function_keys] = {f1key, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-#define special_key_pressed_map_idx(code) ((code) -FIRST_SPECIAL_KEY)
 static uint16_t special_key_pressed_map[SPECIAL_KEYS_CANT] = {0};
 static PCB * blocked;
 
@@ -39,7 +37,7 @@ PCB * get_keyboard_blocked(){
 	return blocked;
 }
 
-int64_t stdin_read (uint16_t * buffer, uint64_t amount )
+int64_t stdin_read (uint16_t * buff, uint64_t amount )
 {
 	if(blocked != NULL){	// un proceso ya esta esperando...
 		return -1;
@@ -53,11 +51,13 @@ int64_t stdin_read (uint16_t * buffer, uint64_t amount )
 	}
 	
 	//if not buffer_has_next block. 
-	while ( i < amount && buffer_has_next()) {
-		buffer[i] = get_current();
+	while ( i < amount && buffer_has_next() && buffer[buffer_current] != EOF) {
+		buff[i] = get_current();
 		i++;
 	}
-
+	if(buffer[buffer_current] == EOF){
+		get_current();
+	}
 	return i;
 }
 
