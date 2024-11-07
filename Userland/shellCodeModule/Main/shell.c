@@ -358,7 +358,7 @@ static void interpret()
 			return;
 		}
 		if(found_idx[1] != -1){
-			if(!modules[found_idx[0]].is_built_in || !modules[found_idx[1]].is_built_in){
+			if(modules[found_idx[0]].is_built_in || modules[found_idx[1]].is_built_in){
 				libc_fprintf ( STDERR, "Cannot use built-in in pipe\n" );
 				free_cmd_args(&cmd);
 				return;
