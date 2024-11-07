@@ -8,9 +8,9 @@ static list_adt blocked_list;
 
 static PCB * running = NULL;
 static uint64_t times_ran = 0;
-
 static PCB * idle_pcb;
 static int initialized = 0;
+static PCB * shell_pcb;
 
 int compare_elements(elem_type_ptr e1, elem_type_ptr e2)
 {
@@ -18,13 +18,15 @@ int compare_elements(elem_type_ptr e1, elem_type_ptr e2)
 }
 
 
-void initialize_scheduler(int64_t idle_process_pid)
+void initialize_scheduler(int64_t shell_process_pid, int64_t idle_process_pid)
 {
 	t_compare cmp = compare_elements;
 	ready_list = new_list(cmp);
 	blocked_list = new_list(cmp);
 	idle_pcb = get_pcb(idle_process_pid);
+	shell_pcb = get_pcb(shell_process_pid);
 	initialized = 1;
+	ready(shell_pcb);
 	return;
 }
 
@@ -40,6 +42,14 @@ void ready(PCB * process)
 
 PCB * get_idle_pcb(){
 	return idle_pcb;
+}
+
+PCB * get_shell_pcb(){
+	return shell_pcb;
+}
+
+void set_running_null(){
+	running = NULL;
 }
 
 void block_current_no_yield(){
@@ -79,13 +89,15 @@ void unblock_waiting_me(){
 
 void unblock_waiting_pid(pid_t pid){
 	PCB * pcb = get_pcb(pid);
+	unblock_waiting_pcb(pcb);
+}
 
+void unblock_waiting_pcb(PCB * pcb){
 	if(pcb == NULL || pcb->waiting_me == NULL || pcb->waiting_me->status == ZOMBIE || pcb->waiting_me->status == FREE){
 		return;
 	}
 	ready(pcb->waiting_me);
 }
-
 
 
 int64_t make_me_zombie(int64_t retval){
@@ -113,7 +125,6 @@ void unschedule(PCB * process)
 	} else if (process->status == BLOCKED) {
 		delete_list(blocked_list, process);
 	}
-
 }
 
 void scheduler_yield()

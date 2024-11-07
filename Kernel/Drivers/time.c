@@ -16,6 +16,13 @@ void init_timer_handler(){
 }
 
 
+void unsleep_kill(PCB * pcb){
+	if(pcb == NULL){
+		return;
+	}
+	delete_ordered_list(sleeping_list, pcb);
+}
+
 void timer_handler()
 {
 	ticks++;

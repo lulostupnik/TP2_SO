@@ -65,8 +65,7 @@ int main()
 	char * argv_shell[] = {"shell"};
 	fd_t idle_fds[3] = {-1, -1, -1};
 	fd_t shell_fds[3] = {STDOUT, STDERR, STDIN};
-	initialize_scheduler(new_process((main_function) idle_process, LOW, 0, argv_idle, 1, idle_fds));
-	new_process((main_function) shellCodeModuleAddress, HIGH, 0, argv_shell, 1, shell_fds);
+	initialize_scheduler(new_process((main_function) shellCodeModuleAddress, HIGH, 0, argv_shell, 1, shell_fds),new_process((main_function) idle_process, LOW, 0, argv_idle, 1, idle_fds));	
 	pipe_init();
 	init_timer_handler();
 	timer_tick();

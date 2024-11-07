@@ -9,8 +9,10 @@ PCB pcb_array[PCB_AMOUNT] = {0};
 uint64_t amount_of_processes = 0;
 
 static int64_t find_free_pcb();
-static int64_t set_free_pcb(pid_t pid);
-
+static int64_t set_free_pid(pid_t pid);
+static int64_t set_free_pcb(PCB * process);
+static void ctrl_c_handler();
+static void ctrl_d_handler();
 
 
 int8_t get_status(pid_t pid){
@@ -43,7 +45,7 @@ pid_t wait(pid_t pid, int64_t * ret){
 		*ret = pcb_to_wait->ret;
 	}
 
-	if(set_free_pcb(pid) != -1){
+	if(set_free_pid(pid) != -1){
 		amount_of_processes--;
 	}
 	return pid;
@@ -138,12 +140,12 @@ PCB * get_pcb(pid_t pid)
 	return &pcb_array[pid];
 }
 
-static int64_t set_free_pcb(pid_t pid)
+static int64_t set_free_pcb(PCB * process)
 {
-	PCB * process = get_pcb(pid);
 	if (process == NULL || process->status == FREE) {
 		return -1;
 	}
+	
 	my_free((void *)process->lowest_stack_address);
 	if (process->argv == NULL) {
 		process->status = FREE;
@@ -154,29 +156,53 @@ static int64_t set_free_pcb(pid_t pid)
 	}
 	my_free((void * )process->argv);
 	process->status = FREE;
+	
 	return 0;
 }
 
+static int64_t set_free_pid(pid_t pid)
+{
+	PCB * process = get_pcb(pid);
+	return set_free_pcb(process);
+}
 
-
-int64_t kill_process(pid_t pid)
-{	
-	PCB * pcb = get_pcb(pid);
+int64_t kill_process_pcb(PCB * pcb){
 	if ( (pcb == NULL) || (pcb->status == FREE) || (!pcb->killable) ) {
 		return -1;
 	}
 
 	unschedule(pcb);
-	unblock_waiting_pid(pid);
+	unblock_waiting_pcb(pcb);
 	if(pcb->waiting_for && pcb->waiting_for->waiting_me){
 		pcb->waiting_for->waiting_me = NULL;
 	}
+	
+	if(get_keyboard_blocked() == pcb){
+		set_keyboard_blocked_null();
+	}
+	if(pcb->time != 0 || pcb->start != 0){
+		unsleep_kill(pcb);
+	}
+	//falta el sleep. 
+	close_fds(pcb);
 	delete_from_blocked_queue(pcb);
-	if(set_free_pcb(pid) != -1){
+	if(set_free_pcb(pcb) != -1){
 		amount_of_processes--;
 	}
-
+	
+	if(pcb == get_running()){
+		set_running_null();
+		timer_tick();
+	}
+	
 	return 0;
+}
+
+
+int64_t kill_process(pid_t pid)
+{	
+	PCB * pcb = get_pcb(pid);
+	return kill_process_pcb(pcb);
 }
 
 
@@ -241,5 +267,37 @@ void close_fds(PCB * pcb){
 		if(pcb->fds[i] > MAX_COMMON_FD){
 			pipe_close(pcb->fds[i]);
 		}	
+	}
+}
+
+
+
+static void ctrl_c_handler(){
+	PCB * shell_pcb = get_shell_pcb();
+	PCB * foreground_process;
+	if(shell_pcb == NULL || ((foreground_process = shell_pcb->waiting_for) == NULL)){
+		return;
+	}
+
+	//primero se hace wait al de la derecha del pipe.
+	PCB * other_process_in_pipe = NULL;
+	if(foreground_process->fds[STDIN] > MAX_COMMON_FD){
+		other_process_in_pipe = get_pcb(pipe_get_pid(foreground_process->fds[STDIN], WRITER));
+	}
+	kill_process_pcb(foreground_process);
+	kill_process_pcb(other_process_in_pipe);
+	return;
+}
+
+static void ctrl_d_handler(){
+	return;
+}
+
+void ctrl_handler(uint8_t key){
+	if(key == 'C' || key == 'c'){
+		ctrl_c_handler();
+		return;
+	}else if(key == 'D' || key == 'c'){
+		ctrl_d_handler();
 	}
 }

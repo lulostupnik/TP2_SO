@@ -5,7 +5,7 @@
 #include <PCB.h>
 #include <interrupts.h>
 
-void initialize_scheduler(pid_t idle_process_pid);
+void initialize_scheduler(pid_t shell_process_pid, pid_t idle_process_pid);
 void ready(PCB * process);
 uint64_t scheduler(uint64_t current_rsp);
 void unschedule(PCB * process);
@@ -19,6 +19,9 @@ PCB * get_running();
 int64_t make_me_zombie(int64_t retval);
 void unblock_waiting_me();
 void unblock_waiting_pid(pid_t pid);
+void unblock_waiting_pcb(PCB * pcb);
 void block_current_no_yield();
 PCB * get_idle_pcb();
+PCB * get_shell_pcb();
+void set_running_null();
 #endif

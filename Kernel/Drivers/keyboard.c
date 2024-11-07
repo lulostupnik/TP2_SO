@@ -23,7 +23,8 @@ extern uint16_t pressed_key_shift_map[][2];
 #define cant_function_keys 12
 static void f1key ( void );
 static function_key function_key_fun_array[cant_function_keys] = {f1key, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
+#define special_key_pressed_map_idx(code) ((code) -FIRST_SPECIAL_KEY)
+static uint16_t special_key_pressed_map[SPECIAL_KEYS_CANT] = {0};
 static PCB * blocked;
 
 static void f1key ( void )
@@ -31,7 +32,12 @@ static void f1key ( void )
 	reg_shot_flag = 1;
 }
 
-
+void set_keyboard_blocked_null(){
+	blocked = NULL;
+}
+PCB * get_keyboard_blocked(){
+	return blocked;
+}
 
 int64_t stdin_read (uint16_t * buffer, uint64_t amount )
 {
@@ -122,9 +128,6 @@ static uint8_t is_pressed ( uint8_t key )
 	return !is_released ( key );
 }
 
-#define special_key_pressed_map_idx(code) ((code) -FIRST_SPECIAL_KEY)
-static uint16_t special_key_pressed_map[SPECIAL_KEYS_CANT] = {0};
-
 static int is_special_key ( uint16_t code )
 {
 	return ( code >= FIRST_SPECIAL_KEY ) && ( code <= LAST_SPECIAL_KEY );
@@ -198,8 +201,13 @@ void keyboard_handler()
 	if ( !key_is_pressed ) {
 		return;
 	}
-	function_key_handler ( code );
 
+	function_key_handler ( code );
+	
+	if(!is_special_key(code) && special_key_pressed(LEFT_CONTROL) && key_is_pressed){
+		ctrl_handler((uint8_t) code);
+		return;
+	}
 
 	buffer[buffer_dim] = code;
 	if ( buffer_dim < BUFFER_SIZE ) {

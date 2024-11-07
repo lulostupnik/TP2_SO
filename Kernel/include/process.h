@@ -12,6 +12,7 @@
 #include <semaphores.h>
 #include <kernel_libc.h>
 #include <driversInformation.h>
+#include <pipe.h>
 
 #define PCB_AMOUNT 100
 
@@ -27,10 +28,11 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 PCB * get_pcb(pid_t pid);
 void list_processes();
 int64_t kill_process(pid_t pid);
+int64_t kill_process_pcb(PCB * pcb);
 pid_t wait(pid_t pid, int64_t * ret);
 process_info_list * ps();
 int8_t get_status(pid_t pid);
 void free_ps(process_info_list * ps);
 void close_fds(PCB * pcb);
-
+void ctrl_handler(uint8_t key);
 #endif
