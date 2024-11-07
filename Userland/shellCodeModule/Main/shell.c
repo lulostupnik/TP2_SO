@@ -194,13 +194,11 @@ static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t
 		free_args(args, argc);
 		return;
 	}
-	// fd_t fds[] = {STDOUT, STDERR, STDIN}; //@todo STDOUT se deja o no?
-	uint8_t is_bckg = (libc_strcmp(args[argc - 1], "&") == 0);
-	if(is_bckg){
-		libc_free(args[argc - 1]);
-		argc--;
-		// fds[STDIN] = -1;
-	}
+	// uint8_t is_bckg = (libc_strcmp(args[argc - 1], "&") == 0);
+	// if(is_bckg){
+	// 	libc_free(args[argc - 1]);
+	// 	argc--;
+	// }
 	for(int i = 0; i < 3; i++){
 		if(fds[i] == -1){
 			libc_fprintf(STDERR, "fd[%d] : -1\n", i);
@@ -212,12 +210,13 @@ static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t
 	
 	if (ans < 0) {
 		libc_fprintf ( STDERR, "Error: Could not create process\n" );
-	}else if (is_bckg){
-		libc_printf("pid: %d in background\n", ans);
 	}
+	// else if (is_bckg){
+	// 	libc_printf("pid: %d in background\n", ans);
+	// }
 
 	free_args(args, argc);
-	if(!is_bckg) libc_wait(ans, NULL);
+	// if(!is_bckg) libc_wait(ans, NULL);
 	return ans;
 }
 
@@ -313,6 +312,28 @@ static int64_t piped_command_parse(char shellBuffer[], Command *cmd) {
     return 0;
 }
 
+/*
+
+
+if(found_idx[0] != -1){
+	if(!has_pipe){
+		uint8_t is_bckg = (libc_strcmp(cmd.args[0][cmd.argc[0] - 1], "&") == 0) && !modules[found_idx[0]].is_built_in;
+		if(is_bckg){
+			
+			if(modules[found_idx[0]].is_built_in){
+				// es un built-in, no puede ir a background
+			}
+			
+
+		}
+
+		
+		
+		call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
+		return;
+	}
+
+*/
 
 static void interpret()
 {
@@ -348,13 +369,34 @@ static void interpret()
 			}
 		}
 	}
-	fd_t fds[] = {STDOUT,STDERR, STDIN};
+	fd_t fds[] = {STDOUT, STDERR, STDIN};
 	fd_t writer_fds[] = {STDOUT,STDERR, STDIN};
 	fd_t reader_fds[] = {STDOUT,STDERR, STDIN};
 
 	if(found_idx[0] != -1){
 		if(!has_pipe){
-			call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
+			uint8_t is_bckg = (libc_strcmp(cmd.args[0][cmd.argc[0] - 1], "&") == 0);
+			if(is_bckg && modules[found_idx[0]].is_built_in){
+				libc_fprintf ( STDERR, "Cannot use built-in in background\n" );
+				free_cmd_args(&cmd);
+				return;
+			}
+			if(is_bckg){
+				// if(modules[found_idx[0]].is_built_in){
+				// 	// es un built-in, no puede ir a background
+				// }
+				libc_free(cmd.args[0][cmd.argc[0] - 1]);
+				cmd.argc[0]--;
+			}
+			int64_t pid = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
+			
+			if(!is_bckg && pid > 0) {
+				libc_wait(pid, NULL);
+			}else if(is_bckg){
+				libc_printf("pid: %d in background\n", pid);
+			}
+			
+
 			return;
 		}
 		if(found_idx[1] != -1){
@@ -376,10 +418,25 @@ static void interpret()
 				free_cmd_args(&cmd);
 				return;
 			}
+			uint8_t is_bckg = (libc_strcmp(cmd.args[1][cmd.argc[1] - 1], "&") == 0) && !modules[found_idx[1]].is_built_in;
+			if(is_bckg){
+				// if(modules[found_idx[0]].is_built_in){
+				// 	// es un built-in, no puede ir a background
+				// }
+				libc_free(cmd.args[1][cmd.argc[1] - 1]);
+				cmd.argc[1]--;
+			}
 			writer_fds[STDOUT] = fd;
-			call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], writer_fds);
+			int64_t pid1 = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], writer_fds);
 			reader_fds[STDIN] = fd;
-			call_function_process(modules[found_idx[1]], cmd.args[1], cmd.argc[1], reader_fds);
+			int64_t pid2 = call_function_process(modules[found_idx[1]], cmd.args[1], cmd.argc[1], reader_fds);
+			if(!is_bckg && pid2 > 0) {
+				libc_wait(pid2, NULL);
+				libc_wait(pid1, NULL);
+			}else if(is_bckg){
+				libc_printf("pid: %d in background\n", pid2);
+			}
+			
 			return;
 		}
 	}
