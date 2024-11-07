@@ -13,7 +13,6 @@
 #define cant_function_keys 12
 #define special_key_pressed_map_idx(code) ((code) -FIRST_SPECIAL_KEY)
 
-#define EOF_KEYBOARD_DRIVER NONE1
 
 static uint16_t buffer[BUFFER_SIZE];
 static uint64_t buffer_dim = 0;
