@@ -105,7 +105,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 			}
 			pipe_mode_t mode = i == STDIN ? READER : WRITER;
 			if(pipe_open_pid(fds[i] - 3, mode, pid) == -1){
-				// my_free((void *)rsp_malloc);
+				// my_free((void *)rsp_malloc);   //@TODO que va
 				// pcb_array[pid].status = FREE;
 				// return -1;
 			}
@@ -282,7 +282,7 @@ static void ctrl_c_handler(){
 	//primero se hace wait al de la derecha del pipe.
 	PCB * other_process_in_pipe = NULL;
 	if(foreground_process->fds[STDIN] > MAX_COMMON_FD){
-		other_process_in_pipe = get_pcb(pipe_get_pid(foreground_process->fds[STDIN], WRITER));
+		other_process_in_pipe = get_pcb(pipe_get_pid(foreground_process->fds[STDIN]-3, WRITER));
 	}
 	kill_process_pcb(foreground_process);
 	kill_process_pcb(other_process_in_pipe);
