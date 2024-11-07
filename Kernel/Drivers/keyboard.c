@@ -205,8 +205,12 @@ void keyboard_handler()
 	function_key_handler ( code );
 	
 	if(!is_special_key(code) && special_key_pressed(LEFT_CONTROL) && key_is_pressed){
-		ctrl_handler((uint8_t) code);
-		return;
+		if(code == 'D' || code == 'd'){
+			code = EOF;
+		}else if(code == 'c' || code == 'C'){
+			ctrl_c_handler();
+			return;
+		}
 	}
 
 	buffer[buffer_dim] = code;

@@ -34,5 +34,5 @@ process_info_list * ps();
 int8_t get_status(pid_t pid);
 void free_ps(process_info_list * ps);
 void close_fds(PCB * pcb);
-void ctrl_handler(uint8_t key);
+void ctrl_c_handler();
 #endif

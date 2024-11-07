@@ -144,10 +144,12 @@ int64_t sys_write ( uint64_t fd, const char * buffer, uint64_t amount )
 	if(fd != STDOUT && fd != STDERR){
 		return -1;
 	}
+
 	fd_t actual_fd = get_running()->fds[fd];
 	if(actual_fd == STDOUT || actual_fd == STDERR){
 		return vdriver_text_write ( fd, buffer, amount );
 	}
+
 	return sys_pipe_write(actual_fd,buffer, amount);
 }
 

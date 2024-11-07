@@ -11,8 +11,6 @@ uint64_t amount_of_processes = 0;
 static int64_t find_free_pcb();
 static int64_t set_free_pid(pid_t pid);
 static int64_t set_free_pcb(PCB * process);
-static void ctrl_c_handler();
-static void ctrl_d_handler();
 
 
 int8_t get_status(pid_t pid){
@@ -272,7 +270,7 @@ void close_fds(PCB * pcb){
 
 
 
-static void ctrl_c_handler(){
+void ctrl_c_handler(){
 	PCB * shell_pcb = get_shell_pcb();
 	PCB * foreground_process;
 	if(shell_pcb == NULL || ((foreground_process = shell_pcb->waiting_for) == NULL)){
@@ -289,15 +287,4 @@ static void ctrl_c_handler(){
 	return;
 }
 
-static void ctrl_d_handler(){
-	return;
-}
 
-void ctrl_handler(uint8_t key){
-	if(key == 'C' || key == 'c'){
-		ctrl_c_handler();
-		return;
-	}else if(key == 'D' || key == 'c'){
-		ctrl_d_handler();
-	}
-}
