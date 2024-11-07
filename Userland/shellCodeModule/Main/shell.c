@@ -15,7 +15,7 @@ static void to_utc_minus_3 ( time_struct * time );
 static void free_args(char ** args, uint64_t argc);
 static void free_cmd_args(Command * cmd);
 // static void call_function_process(module m, char ** args, uint64_t argc);
-static void call_function_process(module m, char ** args, uint64_t argc, fd_t fds[CANT_FDS]);
+static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t fds[CANT_FDS]);
 static int64_t piped_command_parse(char shellBuffer[], Command *cmd);
 static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count);
 static void interpret();
@@ -187,7 +187,7 @@ static void free_cmd_args(Command * cmd){
 }
 
 
-static void call_function_process(module m, char ** args, uint64_t argc, fd_t fds[CANT_FDS])
+static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t fds[CANT_FDS])
 {
 	if (m.is_built_in) {
 		m.function(args, argc);
@@ -218,7 +218,7 @@ static void call_function_process(module m, char ** args, uint64_t argc, fd_t fd
 
 	free_args(args, argc);
 	if(!is_bckg) libc_wait(ans, NULL);
-	return;
+	return ans;
 }
 
 
