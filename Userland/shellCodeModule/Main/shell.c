@@ -389,14 +389,13 @@ static void interpret()
 				cmd.argc[0]--;
 			}
 			int64_t pid = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
-			
+			// free_cmd_args(&cmd);
 			if(!is_bckg && pid > 0) {
 				libc_wait(pid, NULL);
 			}else if(is_bckg){
 				libc_printf("pid: %d in background\n", pid);
 			}
 			
-
 			return;
 		}
 		if(found_idx[1] != -1){
@@ -430,13 +429,14 @@ static void interpret()
 			int64_t pid1 = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], writer_fds);
 			reader_fds[STDIN] = fd;
 			int64_t pid2 = call_function_process(modules[found_idx[1]], cmd.args[1], cmd.argc[1], reader_fds);
+			// free_cmd_args(&cmd);
 			if(!is_bckg && pid2 > 0) {
 				libc_wait(pid2, NULL);
 				libc_wait(pid1, NULL);
 			}else if(is_bckg){
 				libc_printf("pid: %d in background\n", pid2);
 			}
-			
+	
 			return;
 		}
 	}
