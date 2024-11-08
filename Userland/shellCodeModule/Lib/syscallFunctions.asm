@@ -34,6 +34,7 @@ GLOBAL sys_pipe_read
 GLOBAL sys_pipe_write
 GLOBAL sys_pipe_close
 GLOBAL sys_pipe_reserve
+GLOBAL sys_sem_open_get_id
 
 section .text
 
@@ -222,3 +223,6 @@ sys_pipe_close:
 
 sys_pipe_reserve:
     simple_sys_handler 35
+
+sys_sem_open_get_id:
+    simple_sys_handler 36

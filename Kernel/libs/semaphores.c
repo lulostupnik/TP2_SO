@@ -15,6 +15,7 @@ static int8_t is_valid_id(int64_t sem_id, uint8_t is_kernel);
 static int is_value_zero(sem_structure *sem);
 static int always_true(sem_structure *sem);
 static int64_t post_if_condition(int64_t sem_id, int (*condition)(sem_structure *), uint8_t is_kernel);
+static int64_t open_id_after_acquire(int64_t sem_id, int value, uint8_t is_kernel);
 
 int cmp(elem_type_ptr e1, elem_type_ptr e2)
 {
@@ -30,13 +31,32 @@ int64_t sem_post_if_value_is_zero(int64_t sem_id, uint8_t is_kernel){
    return post_if_condition(sem_id, is_value_zero, is_kernel);
 }
 
+
+int64_t my_sem_open_get_id(int value){
+
+    for(int i=0; i<SEM_AMOUNT ; i++){
+        acquire(&sem_array[i].lock);
+        if(sem_array[i].qtty_open == 0){
+            if(open_id_after_acquire(i, value, 0) == 0){
+                return i;
+            }
+            return -1;
+        }
+        release(&sem_array[i].lock);
+    }
+    return -1;
+}
+
+
+
 int64_t my_sem_open(int64_t sem_id, int value, uint8_t is_kernel){
     if(!is_valid_id(sem_id, is_kernel)){
         return -1;
     }
 
     acquire(&sem_array[sem_id].lock);
-    if(sem_array[sem_id].qtty_open){ 
+    return open_id_after_acquire(sem_id, value, is_kernel);
+   /* if(sem_array[sem_id].qtty_open){ 
         sem_array[sem_id].qtty_open++;
         release(&sem_array[sem_id].lock);
         return 0; 
@@ -56,9 +76,37 @@ int64_t my_sem_open(int64_t sem_id, int value, uint8_t is_kernel){
     sem_array[sem_id].queue = queue;
     
     release(&sem_array[sem_id].lock);
-    return 0;
+    return 0;*/
 }
 
+
+static int64_t open_id_after_acquire(int64_t sem_id, int value, uint8_t is_kernel){
+    if(!is_valid_id(sem_id, is_kernel)){
+        return -1;
+    }
+    
+    if(sem_array[sem_id].qtty_open){ 
+        sem_array[sem_id].qtty_open++;
+        release(&sem_array[sem_id].lock);
+        return 0; 
+    }
+
+    // Si es el primero en abrirlo crea el semáforo
+
+    queue_adt queue = new_queue();
+    if(queue == NULL){
+        release(&sem_array[sem_id].lock);
+        return -1;
+    }
+
+    sem_array[sem_id].qtty_open = 1;
+    //sem_array[sem_id].lock = 1; 
+    sem_array[sem_id].value = value;
+    sem_array[sem_id].queue = queue;
+    
+    release(&sem_array[sem_id].lock);
+    return 0;
+}
 
 int64_t my_sem_wait(int64_t sem_id, uint8_t is_kernel){
 

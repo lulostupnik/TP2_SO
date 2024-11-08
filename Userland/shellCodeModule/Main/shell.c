@@ -80,7 +80,7 @@ void writter(){
 
 void ps_loop(){
 	while(1){
-		sys_nano_sleep(18*1);
+		sys_nano_sleep(18*3);
 		libc_ps();
 	}
 }
@@ -103,7 +103,7 @@ void cat(){
 }
 
 void escritor(){
-	char string[] = "P\0robando por favor uncionaaaa, :)";
+	char string[] = "Probando\0 por favor uncionaaaa, :)";
 	for(int i = 0; i < 20; i++){
 		sys_nano_sleep(10);
 		if(sys_write(STDOUT, string+i, 1) == -1){
@@ -148,7 +148,7 @@ static module modules[] = {
 	{"lector", "Tests pipe reader. (use in foreground)", lector, !BUILT_IN},
 	{"writer", "Tests pipe writer. (use in foreground)", writter, !BUILT_IN},
 	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN},
-	{"long_sleep", "sleeps for a long time", long_sleep, !BUILT_IN},
+	{"phylos", "filosofos hambrientos", phylos, !BUILT_IN},
 	{"cat", "cat like linux", cat, !BUILT_IN}
 };
 
@@ -199,13 +199,7 @@ static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t
 	// 	libc_free(args[argc - 1]);
 	// 	argc--;
 	// }
-	for(int i = 0; i < 3; i++){
-		if(fds[i] == -1){
-			libc_fprintf(STDERR, "fd[%d] : -1\n", i);
-			continue;
-		}
-		libc_printf("fd[%d] : %d\n", i, fds[i]);
-	}
+	
 	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc, fds);
 	
 	if (ans < 0) {

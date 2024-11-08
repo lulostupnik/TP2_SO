@@ -87,6 +87,8 @@ int64_t sys_call_handler ( stack_registers * regs )
 			return sys_pipe_close(regs->rdi);
 		case 35:
 			return sys_pipe_reserve();
+		case 36:
+			return sys_sem_open_get_id(regs->rdi); 
 		default:
 			return NOT_VALID_SYS_ID;
 	}
@@ -321,6 +323,10 @@ int64_t sys_sem_wait ( int64_t sem_id )
 int64_t sys_sem_post ( int64_t sem_id )
 {
 	return my_sem_post(sem_id, 0);
+}
+
+int64_t sys_sem_open_get_id(int value){
+	return my_sem_open_get_id(value);
 }
 
 int64_t sys_sem_close ( int64_t sem_id )

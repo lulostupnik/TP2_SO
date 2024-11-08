@@ -9,6 +9,7 @@
 #include <test_proc.h>
 #include <test_mm.h>
 #include <test_synchro.h>
+#include <phylos.h>
 
 #define MAX_COMMAND_SIZE 100
 #define MAX_ZOOM 3

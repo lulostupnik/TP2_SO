@@ -34,6 +34,7 @@ pid_t wait(pid_t pid, int64_t * ret){
 		pcb_to_wait->waiting_me = running;
 		running->waiting_for = pcb_to_wait;
 		block_current();
+		running->waiting_for = NULL;
 	}
 	if(!((pcb_to_wait->status == ZOMBIE))){ // Esto podria pasar si lo mataron
 		return -1;
@@ -89,7 +90,6 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	pcb_array[pid].priority = priority;
 	pcb_array[pid].killable = killable;
 	pcb_array[pid].waiting_me = NULL;
-	pcb_array[pid].is_background = 0;
 	pcb_array[pid].lowest_stack_address = rsp_malloc;
 	pcb_array[pid].blocked_by_sem = -1;
 	for(int i = 0; i < 3; i++){
@@ -204,6 +204,35 @@ int64_t kill_process(pid_t pid)
 }
 
 
+static int64_t is_foreground(PCB * pcb){
+	if(pcb == NULL){
+		return 0;
+	}
+	PCB * shell_pcb = get_shell_pcb();
+	if(shell_pcb == NULL){
+		return 0;
+	}
+	PCB * fore1 = shell_pcb->waiting_for;
+	if(fore1 == NULL){
+		if(pcb == shell_pcb){
+			return 1;
+		}
+		return 0;
+	}
+	if(fore1 == pcb){
+		return 1;
+	}
+
+	PCB * fore2 = NULL;
+	if(fore1->fds[STDIN] > MAX_COMMON_FD){
+		fore2 = get_pcb(pipe_get_pid(fore1->fds[STDIN]-3, WRITER));
+	}
+	if(fore2 != NULL && fore2 == pcb){
+		return 1;
+	}
+	return 0;
+}
+
 void get_process_info(PCB * pcb, process_info * process)
 {
 	process->name = new_str_copy(pcb->argv != NULL ? pcb->argv[0] : NULL); // Si falla el malloc lo imprimimos como "No name" pero dejamos el resto del estado. 
@@ -212,8 +241,12 @@ void get_process_info(PCB * pcb, process_info * process)
 	process->stack_pointer = pcb->rsp;
 	process->lowest_stack_address = pcb->lowest_stack_address;
 	process->status = pcb->status;
+	process->is_background = !is_foreground(pcb);
 	PCB * pcb2;
-	process->is_background = !(pcb->fds[STDIN] == STDIN || (pcb->fds[STDIN] > 2 && (pcb2 = (get_pcb(pipe_get_pid(pcb2->fds[STDIN], WRITER)) != NULL)) && pcb2->fds[STDIN] == STDIN) );
+	
+	
+	
+
 	for(int i = 0; i < 3; i++){
 		process->fds[i] = pcb->fds ? pcb->fds[i] : -1;
 	}
@@ -279,7 +312,7 @@ void ctrl_c_handler(){
 
 	//primero se hace wait al de la derecha del pipe.
 	PCB * other_process_in_pipe = NULL;
-	if(foreground_process->fds[STDIN] > MAX_COMMON_FD){
+	if(foreground_process != NULL && foreground_process->fds[STDIN] > MAX_COMMON_FD){
 		other_process_in_pipe = get_pcb(pipe_get_pid(foreground_process->fds[STDIN]-3, WRITER));
 	}
 	kill_process_pcb(foreground_process);

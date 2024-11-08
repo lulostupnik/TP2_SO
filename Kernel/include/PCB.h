@@ -7,7 +7,6 @@
 
 
 typedef struct PCB {
-	uint8_t is_background; // puede que después nos convenga usar los file descriptors -> luego sabemos si es background fijandonos si si file_descriptors[stdin] == stdin (fd de la entrada de la shell)
 	pid_t pid;
 	uint64_t rsp;
 	uint64_t lowest_stack_address;
