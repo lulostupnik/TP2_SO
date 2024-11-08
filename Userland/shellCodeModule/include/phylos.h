@@ -7,6 +7,13 @@
 #include <driversInformation.h>
 #include <shell.h>
 
+#define MAX_PHILOS 20
+#define MIN_PHILOS 5
+#define HUNGRY  2
+#define EATING  1
+#define THINKING  0
+#define CONTINUE 1
+#define FINISH 0
 
 int phylos(char ** argv, int argc);
 

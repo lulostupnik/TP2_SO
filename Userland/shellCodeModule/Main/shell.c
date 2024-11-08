@@ -379,14 +379,17 @@ static void interpret()
 				// if(modules[found_idx[0]].is_built_in){
 				// 	// es un built-in, no puede ir a background
 				// }
+				fds[STDIN] = -1;
+				fds[STDOUT] = -1;
 				libc_free(cmd.args[0][cmd.argc[0] - 1]);
 				cmd.argc[0]--;
 			}
+			libc_printf("out %d  err %d in %d\n", fds[0], fds[1], fds[2]);
 			int64_t pid = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
 			if(!is_bckg && pid > 0) {
 				libc_wait(pid, NULL);
 			}else if(is_bckg){
-				libc_printf("pid: %d in background\n", pid);
+				libc_printf("Pid: %d in background\n", pid);
 			}
 			
 			return;

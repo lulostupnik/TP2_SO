@@ -89,12 +89,23 @@ int64_t sys_call_handler ( stack_registers * regs )
 			return sys_pipe_reserve();
 		case 36:
 			return sys_sem_open_get_id(regs->rdi); 
+		case 37: 
+			return sys_get_my_fds(regs->rdi);
 		default:
 			return NOT_VALID_SYS_ID;
 	}
 }
 
-
+int64_t sys_get_my_fds(fd_t fds[CANT_FDS]){
+	PCB * pcb = get_running();
+	if(pcb == NULL || fds == NULL){
+		return -1;
+	} 
+	for(int i=0; i<CANT_FDS; i++){
+		fds[i] = pcb->fds[i];
+	}
+	return 0;
+}
 
 int64_t sys_pipe_open(int64_t id, pipe_mode_t mode){
 	if(id < 3){
@@ -148,6 +159,9 @@ int64_t sys_write ( uint64_t fd, const char * buffer, uint64_t amount )
 	}
 
 	fd_t actual_fd = get_running()->fds[fd];
+	// if(actual_fd == -1){
+	// 	return -1;
+	// }
 	if(actual_fd == STDOUT || actual_fd == STDERR){
 		return vdriver_text_write ( fd, buffer, amount );
 	}

@@ -35,6 +35,7 @@ GLOBAL sys_pipe_write
 GLOBAL sys_pipe_close
 GLOBAL sys_pipe_reserve
 GLOBAL sys_sem_open_get_id
+GLOBAL sys_get_my_fds
 
 section .text
 
@@ -226,3 +227,5 @@ sys_pipe_reserve:
 
 sys_sem_open_get_id:
     simple_sys_handler 36
+sys_get_my_fds:
+    simple_sys_handler 37
