@@ -72,53 +72,33 @@ typedef struct {
     int64_t rightFork;
 } philosopher_t;
 
-static int num_philosophers; 
+static int64_t forks[MAX_PHILOS];
 static philosopher_t philos_array[MAX_PHILOS];
 static int philosophers_pids[MAX_PHILOS];
-static int64_t mutex;
-static int64_t change_sem;
+static int64_t state_mutex;
+static int64_t added_min_sem; 
+static int64_t mutex_add_delete; 
+static int64_t num_philos_mutex;
 
 
-int canEat(int i) {
-    int left = (i + num_philosophers - 1) % num_philosophers;
-    int right = (i + 1) % num_philosophers;
-    return philos_array[left].state != EATING && philos_array[right].state != EATING;
-}
 
-void displayState() {
-    libc_printf("");
-    for (int i = 0; i < num_philosophers; i++) {
-        if (philos_array[i].state == EATING) { 
-            libc_put_char('E');
-        } else {
-            libc_put_char('.');
-        }
-        libc_put_char(' ');
-    }
-    libc_printf("\n");
-}
-
+// . E . E 
+// Mato siempre al primero que esta comiendo
+// Agrego al final 
 void think(int i) {
-    sys_nano_sleep(18*1); // 1 second
+    sys_nano_sleep(3); // 1 second
 }
 
 void eat(int i) {
-    sys_nano_sleep(18*2); // 2 seconds
-}
+    libc_sem_wait(state_mutex);
+    philos_array[i].state = EATING; 
+    libc_sem_post(state_mutex);
+    
+    sys_nano_sleep(10); 
 
-void takeForks(int i) {
-    philos_array[i].state = HUNGRY;
-    if (canEat(i)) {
-        philos_array[i].state = EATING;
-        libc_sem_wait(philos_array[i].leftFork);
-        libc_sem_wait(philos_array[i].rightFork);
-    }
-}
-
-void putForks(int i) {
+    libc_sem_wait(state_mutex);
     philos_array[i].state = THINKING; 
-    libc_sem_post(philos_array[i].leftFork);
-    libc_sem_post(philos_array[i].rightFork);
+    libc_sem_post(state_mutex);
 }
 
 int philosopher(char ** argv, int argc) {
@@ -129,96 +109,144 @@ int philosopher(char ** argv, int argc) {
 
     if(i < 0){
         //@todo
-        libc_printf("Noooooo");
+      
     }
-    libc_printf("I am a philo and my pid is %d\n", libc_get_pid());
-
-    philosophers_pids[i] = libc_get_pid();
+    if(i < MIN_PHILOS){
+        libc_sem_wait(added_min_sem);
+    }
+    
     while (1) {
         think(i);
-        libc_sem_wait(mutex);
-        takeForks(i);
-        libc_sem_post(mutex);
-        if (philos_array[i].state == EATING) {
-            eat(i);
-            libc_sem_wait(mutex);
-            putForks(i);
-            libc_sem_post(mutex);
+      
+
+        libc_sem_wait(mutex_add_delete);
+        libc_sem_post(mutex_add_delete);
+
+
+        if(i % 2 == 0){
+            libc_sem_wait(philos_array[i].leftFork);
+            libc_sem_wait(philos_array[i].rightFork);
+        }else{
+            libc_sem_wait(philos_array[i].rightFork);
+            libc_sem_wait(philos_array[i].leftFork);
         }
-        displayState();
+    
+        eat(i);
+        libc_sem_post(philos_array[i].leftFork);
+        libc_sem_post(philos_array[i].rightFork);
+
     }
     return 0;
 }
 
-void addPhilosopher() {
-    libc_sem_wait(change_sem);
-    if (num_philosophers < MAX_PHILOS) {
-        int i = num_philosophers;
-        philos_array[i].state = THINKING; 
-        philos_array[i].leftFork = sys_sem_open_get_id(1);
-        if(philos_array[i].leftFork == -1){
-            libc_fprintf(STDERR, "Could open sem 1");
-                //@todo smthing
-        }
-        philos_array[i].rightFork = sys_sem_open_get_id(1);
-        if(philos_array[i].rightFork == -1){
-            libc_fprintf(STDERR, "Could open sem 2");
-                //@todo smthing
-        }
-        libc_printf("Opened sem %d and %d for philo %d\n", philos_array[i].leftFork, philos_array[i].rightFork, i);
 
-        char philo_num_buff[5];
-        char * philo_number_str = itoa(i, philo_num_buff,5,10);
-
-        if(philo_number_str == NULL){
+static int64_t create_process(int64_t i){
+    char philo_num_buff[5];
+    char * philo_number_str = itoa(i, philo_num_buff,5,10);
+    int64_t ans;
+    if(philo_number_str == NULL){
             //@todo some
-        }
-
-        char *args[] = {"filo" , philo_number_str};
-        
-        fd_t fds[CANT_FDS];
-        if(sys_get_my_fds(fds) == -1){
+    }
+    char *args[] = {"filo" , philo_number_str};
+    fd_t fds[CANT_FDS];
+  
+    if(sys_get_my_fds(fds) == -1){
             //
-        }
-        int64_t ans = libc_create_process(&philosopher, LOW, args, 2, fds);
-        if(ans >= 0){
+    }
+    return libc_create_process(&philosopher, LOW, args, 2, fds);
+}
+
+int64_t addFisrtPhylos(){
+    int64_t num_philosophers = 0;
+    philos_array[0].leftFork=  forks[0] = sys_sem_open_get_id(1);
+    philos_array[0].rightFork = forks[1] = sys_sem_open_get_id(1);
+    philos_array[1].rightFork =  philos_array[0].leftFork;
+    philos_array[1].leftFork =  philos_array[0].rightFork;
+
+    for(int i=2; i<MIN_PHILOS ; i++){
+        philos_array[i].leftFork = forks[i] = sys_sem_open_get_id(1);
+        philos_array[i-1].rightFork =  philos_array[i].leftFork;
+        philos_array[i].rightFork = philos_array[0].leftFork;
+    }
+
+    for(int i=0; i<MIN_PHILOS ; i++){
+        philosophers_pids[i] = create_process(i);
+        if(philosophers_pids[i] >= 0){
             num_philosophers++;
+        }
+    }
+    for(int i=0; i<MIN_PHILOS ; i++){
+        libc_sem_post(added_min_sem);
+    }
+    return num_philosophers;
+}
+
+
+static void addPhilosopher(int64_t * num_philosophers) {
+    if ((*num_philosophers) < MAX_PHILOS) {
+        int i = (*num_philosophers);
+        philos_array[i].state = THINKING; 
+
+        int64_t new_sem;
+        if((new_sem = sys_sem_open_get_id(1)) < 0){
+            libc_fprintf(STDERR, "Couldnt open sem 1");
+                //
+        }
+        forks[i] = new_sem;
+        libc_sem_wait(mutex_add_delete);
+
+        philos_array[i-1].rightFork = new_sem;
+        philos_array[i].leftFork = new_sem;
+        philos_array[i].rightFork = philos_array[0].leftFork;
+        philosophers_pids[i] = create_process(i);
+        if(philosophers_pids[i] >= 0){
+            (*num_philosophers)++;
         }else{
+            libc_sem_close(forks[i]);
             libc_fprintf(STDERR, "Couldnt create philosopher");
         }
+        libc_sem_post(mutex_add_delete);
+        
+        }
 
-    }
-    libc_sem_post(change_sem);
+        // for(int i=0; i<MAX_PHILOS; i++){
+        //     libc_printf("i %d, state %d, left %d, right %d\n", i, philos_array[i].state, philos_array[i].leftFork, philos_array[i].rightFork);
+        // }
 }
 
-void removePhilosopher() {
-    libc_sem_wait(change_sem);
-    num_philosophers--;
-    libc_sem_close(philos_array[num_philosophers].leftFork);
-    libc_sem_close(philos_array[num_philosophers].rightFork);
-    if(libc_kill(philosophers_pids[num_philosophers]) == 0){
-        libc_printf("I just killed pid %d\n", philosophers_pids[num_philosophers]);
-    }else{
-        libc_fprintf(STDERR, "MOOOO i tried to kill pid %d\n", philosophers_pids[num_philosophers]);
-        while(1);
+
+void displayState(int64_t num_philosophers) {
+    libc_printf("");
+    libc_sem_wait(state_mutex);
+    for (int i = 0; i < num_philosophers; i++) {
+        if (philos_array[i].state == EATING) { 
+            libc_put_char('E');
+        } else {
+            libc_put_char('.');
+        }
+        libc_put_char(' ');
     }
- 
-    libc_sem_post(change_sem);
+    libc_printf("\n");
+  //  libc_ps();
+    libc_sem_post(state_mutex);
+         
 }
 
-int handleKeyboard(char key) {
+int handleKeyboard(char key, int64_t * num_phil) {
     if (key == 'a') {
-        addPhilosopher();
+        addPhilosopher(num_phil);
         return CONTINUE;
     } else if (key == 'r') {
-        if(num_philosophers > MIN_PHILOS)
-            removePhilosopher();
+        if(*num_phil > MIN_PHILOS)
+            //removePhilosopher();
         return CONTINUE;
     } else if (key == 'e') {
         return FINISH;
     }
     return CONTINUE;
 }
+
+
 
 void displayHeader() {
     libc_printf("\n\tInstructions:\n");
@@ -230,42 +258,40 @@ void displayHeader() {
     libc_printf(" - . - Pensando\n\n\n");
 }
 
+
 int phylos(char ** argv, int argc) {
-    num_philosophers = 0;
+    int64_t num_philosophers = 0;
 
-    //libc_printf("%d %d \n\n", sys_sem_open_get_id(1), sys_sem_open_get_id(1));
-
-    mutex = sys_sem_open_get_id(1);
-    if(mutex == -1){
+    state_mutex = sys_sem_open_get_id(1);
+    if(state_mutex == -1){
         libc_fprintf(STDERR, "Error opening sem\n");
         return;
     }
-    change_sem = sys_sem_open_get_id(1);
-    if(change_sem == -1){
-        libc_sem_close(mutex);
-        libc_fprintf(STDERR, "Error opening sem\n");
-        return;
-    }
-
-    displayHeader();  
-
-    for (int i = 0; i < MIN_PHILOS; i++) {
-        addPhilosopher();
-    }
+    added_min_sem = sys_sem_open_get_id(0);
+    mutex_add_delete = sys_sem_open_get_id(1);
+    num_philos_mutex = sys_sem_open_get_id(1);
+    displayHeader(); 
+    num_philosophers = addFisrtPhylos();
 
     int flag = 1;
     char key;
     while (flag) {
+        displayState(num_philosophers);
         key = libc_get_char();
-        flag = handleKeyboard(key);
+        flag = handleKeyboard(key, &num_philosophers);
     }
 
     while (num_philosophers > 0) {
-        removePhilosopher();    
+        //removePhilosopher();    
     }
     
-    libc_sem_close(change_sem);
-    libc_sem_close(mutex);
+    // libc_sem_close(change_sem);
+    libc_sem_close(state_mutex);
 
     return 0;
 }
+
+
+
+
+
