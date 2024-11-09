@@ -22,6 +22,7 @@ char libc_get_char()
 
 
     return ans == 0 ? ans:(char)c;
+    } while (ans != 0 && c > 255);   
 }
 
 

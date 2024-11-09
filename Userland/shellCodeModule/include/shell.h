@@ -10,11 +10,12 @@
 #include <test_mm.h>
 #include <test_synchro.h>
 #include <phylos.h>
+#include <programs.h>
 
 #define MAX_COMMAND_SIZE 100
 #define MAX_ZOOM 3
 #define MIN_ZOOM 1
-#define MAX_MODULES 27
+#define MAX_MODULES 29
 #define MAX_ARGS 10
 #define MAX_ARGS_SIZE 20
 //Constants for the shell
