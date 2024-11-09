@@ -10,91 +10,57 @@ static int64_t sys_free_wrapper ( void * p );
 extern uint64_t regs_shot[17];
 extern uint64_t regs_shot_available;
 
+typedef uint64_t (*sys_function)(uint64_t, uint64_t, uint64_t, uint64_t, uint64_t, uint64_t);
 
-int64_t sys_call_handler ( stack_registers * regs )
-{
-	switch ( regs->rax ) {
-		case 0:
-			return sys_read ( ( uint16_t * ) regs->rdi,  regs->rsi);
-		case 1:
-			return sys_write ( regs->rdi, ( char * ) regs->rsi, regs->rdx );
-		case 2:
-			return sys_get_register_snapshot ( ( snapshot * ) regs->rdi );
-		case 3:
-			return sys_beep ( regs->rdi, regs->rsi );
-		case 4:
-			return sys_set_font_size ( regs->rdi );
-		case 5:
-			return sys_clear_screen();
-		case 6:
-			return sys_put_pixel ( regs->rdi, regs->rsi, ( color * ) regs->rdx );
-		case 7:
-			return sys_put_rectangle ( regs->rdi, regs->rsi, regs->rdx, regs->rcx, ( color * ) regs->r8 );
-		case 8:
-			return sys_draw_letter ( regs->rdi, regs->rsi, ( char * ) regs->rdx, ( color * ) regs->rcx, regs->r8 );
-		case 9:
-			return sys_set_mode ( regs->rdi );
-		case 10:
-			return sys_get_screen_information ( ( screen_information * ) regs->rdi );
-		case 11:
-			return sys_ticks_sleep ( regs->rdi );
-		case 12:
-			return sys_get_time ( ( time_struct * ) regs->rdi );
-		case 13:
-			return ( int64_t ) sys_malloc ( regs->rdi );
-		case 14:
-			return sys_free_wrapper ( ( void * ) regs->rdi );
-		case 15:
-			return sys_get_pid();
-		case 16:
-			return sys_create_process ( ( main_function ) regs->rdi, ( priority_t ) regs->rsi, ( char ** ) regs->rdx, regs->rcx, (fd_t *) regs->r8);
-		case 17:
-			return sys_block ( regs->rdi );
-		case 18:
-			return sys_unblock ( regs->rdi );
-		case 19:
-			return sys_yield();
-		case 20:
-			return sys_nice( (int64_t) regs->rdi, regs->rsi);
-		case 21:
-			return sys_kill( (int64_t) regs->rdi );
-		case 22:
-			return sys_wait( (int64_t) regs->rdi , (int64_t * ) regs->rsi);
-		case 23:
-			return sys_sem_open( (int64_t) regs->rdi, regs->rsi);
-		case 24:
-			return sys_sem_wait( (int64_t) regs->rdi);
-		case 25:
-			return sys_sem_post( (int64_t) regs->rdi);
-		case 26:
-			return sys_sem_close( (int64_t) regs->rdi);
-		case 27: 
-			return (int64_t) sys_ps();		
-		case 28: 
-			return sys_free_ps_wrapper((process_info_list *) regs->rdi);
-		case 29:
-			int8_t ans = sys_get_status((pid_t) regs->rdi);
-			return (int64_t) ans;
-		case 30:
-			return sys_pipe_open(regs->rdi, (pipe_mode_t) regs->rsi);
-		case 31:
-			return sys_pipe_open_free((pipe_mode_t)regs->rdi);
-		case 32:
-			return sys_pipe_read(regs->rdi, (uint16_t *) regs->rsi, regs->rdx);
-		case 33:
-			return sys_pipe_write(regs->rdi, (uint16_t *) regs->rsi, regs->rdx);
-		case 34:
-			return sys_pipe_close(regs->rdi);
-		case 35:
-			return sys_pipe_reserve();
-		case 36:
-			return sys_sem_open_get_id(regs->rdi); 
-		case 37: 
-			return sys_get_my_fds(regs->rdi);
-		default:
-			return NOT_VALID_SYS_ID;
-	}
+static sys_function syscall_table[NUM_SYSCALLS] = {
+    (sys_function) sys_read,                       // 0
+    (sys_function) sys_write,                      // 1
+    (sys_function) sys_get_register_snapshot,      // 2
+    (sys_function) sys_beep,                       // 3
+    (sys_function) sys_set_font_size,              // 4
+    (sys_function) sys_clear_screen,               // 5
+    (sys_function) sys_put_pixel,                  // 6
+    (sys_function) sys_put_rectangle,              // 7
+    (sys_function) sys_draw_letter,                // 8
+    (sys_function) sys_set_mode,                   // 9
+    (sys_function) sys_get_screen_information,     // 10
+    (sys_function) sys_ticks_sleep,                // 11
+    (sys_function) sys_get_time,                   // 12
+    (sys_function) sys_malloc,                     // 13
+    (sys_function) sys_free_wrapper,               // 14
+    (sys_function) sys_get_pid,                    // 15
+    (sys_function) sys_create_process,             // 16
+    (sys_function) sys_block,                      // 17
+    (sys_function) sys_unblock,                    // 18
+    (sys_function) sys_yield,                      // 19
+    (sys_function) sys_nice,                       // 20
+    (sys_function) sys_kill,                       // 21
+    (sys_function) sys_wait,                       // 22
+    (sys_function) sys_sem_open,                   // 23
+    (sys_function) sys_sem_wait,                   // 24
+    (sys_function) sys_sem_post,                   // 25
+    (sys_function) sys_sem_close,                  // 26
+    (sys_function) sys_ps,                         // 27
+    (sys_function) sys_free_ps_wrapper,            // 28
+    (sys_function) sys_get_status,                 // 29
+    (sys_function) sys_pipe_open,                  // 30
+    (sys_function) sys_pipe_open_free,             // 31
+    (sys_function) sys_pipe_read,                  // 32
+    (sys_function) sys_pipe_write,                 // 33
+    (sys_function) sys_pipe_close,                 // 34
+    (sys_function) sys_pipe_reserve,               // 35
+    (sys_function) sys_sem_open_get_id,            // 36
+    (sys_function) sys_get_my_fds                  // 37
+};
+
+int64_t sys_call_handler(stack_registers * regs) {
+    if (regs->rax >= NUM_SYSCALLS) {
+        return NOT_VALID_SYS_ID;  
+    }
+    return syscall_table[regs->rax]((uint64_t)regs->rdi, (uint64_t)regs->rsi, (uint64_t)regs->rdx, (uint64_t)regs->rcx, (uint64_t)regs->r8, (uint64_t)regs->r9);
 }
+
+
 
 int64_t sys_get_my_fds(fd_t fds[CANT_FDS]){
 	PCB * pcb = get_running();
@@ -285,7 +251,6 @@ static int64_t sys_free_wrapper ( void * p )
 
 int64_t sys_create_process (main_function rip, priority_t priority, char ** argv, uint64_t argc, fd_t fds[])
 {
-	// fd_t fds[3] = {STDOUT, STDERR, STDIN};
 	return (int64_t) new_process( rip, priority, 1, argv, argc, fds);
 }
 
@@ -362,5 +327,6 @@ static int64_t sys_free_ps_wrapper(process_info_list * ps){
 int8_t sys_get_status(pid_t pid){
 	return get_status(pid);
 }
+
 
 

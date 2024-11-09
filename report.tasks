@@ -1,0 +1,40 @@
+pvs-studio.com/en/docs/warnings/	1	err	Help: The documentation for all analyzer warnings is available here: https://pvs-studio.com/en/docs/warnings/.
+/root/Bootloader/BMFS/bmfs.c	441	err	V595 The 'buffer' pointer was utilized before it was verified against nullptr. Check lines: 441, 471.
+/root/Bootloader/BMFS/bmfs.c	446	err	V595 The 'disk' pointer was utilized before it was verified against nullptr. Check lines: 446, 465.
+/root/Bootloader/BMFS/bmfs.c	523	warn	V1032 The pointer 'dir_copy' is cast to a more strictly aligned pointer type.
+/root/Bootloader/BMFS/bmfs.c	573	warn	V1032 The pointer 'Directory' is cast to a more strictly aligned pointer type.
+/root/Bootloader/BMFS/bmfs.c	369	note	V575 The potential null pointer is passed into 'memset' function. Inspect the first argument.
+/root/Bootloader/BMFS/bmfs.c	394	note	V575 The potential null pointer is passed into 'rewind' function. Inspect the first argument.
+/root/Bootloader/BMFS/bmfs.c	194	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	204	note	V576 Incorrect format. Consider checking the fourth actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	204	note	V576 Incorrect format. Consider checking the third actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	332	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. Under certain conditions the pointer can be null.
+/root/Bootloader/BMFS/bmfs.c	568	note	V576 Incorrect format. Consider checking the second actual argument of the 'printf' function. The SIGNED integer type argument is expected.
+/root/Bootloader/BMFS/bmfs.c	302	note	V584 The 'diskSize' value is present on both sides of the '>' operator. The expression is incorrect or it can be simplified.
+/root/Bootloader/BMFS/bmfs.c	408	note	V1004 The 'mbr' pointer was used unsafely after it was verified against nullptr. Check lines: 320, 408.
+/root/Kernel/ADTs/ordered_list_ADT.c	1	err	V009 To use free version of PVS-Studio, source code files are required to start with a special comment.
+/root/Kernel/Drivers/keyboard.c	206	warn	V560 A part of conditional expression is always true: key_is_pressed.
+/root/Kernel/Drivers/time.c	38	warn	V1031 The 'ready' function is not declared. Passing data to or from this function can be affected.
+/root/Kernel/Drivers/time.c	55	warn	V1031 The 'get_running' function is not declared. Passing data to or from this function can be affected.
+/root/Kernel/Drivers/time.c	61	warn	V1031 The 'block_current' function is not declared. Passing data to or from this function can be affected.
+/root/Kernel/kernel.c	70	warn	V1031 The 'init_timer_handler' function is not declared. Passing data to or from this function can be affected.
+/root/Kernel/kernel.c	14	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x400000
+/root/Kernel/kernel.c	15	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x500000
+/root/Kernel/kernel.c	17	note	V566 The integer constant is converted to pointer. Possibly an error or a bad coding style: (void *) 0x600000
+/root/Kernel/libs/buddy_mm.c	1	err	V009 To use free version of PVS-Studio, source code files are required to start with a special comment.
+/root/Kernel/libs/kernel_libc.c	1	err	V009 To use free version of PVS-Studio, source code files are required to start with a special comment.
+/root/Kernel/libs/pipe.c	1	err	V009 To use free version of PVS-Studio, source code files are required to start with a special comment.
+/root/Kernel/libs/process.c	315	warn	V560 A part of conditional expression is always true: foreground_process != NULL.
+/root/Kernel/libs/process.c	251	warn	V600 Consider inspecting the condition. The 'pcb->fds' pointer is always not equal to NULL.
+/root/Kernel/libs/process.c	178	warn	V1031 The 'get_keyboard_blocked' function is not declared. Passing data to or from this function can be affected.
+/root/Kernel/libs/process.c	179	warn	V1031 The 'set_keyboard_blocked_null' function is not declared. Passing data to or from this function can be affected.
+/root/Kernel/libs/process.c	182	warn	V1031 The 'unsleep_kill' function is not declared. Passing data to or from this function can be affected.
+/root/Kernel/libs/process.c	186	warn	V1031 The 'delete_from_blocked_queue' function is not declared. Passing data to or from this function can be affected.
+/root/Kernel/libs/semaphores.c	1	err	V009 To use free version of PVS-Studio, source code files are required to start with a special comment.
+/root/SharedLibs/libs/shared_libc.c	1	err	V009 To use free version of PVS-Studio, source code files are required to start with a special comment.
+/root/Userland/shellCodeModule/Lib/libc.c	63	warn	V1031 The 'shared_libc_strlen' function is not declared. Passing data to or from this function can be affected.
+/root/Userland/shellCodeModule/Main/shell.c	118	warn	V591 Non-void function should return a value.
+/root/Userland/shellCodeModule/Main/shell.c	244	note	V522 There might be dereferencing of a potential null pointer 'cmd.args[j]'.
+/root/Userland/shellCodeModule/Main/shell.c	476	note	V547 Expression 'status == 1' is always true.
+/root/Userland/shellCodeModule/Modules/programs.c	1	err	V009 To use free version of PVS-Studio, source code files are required to start with a special comment.
+/root/Userland/shellCodeModule/tests/test_synchro.c	1	err	V009 To use free version of PVS-Studio, source code files are required to start with a special comment.
