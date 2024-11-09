@@ -1,6 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
-
+#ifdef FROM_SCRATCH
 #include <memory_management.h>
 
 typedef struct MM_rq {
@@ -39,3 +39,5 @@ void my_free ( void * p )
 	free_ptrs[--current] = p;
 }
 
+
+#endif

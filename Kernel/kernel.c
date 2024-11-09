@@ -62,7 +62,7 @@ int main()
 	load_idt();
 	my_mm_init ( heap, HEAP_SIZE );
 	char * argv_idle[] = {"idle"};
-	char * argv_shell[] = {"shell"};
+	char * argv_shell[] = {"she"};
 	fd_t idle_fds[3] = {-1, -1, -1};
 	fd_t shell_fds[3] = {STDOUT, STDERR, STDIN};
 	initialize_scheduler(new_process((main_function) shellCodeModuleAddress, HIGH, 0, argv_shell, 1, shell_fds),new_process((main_function) idle_process, LOW, 0, argv_idle, 1, idle_fds));	

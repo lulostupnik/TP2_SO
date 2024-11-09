@@ -1,4 +1,4 @@
-/*
+#ifdef BUDDY
 #include <memory_management.h>
 
 #define GET_SIBLING(i) (i % 2 ? i + 1 : i - 1)
@@ -139,4 +139,5 @@ int get_block_from_index(int index)
     int level = get_index_level(index);
     return (index + 1 - (1 << level)) * ((MEM_SIZE / MIN_BLOCK_SIZE) / (1 << level));
 }
-*/
+
+#endif

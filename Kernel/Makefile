@@ -25,6 +25,8 @@ STATICLIBS=
 INCLUDE_DIRS=$(shell find include -type d) $(shell find ../SharedLibs/include -type d)
 INCLUDE_FLAGS=$(addprefix -I,$(INCLUDE_DIRS))
 
+
+
 all: $(KERNEL)
 
 $(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM) $(OBJECTS_DRIVERS) $(OBJECTS_INTERRUPTS) $(OBJECTS_LIBS) $(OBJECTS_TESTS) $(OBJECTS_ADTS) $(OBJECTS_SHARED)
@@ -32,7 +34,7 @@ $(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM) $(OBJECTS_DRI
 	$(LD) $(LDFLAGS) -T kernel.ld --oformat=elf64-x86-64 -z noexecstack -o kernel.elf $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(STATICLIBS) $(OBJECTS_DRIVERS) $(OBJECTS_INTERRUPTS) $(OBJECTS_LIBS) $(OBJECTS_TESTS) $(OBJECTS_ADTS) $(OBJECTS_SHARED) # Debug
 
 %.o: %.c
-	$(GCC) $(GCCFLAGS) $(INCLUDE_FLAGS) -c $< -o $@
+	$(GCC) $(GCCFLAGS) $(INCLUDE_FLAGS) $(MM) -c $< -o $@
 
 %.o : %.asm
 	$(ASM) $(ASMFLAGS) $< -o $@

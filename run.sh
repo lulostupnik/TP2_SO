@@ -1,7 +1,15 @@
 sudo chmod -R 777 ./*
 sudo docker start SO
 sudo docker exec -it SO make -C/root/Toolchain
-sudo docker exec -it SO make -C/root/ > make_out.txt
+
+if [[ $1 == "buddy" ]]; then
+    # Compile with buddy system
+    sudo docker exec -it SO make buddy -C/root/ > make_out.txt
+else
+    # Compile with default memory manager
+    sudo docker exec -it SO make -C/root/  > make_out.txt
+fi
+
 sed -r "s/\x1B\[[0-9;]*[a-zA-Z]//g" make_out.txt > compile_out.txt #fixes with newline in windows and Linux
 rm make_out.txt
 sudo chmod 777 Image/x64BareBonesImage.qcow2
