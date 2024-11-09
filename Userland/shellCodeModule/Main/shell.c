@@ -2,7 +2,6 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 #include <shell.h>
-
 typedef struct {
     char **args[2];   
     uint64_t argc[2]; 
@@ -95,7 +94,7 @@ void long_sleep(){
 void cat(){
 	char buff[1000];
 	int amount = 0;
-	while((amount = sys_read(buff, 999)) > 0 ){
+	while((amount = sys_read(buff, 499)) > 0 ){
 		buff[amount] = 0;
 		libc_fprintf(STDERR, "%s", buff);
 	}
@@ -133,12 +132,12 @@ static module modules[] = {
     {"opcode", "Genera una excepción de código de operación inválido.", op_code, BUILT_IN},
     {"clear", "Limpia la pantalla.", (void (*)(char **, uint64_t))libc_clear_screen, BUILT_IN},
     {"ipod", "Inicia el reproductor de música.", ipod_menu, BUILT_IN},
-    {"loop", "Crea un proceso que imprime un saludo.", loop_process, !BUILT_IN},
+    // {"loop", "Crea un proceso que imprime un saludo.", loop_process, !BUILT_IN},
     {"testprio", "Testea las prioridades del scheduler.", test_prio, !BUILT_IN},
-    {"kill", "Mata al proceso con el número pid.", kill_pid, BUILT_IN},
+    {"kill", "Kills a process given its PID", kill_pid, BUILT_IN},
     {"block", "Hace un swap entre ready y blocked para el proceso pid.", shell_block, BUILT_IN},
     {"wait", "Espera al proceso número pid.", shell_wait_pid, BUILT_IN},
-    {"nice", "Cambia la prioridad del proceso pid a newprio.", shell_nice, BUILT_IN},
+    {"nice", "Changes the priority of a process given its PID and the new priority.", shell_nice, BUILT_IN},
     {"testproc", "Testea la creación de procesos.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
     {"testsync", "Testea la sincronización de procesos.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
     {"testmm", "Testea el uso del malloc y free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
@@ -149,8 +148,21 @@ static module modules[] = {
 	{"writer", "Tests pipe writer. (use in foreground)", writter, !BUILT_IN},
 	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN},
 	{"phylos", "filosofos hambrientos", phylos, !BUILT_IN},
-	{"cat", "cat like linux", cat, !BUILT_IN}
+	{"cat", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
+	{"loop", "Greets with its pid every specified amount of seconds", loop, !BUILT_IN},
+	{"filter", "Filters the vowels from the input.", long_sleep, !BUILT_IN},
+	{"wc", "Counts the number of lines in the input.", wc, !BUILT_IN}
 };
+// todo: podríamos guardar un tercer string con Usage: <nombre> <argumentos> para mostrar en caso de error
+// -> solo tendría <argumentos>
+// mentira, re al dope
+/*
+mem: Prints the memory status.
+loop: Prints its ID with a greeting every specified number of seconds.
+nice: Changes the priority of a process given its ID and the new priority.
+block: Changes the state of a process between blocked and ready, given its ID.
+filter: Filters the vowels from the input.
+*/
 
 
 int main()

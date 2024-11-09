@@ -16,12 +16,12 @@ char libc_get_char()
 {
     int64_t ans = 0;
 	uint16_t c = 0;
+	char flag = 0;
     do {
         ans = sys_read( &c, 1);  
-    } while (c > 255);                 
-
-
-    return ans == 0 ? ans:(char)c;
+    } while (ans != 0 && c > 255);   
+	
+    return ans == 0 ? ans : (char) c;
 }
 
 
