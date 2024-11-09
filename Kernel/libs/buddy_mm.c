@@ -9,8 +9,6 @@
 
 #define TREE_BIT_MAP_SIZE (((MEM_SIZE / MIN_BLOCK_SIZE) / 8) * 2)
 
-#define MEM_SIZE 0x1000000    // = 1024
-#define MIN_BLOCK_SIZE 0x1000   // 0x10 // 4KB
 #define TREE_BIT_MAP_SIZE (((MEM_SIZE / MIN_BLOCK_SIZE)) * 2)
 
 

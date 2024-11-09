@@ -30,7 +30,6 @@ uint64_t test_mm ( char * argv[],  uint64_t argc )
 	}
 
 
-	libc_printf ( "\nRunning test....\n" );
 	while (1) {
 		rq = 0;
 		total = 0;

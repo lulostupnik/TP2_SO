@@ -14,6 +14,7 @@
 #include <process.h>
 #include <scheduler.h>
 #include <pipe.h>
+#include <time.h>
 
 int main();
 

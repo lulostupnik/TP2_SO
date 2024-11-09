@@ -69,14 +69,13 @@ void exception_dispatcher ( uint64_t exception )
 
 	print_regs ( message, message_cant_chars );
 	vdriver_text_write ( STDERR, "\nPress any key to continue", 30 );
-	uint16_t buffer;
 
 	pic_master_mask ( 0xfd );                 //solo habilito interrupciones de teclado
 	_sti();
 	while(!buffer_has_next()){
 		_hlt();
 	}
-	buffer = get_current();
+	get_current();
 	_cli();
 	pic_master_mask ( DEFAULT_MASTER_MASK );  // restores to default
 
