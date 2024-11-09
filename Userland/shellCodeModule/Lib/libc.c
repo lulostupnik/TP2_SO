@@ -526,6 +526,9 @@ int64_t libc_sem_post ( int64_t sem_id ){
 int64_t libc_sem_close ( int64_t sem_id ){
 	return sys_sem_close(sem_id);
 }
+int64_t libc_sem_open_get_id( int64_t value ){
+	return sys_sem_open_get_id(value);
+}
 
 void libc_ps(){
 
