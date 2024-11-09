@@ -2,6 +2,7 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 
 #include <shell.h>
+
 typedef struct {
     char **args[2];   
     uint64_t argc[2]; 
@@ -13,7 +14,6 @@ static void kill_pid(char ** argv, uint64_t argc);
 static void to_utc_minus_3 ( time_struct * time );
 static void free_args(char ** args, uint64_t argc);
 static void free_cmd_args(Command * cmd);
-// static void call_function_process(module m, char ** args, uint64_t argc);
 static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t fds[CANT_FDS]);
 static int64_t piped_command_parse(char shellBuffer[], Command *cmd);
 static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count);
@@ -29,53 +29,8 @@ static void shell_block(char **argv, uint64_t argc);
 
 
 static uint64_t font_size = 1;
-
 #define BUILT_IN 1
 
-
-void reader(){
-	libc_pipe_open(3, READER);
-	uint16_t buff[1000];
-	char char_buff[1001];
-	// if(libc_pipe_open(0, READER) == -1){
-	// 	libc_fprintf(STDERR, "-1 as expected\n");
-	// }
-	while(1){
-		sys_nano_sleep(100);
-		
-		int amount;
-		amount = libc_pipe_read(3, buff, 999);
-		if(amount == 0){
-			libc_fprintf(STDERR, "EOF read: %s\n",amount, char_buff);
-			libc_pipe_close(3);
-			break;
-		}
-		int i=0;
-		for( ;i<amount && i<1001;i++){
-			char_buff[i] = (char) buff[i];
-		}
-		char_buff[i] = 0;
-		libc_fprintf(STDERR, "I read %d bytes: %s\n",amount, char_buff);
-	}
-}
-void writter(){
-	libc_pipe_open(3, WRITER);
-	int i = 0;
-	while(1){
-		uint16_t c = 0;
-		//c = libc_get_char();
-		uint16_t abc[] = {'1','2','3', '4', '5', '6', '7'};
-		//char abc[] = "abcdefghijklmnopqrstuvwxyz";
-		libc_pipe_write(3, abc, 3);
-
-		if(i == 3){
-			libc_pipe_close(3);
-			break;
-		}
-		i++;
-		//libc_pipe_write(0, abc, 20);
-	}
-}
 
 void ps_loop(){
 	while(1){
@@ -84,42 +39,15 @@ void ps_loop(){
 	}
 }
 
-void long_sleep(){
-	while(1){
-		sys_nano_sleep(1000);
-		libc_printf("Long sleep pid %d\n", libc_get_pid());
-	}
-}
-
 void cat(){
-	char buff[1000];
+	uint16_t buff[1000];
 	int amount = 0;
-	while((amount = sys_read(buff, 499)) > 0 ){
+	while((amount = sys_read(buff, 999)) > 0 ){
 		buff[amount] = 0;
 		libc_fprintf(STDERR, "%s", buff);
 	}
-	libc_pipe_close(3);
 }
 
-void escritor(){
-	char string[] = "Probando\0 por favor uncionaaaa, :)";
-	for(int i = 0; i < 20; i++){
-		sys_nano_sleep(10);
-		if(sys_write(STDOUT, string+i, 1) == -1){
-			libc_fprintf(STDERR, "Error writing\n");
-			break;
-		}
-	}
-}
-
-void lector(){
-	while(1){
-		sys_nano_sleep(1000);
-		char buff[100];
-		libc_gets(buff, 100);
-		libc_fprintf(STDERR, "Read: %s\n", buff);
-	}
-}
 
 static module modules[] = {
     {"help", "Muestra todos los módulos disponibles del sistema operativo.", help, BUILT_IN},
@@ -141,21 +69,15 @@ static module modules[] = {
     {"testproc", "Testea la creación de procesos.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
     {"testsync", "Testea la sincronización de procesos.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
     {"testmm", "Testea el uso del malloc y free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
-    {"ps", "Muestra información de los procesos.", libc_ps, !BUILT_IN},
-	{"reader", "Tests pipe reader.", reader, !BUILT_IN},
-	{"escritor", "Tests pipe writer.", escritor, !BUILT_IN},
-	{"lector", "Tests pipe reader. (use in foreground)", lector, !BUILT_IN},
-	{"writer", "Tests pipe writer. (use in foreground)", writter, !BUILT_IN},
+    {"ps", "Muestra información de los procesos.", libc_ps, !BUILT_IN},	
 	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN},
 	{"phylos", "filosofos hambrientos", phylos, !BUILT_IN},
 	{"cat", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
 	{"loop", "Greets with its pid every specified amount of seconds", loop, !BUILT_IN},
-	{"filter", "Filters the vowels from the input.", long_sleep, !BUILT_IN},
+	{"filter", "Filters the vowels from the input.  DICE PHYLOS", phylos, !BUILT_IN},
 	{"wc", "Counts the number of lines in the input.", wc, !BUILT_IN}
 };
-// todo: podríamos guardar un tercer string con Usage: <nombre> <argumentos> para mostrar en caso de error
-// -> solo tendría <argumentos>
-// mentira, re al dope
+
 /*
 mem: Prints the memory status.
 loop: Prints its ID with a greeting every specified number of seconds.
