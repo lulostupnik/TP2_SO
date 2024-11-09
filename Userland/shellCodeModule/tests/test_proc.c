@@ -21,7 +21,7 @@ int64_t test_processes( char * argv[], uint64_t argc)
 	uint64_t action;
 	int64_t max_processes;
 	int64_t satoi_flag;
-	if (argc != 2 || (max_processes = satoi(argv[1], &satoi_flag)) < 0 || !satoi_flag) {
+	if (argc != 2 || (max_processes = libc_satoi(argv[1], &satoi_flag)) < 0 || !satoi_flag) {
 		libc_fprintf(STDERR, "Usage: test_processes <max_processes>\n");
 		return -1;	
 	}

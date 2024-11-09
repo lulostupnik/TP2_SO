@@ -24,7 +24,6 @@ static void show_current_time();
 static void get_regs();
 static void shell_wait_pid(char ** args, uint64_t argc);
 static void shell_nice(char **argv, uint64_t argc);
-static void loop_process(char ** argv, uint64_t argc);
 static void shell_block(char **argv, uint64_t argc);
 
 
@@ -32,12 +31,6 @@ static uint64_t font_size = 1;
 #define BUILT_IN 1
 
 
-void ps_loop(){
-	while(1){
-		sys_ticks_sleep(18*3);
-		libc_ps();
-	}
-}
 
 void cat(){
 	uint16_t buff[1000];
@@ -48,33 +41,33 @@ void cat(){
 	}
 }
 
-
+static void ps_loop(char **argv, uint64_t argc) ;
 
 static module modules[] = {
-    {"help", "Muestra todos los módulos disponibles del sistema operativo.", help, BUILT_IN},
-    {"time", "Muestra la hora actual del sistema.", show_current_time, BUILT_IN},
-    {"zoomin", "Agranda los caracteres en pantalla.", zoom_in, BUILT_IN},
-    {"zoomout", "Achica la pantalla.", zoom_out, BUILT_IN},
-    {"getregs", "Muestra el estado actual de los registros.", get_regs, BUILT_IN},
-    {"dividebyzero", "Genera una excepción de división por cero.", div0, BUILT_IN},
-    {"opcode", "Genera una excepción de código de operación inválido.", op_code, BUILT_IN},
-    {"clear", "Limpia la pantalla.", (void (*)(char **, uint64_t))libc_clear_screen, BUILT_IN},
-    {"testprio", "Testea las prioridades del scheduler.", test_prio, !BUILT_IN},
-    {"kill", "Kills a process given its PID", kill_pid, BUILT_IN},
-    {"block", "Hace un swap entre ready y blocked para el proceso pid.", shell_block, BUILT_IN},
-    {"wait", "Espera al proceso número pid.", shell_wait_pid, BUILT_IN},
+    {"help", "Displays all available operating system modules.", help, BUILT_IN},
+    {"time", "Shows the current system time.", show_current_time, BUILT_IN},
+    {"getregs", "Displays the current state of the registers.", get_regs, BUILT_IN},
+    {"dividebyzero", "Generates a divide-by-zero exception.", div0, BUILT_IN},
+    {"opcode", "Generates an invalid opcode exception.", op_code, BUILT_IN},
+    {"clear", "Clears the screen.", (void (*)(char **, uint64_t))libc_clear_screen, BUILT_IN},
+    {"kill", "Kills a process given its PID.", kill_pid, BUILT_IN},
+    {"block", "Swaps between ready and blocked state for the given PID.", shell_block, BUILT_IN},
+    {"wait", "Waits for the process with the given PID.", shell_wait_pid, BUILT_IN},
     {"nice", "Changes the priority of a process given its PID and the new priority.", shell_nice, BUILT_IN},
-    {"testproc", "Testea la creación de procesos.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
-    {"testsync", "Testea la sincronización de procesos.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
-    {"testmm", "Testea el uso del malloc y free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
-    {"ps", "Muestra información de los procesos.", libc_ps, !BUILT_IN},	
-	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN},
-	{"phylo", "filosofos hambrientos", phylos, !BUILT_IN},
-	{"cat", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
-	{"loop", "Greets with its pid every specified amount of seconds", loop, !BUILT_IN},
-	{"filter", "Filters the vowels from the input.", filter, !BUILT_IN},
-	{"wc", "Counts the number of lines in the input.", wc, !BUILT_IN}
+	{"ps", "Displays process information.", ps_program, !BUILT_IN},    
+    {"phylo", "Hungry philosophers problem.", phylos, !BUILT_IN},
+    {"cat", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
+    {"loop", "Greets with its PID every specified number of seconds.", loop, !BUILT_IN},
+    {"filter", "Filters vowels from the input.", filter, !BUILT_IN},
+    {"wc", "Counts the number of lines in the input.", wc, !BUILT_IN},
+	{"testproc", "Tests process creation.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
+    {"testsync", "Tests process synchronization.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
+    {"testmm", "Tests the use of malloc and free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
+	{"testprio", "Tests the scheduler priorities.", test_prio, !BUILT_IN},
 };
+
+
+
 
 /*
 mem: Prints the memory status.
@@ -88,7 +81,6 @@ filter: Filters the vowels from the input.
 int main()
 {
 	libc_set_font_size ( font_size );
-
 	libc_puts ( WELCOME );
 	help();
 	while ( 1 ) {
@@ -125,23 +117,12 @@ static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t
 		free_args(args, argc);
 		return;
 	}
-	// uint8_t is_bckg = (libc_strcmp(args[argc - 1], "&") == 0);
-	// if(is_bckg){
-	// 	libc_free(args[argc - 1]);
-	// 	argc--;
-	// }
-	
 	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc, fds);
 	
 	if (ans < 0) {
 		libc_fprintf ( STDERR, "Error: Could not create process\n" );
 	}
-	// else if (is_bckg){
-	// 	libc_printf("pid: %d in background\n", ans);
-	// }
-
 	free_args(args, argc);
-	// if(!is_bckg) libc_wait(ans, NULL);
 	return ans;
 }
 
@@ -237,29 +218,6 @@ static int64_t piped_command_parse(char shellBuffer[], Command *cmd) {
     return 0;
 }
 
-/*
-
-
-if(found_idx[0] != -1){
-	if(!has_pipe){
-		uint8_t is_bckg = (libc_strcmp(cmd.args[0][cmd.argc[0] - 1], "&") == 0) && !modules[found_idx[0]].is_built_in;
-		if(is_bckg){
-			
-			if(modules[found_idx[0]].is_built_in){
-				// es un built-in, no puede ir a background
-			}
-			
-
-		}
-
-		
-		
-		call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
-		return;
-	}
-
-*/
-
 static void interpret()
 {
 	libc_puts ( PROMPT );
@@ -268,17 +226,13 @@ static void interpret()
 	if ( shared_libc_strlen ( shellBuffer ) == 0 ) {
 		return;
 	}
-	// char ** args;
-	// uint64_t argc;
-	//args = command_parse(shellBuffer, &argc);
-
+	
 	Command cmd;
 	if(piped_command_parse(shellBuffer, &cmd) != 0){
 		libc_fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
 		return;
 	}
-	int has_pipe = cmd.args[1] != NULL; //@todo check
-
+	int has_pipe = cmd.args[1] != NULL;
 	if (cmd.argc[0] == -1 || cmd.argc[1] == -1) {
 		libc_fprintf ( STDERR, "Not enough memory to create process\n" );
 	}
@@ -288,7 +242,6 @@ static void interpret()
 	for(int j=0; j<look_for_max ; j++){
 		for ( int i = 0; i < MAX_MODULES && ((cmd.args[j] != NULL) || (cmd.argc[j] != 0)); i++ ) {
 			if ( libc_strcmp (cmd.args[j][0], modules[i].name ) == 0 ) {
-			//call_function_process(modules[i], args, argc);
 			found_idx[j] = i;
 			break;
 			}
@@ -302,16 +255,12 @@ static void interpret()
 		if(!has_pipe){
 			uint8_t is_bckg = (libc_strcmp(cmd.args[0][cmd.argc[0] - 1], "&") == 0);
 			if(is_bckg && modules[found_idx[0]].is_built_in){
-				libc_fprintf ( STDERR, "Cannot use built-in in background\n" );
+				libc_fprintf ( STDERR, "Error: Cannot use built-in in background\n" );
 				free_cmd_args(&cmd);
 				return;
 			}
 			if(is_bckg){
-				// if(modules[found_idx[0]].is_built_in){
-				// 	// es un built-in, no puede ir a background
-				// }
 				fds[STDIN] = -1;
-				//fds[STDOUT] = -1;
 				libc_free(cmd.args[0][cmd.argc[0] - 1]);
 				cmd.argc[0]--;
 			}
@@ -331,23 +280,15 @@ static void interpret()
 				return;
 			}
 			fd_t fd = sys_pipe_reserve();
-			if(fd >= 0){
-				libc_printf("pipe fd: %d\n", fd);
-			}
-			else{
-				libc_printf("pipe fd: -%d\n", fd*-1);
-			}
+			
 			if(fd < 0){
-				libc_fprintf ( STDERR, "Could not open pipe\n" );
-
+				libc_fprintf ( STDERR, "Error: Could not open pipe\n" );
 				free_cmd_args(&cmd);
 				return;
 			}
+
 			uint8_t is_bckg = (libc_strcmp(cmd.args[1][cmd.argc[1] - 1], "&") == 0) && !modules[found_idx[1]].is_built_in;
 			if(is_bckg){
-				// if(modules[found_idx[0]].is_built_in){
-				// 	// es un built-in, no puede ir a background
-				// }
 				libc_free(cmd.args[1][cmd.argc[1] - 1]);
 				cmd.argc[1]--;
 			}
@@ -359,14 +300,14 @@ static void interpret()
 				libc_wait(pid2, NULL);
 				libc_wait(pid1, NULL);
 			}else if(is_bckg){
-				libc_printf("pid: %d in background\n", pid2);
+				libc_printf("pid: %d in background.\n", pid2);
 			}
 	
 			return;
 		}
 	}
 
-	libc_fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
+	libc_fprintf ( STDERR, "Error: Invalid Command! Try Again.\n" );
 }
 
 
@@ -375,7 +316,7 @@ static void kill_pid(char ** argv, uint64_t argc)
 {
 	pid_t pid;
 	int64_t satoi_flag;
-	if (argc != 2 || argv == NULL || ((pid = satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
+	if (argc != 2 || argv == NULL || ((pid = libc_satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
 		libc_fprintf(STDERR, "Usage: killpid <pid>\n");
 		return;
 	}
@@ -393,7 +334,7 @@ static void shell_wait_pid(char ** args, uint64_t argc){
 	}
 	pid_t pid;
 	int64_t satoi_flag;
-	if((pid=satoi(args[1], &satoi_flag)) < 0 || !satoi_flag ){
+	if((pid=libc_satoi(args[1], &satoi_flag)) < 0 || !satoi_flag ){
 		libc_fprintf(STDERR, "Error: pid must be positive\n");
 		return;
 	} 
@@ -410,8 +351,12 @@ static void shell_wait_pid(char ** args, uint64_t argc){
 
 void help(char **args, uint64_t argc) {
     for (int i = 0; i < MAX_MODULES; i++) {
-        libc_printf("- %s: %s\n", modules[i].name, modules[i].desc);
+        if(i == MAX_MODULES-NUM_TESTS){
+			libc_printf("\n\n-------------------------------                      Functionality tests                      ---------------------------------\n\n");
+		}
+		libc_printf("- %s: %s\n", modules[i].name, modules[i].desc);
     }
+	libc_printf("\n");
 }
 
 
@@ -493,7 +438,7 @@ static void get_regs()
 static void shell_nice(char **argv, uint64_t argc) {
     pid_t pid;
 	int64_t satoi_flag;
-    if (argc != 3 || ((pid = satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
+    if (argc != 3 || ((pid = libc_satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
         libc_fprintf(STDERR, "Usage: nice <pid> <new_prio>\n");
         return;
     }
@@ -517,7 +462,7 @@ static void shell_nice(char **argv, uint64_t argc) {
 static void shell_block(char **argv, uint64_t argc){
 	pid_t pid;
 	int64_t satoi_flag;
-    if (argc != 2 || ((pid = satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
+    if (argc != 2 || ((pid = libc_satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
         libc_fprintf(STDERR, "Usage: block <pid>");
         return;
     }
@@ -530,13 +475,5 @@ static void shell_block(char **argv, uint64_t argc){
 		libc_unblock(pid);
 	}else if(status == READY){
 		libc_block(pid);
-	}
-}
-
-static void loop_process(char ** argv, uint64_t argc){
-	pid_t pid = libc_get_pid();
-	while(1){
-		sys_ticks_sleep((pid^10) + pid*10 + 100);
-		libc_printf("\nHello my friend, my pid is %d, I hope you are well\n", pid);
 	}
 }

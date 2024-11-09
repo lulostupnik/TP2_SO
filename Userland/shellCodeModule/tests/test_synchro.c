@@ -18,11 +18,11 @@ int64_t check_params(char *argv[], uint64_t argc, int64_t * n, int8_t * inc, int
   int64_t satoi_flag;
   int8_t use_sem_aux, inc_aux;
   int64_t n_aux;
-  if ((n_aux = satoi(argv[1], &satoi_flag)) <= 0 || !satoi_flag)
+  if ((n_aux = libc_satoi(argv[1], &satoi_flag)) <= 0 || !satoi_flag)
     return -1;
-  if ((inc_aux = satoi(argv[2], &satoi_flag)) == 0 || !satoi_flag)
+  if ((inc_aux = libc_satoi(argv[2], &satoi_flag)) == 0 || !satoi_flag)
     return -1;
-  if ((use_sem_aux = satoi(argv[3], &satoi_flag)) < 0 || !satoi_flag)
+  if ((use_sem_aux = libc_satoi(argv[3], &satoi_flag)) < 0 || !satoi_flag)
     return -1;
 
    if(n != NULL){

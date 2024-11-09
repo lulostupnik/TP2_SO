@@ -8,14 +8,14 @@ int64_t prio[TOTAL_PROCESSES] = {LOW, MEDIUM, HIGH};
 void test_prio()
 {
 	pid_t pids[TOTAL_PROCESSES];
-	char * str = WAIT_STRING;
-	char * argv[] = {str};
+
+	char * argv[] = {"test_prio_aux", WAIT_STRING};
 	uint64_t i;
 
 	libc_printf("\n");
 	for (i = 0; i < TOTAL_PROCESSES; i++) {
 		fd_t fds[] = {STDOUT, STDERR, -1};
-		pids[i] = libc_create_process((main_function)endless_loop_print_main, 0, argv, 1, fds);
+		pids[i] = libc_create_process((main_function)endless_loop_print_main, 0, argv, 2, fds);
 		if (pids[i] < 0) {
 			libc_fprintf ( STDERR, "Failed to create process number %d\n", i + 1 );
 		}

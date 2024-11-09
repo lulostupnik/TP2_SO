@@ -9,6 +9,8 @@ void wc();
 
 void filter();
 
+void ps_program();
+
 // void cat();
 
 // void ps();

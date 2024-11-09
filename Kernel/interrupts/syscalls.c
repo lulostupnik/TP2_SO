@@ -4,6 +4,8 @@
 #include <syscallsKernel.h>
 
 
+static int64_t sys_free_ps_wrapper(process_info_list * ps);
+static int64_t sys_free_wrapper ( void * p );
 
 extern uint64_t regs_shot[17];
 extern uint64_t regs_shot_available;
@@ -41,8 +43,7 @@ int64_t sys_call_handler ( stack_registers * regs )
 		case 13:
 			return ( int64_t ) sys_malloc ( regs->rdi );
 		case 14:
-			sys_free ( ( void * ) regs->rdi );
-			return 0;
+			return sys_free_wrapper ( ( void * ) regs->rdi );
 		case 15:
 			return sys_get_pid();
 		case 16:
@@ -70,8 +71,7 @@ int64_t sys_call_handler ( stack_registers * regs )
 		case 27: 
 			return (int64_t) sys_ps();		
 		case 28: 
-			sys_free_ps((process_info_list *) regs->rdi);
-			return 0;
+			return sys_free_ps_wrapper((process_info_list *) regs->rdi);
 		case 29:
 			int8_t ans = sys_get_status((pid_t) regs->rdi);
 			return (int64_t) ans;
@@ -275,9 +275,10 @@ void * sys_malloc ( uint64_t size )
 {
 	return my_malloc ( size );
 }
-void sys_free ( void * p )
+static int64_t sys_free_wrapper ( void * p )
 {
 	my_free ( p );
+	return 0;
 }
 
 
@@ -353,10 +354,13 @@ process_info_list * sys_ps ()
 	return ps();
 }
 
-void sys_free_ps(process_info_list * ps){
+static int64_t sys_free_ps_wrapper(process_info_list * ps){
 	free_ps(ps);
+	return 0;
 }
 
 int8_t sys_get_status(pid_t pid){
 	return get_status(pid);
 }
+
+
