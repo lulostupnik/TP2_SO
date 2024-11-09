@@ -23,8 +23,8 @@ uint64_t test_mm ( char * argv[],  uint64_t argc )
 		return -1;
 	}
 
-
-	if ( ( max_memory = satoi ( argv[1] ) ) <= 0 ) {
+	int64_t satoi_flag;
+	if ( ( max_memory = satoi ( argv[1], &satoi_flag ) ) <= 0 ) {
 		libc_fprintf(STDERR, "Error: could not read from argv" );
 		return -1;
 	}

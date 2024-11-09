@@ -50,7 +50,7 @@ int seconds_elapsed()
 	return ticks / 18;
 }
 
-int64_t nano_sleep ( int time )
+int64_t ticks_sleep ( int time )
 {	
 	PCB * pcb  = get_running();
 	pcb->start = ticks;

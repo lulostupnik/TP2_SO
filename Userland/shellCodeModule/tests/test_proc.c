@@ -20,8 +20,8 @@ int64_t test_processes( char * argv[], uint64_t argc)
 	uint64_t alive = 0;
 	uint64_t action;
 	int64_t max_processes;
-
-	if (argc != 2 || (max_processes = satoi(argv[1])) < 0) {
+	int64_t satoi_flag;
+	if (argc != 2 || (max_processes = satoi(argv[1], &satoi_flag)) < 0 || !satoi_flag) {
 		libc_fprintf(STDERR, "Usage: test_processes <max_processes>\n");
 		return -1;	
 	}
@@ -36,7 +36,8 @@ int64_t test_processes( char * argv[], uint64_t argc)
 	while (1) {
 		for (rq = 0; rq < max_processes; rq++) {
 			fd_t fds[] = {STDOUT, STDERR, -1};
-			p_rqs[rq].pid = libc_create_process((main_function)endless_loop, 0, NULL, 0, fds);
+			char * argv[] = {"test_proc_aux"};
+			p_rqs[rq].pid = libc_create_process((main_function)endless_loop, 0, argv, 1, fds);
 			if (p_rqs[rq].pid < 0) {
 				libc_fprintf(STDERR, "test_processes: ERROR creating process\n");
 				return -1;

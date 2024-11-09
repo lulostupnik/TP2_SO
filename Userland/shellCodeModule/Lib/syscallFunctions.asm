@@ -9,7 +9,7 @@ GLOBAL sys_put_rectangle
 GLOBAL sys_draw_letter
 GLOBAL sys_set_mode
 GLOBAL sys_get_screen_information
-GLOBAL sys_nano_sleep
+GLOBAL sys_ticks_sleep
 GLOBAL sys_get_time
 GLOBAL sys_free
 GLOBAL sys_malloc
@@ -153,7 +153,7 @@ sys_set_mode:
 sys_get_screen_information:
     simple_sys_handler 10
 
-sys_nano_sleep:
+sys_ticks_sleep:
     simple_sys_handler 11
 
 sys_get_time:

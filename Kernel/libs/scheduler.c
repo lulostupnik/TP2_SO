@@ -193,7 +193,7 @@ uint64_t scheduler(uint64_t current_rsp)
 int64_t nice ( pid_t pid, uint64_t new_prio )
 {
 	PCB * process = get_pcb(pid);
-	if (process == NULL) {
+	if (process == NULL || process->status == FREE) {
 		return -1;
 	}
 	process->priority = new_prio;

@@ -35,14 +35,17 @@ uint8_t memcheck ( void * start, uint8_t value, uint32_t size )
 }
 
 // Parameters
-int64_t satoi ( char * str )
+int64_t satoi ( char * str, int64_t * flag )
 {
 	uint64_t i = 0;
 	int64_t res = 0;
 	int8_t sign = 1;
 
-	if ( !str )
-		return 0;
+	if ( !str ){
+		if(flag){
+			*flag = 0;
+		}
+		return 0;}
 
 	if ( str[i] == '-' ) {
 		i++;
@@ -50,11 +53,18 @@ int64_t satoi ( char * str )
 	}
 
 	for ( ; str[i] != '\0'; ++i ) {
-		if ( str[i] < '0' || str[i] > '9' )
+		if ( str[i] < '0' || str[i] > '9' ){
+			if(flag){
+				*flag = 0;
+			}
 			return 0;
+		}
+			
 		res = res * 10 + str[i] - '0';
 	}
-
+	if(flag){
+		*flag = 1;
+	}
 	return res * sign;
 }
 
@@ -75,12 +85,20 @@ void endless_loop()
 
 void endless_loop_print_main(char ** argv, uint64_t argc)
 {
+	
 	if (argv == NULL || argc != 1) {
 		libc_fprintf ( STDERR, "Wrong parameters\n" );
 		return;
 	}
 
-	uint64_t wait = satoi(argv[0]);
+	int64_t satoi_flag;
+	uint64_t wait = satoi(argv[0], &satoi_flag);
+	
+	if (wait <= 0 || !satoi_flag) {
+		libc_fprintf ( STDERR, "Wait parameter must be a positive integer\n" );
+		return;
+	}
+
 	endless_loop_print(wait);
 }
 

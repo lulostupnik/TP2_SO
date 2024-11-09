@@ -2,61 +2,25 @@
 
 void loop(char ** argv, int argc){
     if(argc != 2){
-        libc_printf("Usage: loop <seconds>\n");
+        libc_fprintf(STDERR, "Usage: loop <seconds>\n");
         return;
     }
-    int64_t seconds = satoi(argv[1]);
-    if(seconds < 0){
-        libc_printf("Invalid amount of seconds\n");
+    int64_t satoi_flag;
+    int64_t seconds = satoi(argv[1] , &satoi_flag);
+    if(seconds < 0 || !satoi_flag){
+        libc_fprintf(STDERR, "Invalid amount of seconds\n");
         return;
     }
     uint64_t ticks = seconds * 18;
     while(1){
-        sys_nano_sleep(ticks);
+        sys_ticks_sleep(ticks);
         libc_printf("Hello! I'm a loop with pid: %d\n", libc_get_pid());
     }
 }
-/*
-void cat(){
-	char buff[1000];
-	int amount = 0;
-	while((amount = sys_read(buff, 999)) > 0 ){
-		buff[amount] = 0;
-		libc_fprintf(STDERR, "%s", buff);
-	}
-	libc_pipe_close(3);
-}
-*/
-/*
-void wc(char ** argv, int argc){
-    if(argc != 1){
-        libc_printf("Usage: wc\n");
-        return;
-    }
-	uint16_t c[10];
-    uint16_t prev = EOF;
-    uint64_t lines = 1;
-	while ( ( sys_read(c, 1) ) == 1 ) {
-        libc_put_char((char) c[0]);
-        if(c[0] == '\n'){
-            lines = lines + 1;
-            // libc_printf("Lines:   uuu %d\n", lines);
-        }
-        prev = c[0];
-        libc_printf("prev: %c\n", prev);
-	}
-    libc_printf("prev: %c\n", prev);
-    if(prev == EOF || prev == '\n'){
-        lines--;
-    }
-    libc_printf("Lines: %d\n", lines);
 
-	return;
-}
-*/
 void wc(char ** argv, int argc){
     if(argc != 1){
-        libc_printf("Usage: wc\n");
+        libc_fprintf(STDERR, "Usage: wc\n");
         return;
     }
 	char c;
@@ -68,10 +32,8 @@ void wc(char ** argv, int argc){
             lines = lines + 1;
         }
         prev = c;
-        // libc_printf("prev: %c\n", prev);
 	}
 
-    libc_printf("prev: %c\n", prev);
     if(prev == 0 || prev == '\n'){
         lines--;
     }
@@ -82,7 +44,13 @@ void wc(char ** argv, int argc){
 
 
 void filter(){
-    return;
+	char ans;
+	while((ans = libc_get_char()) > 0 ){
+		if(!(ans == 'a' || ans == 'A' || ans == 'e' || ans == 'E' || ans == 'i' || ans == 'I' || ans == 'o' || ans =='O' || ans == 'u' || ans == 'U')){
+			libc_printf("%c", ans);
+		}
+	}
+
 }
 
 /*

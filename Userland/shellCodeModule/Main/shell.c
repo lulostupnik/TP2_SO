@@ -34,7 +34,7 @@ static uint64_t font_size = 1;
 
 void ps_loop(){
 	while(1){
-		sys_nano_sleep(18*3);
+		sys_ticks_sleep(18*3);
 		libc_ps();
 	}
 }
@@ -49,18 +49,16 @@ void cat(){
 }
 
 
+
 static module modules[] = {
     {"help", "Muestra todos los módulos disponibles del sistema operativo.", help, BUILT_IN},
     {"time", "Muestra la hora actual del sistema.", show_current_time, BUILT_IN},
-    {"eliminator", "Inicia el juego Eliminator, un clásico.", eliminator, BUILT_IN},
     {"zoomin", "Agranda los caracteres en pantalla.", zoom_in, BUILT_IN},
     {"zoomout", "Achica la pantalla.", zoom_out, BUILT_IN},
     {"getregs", "Muestra el estado actual de los registros.", get_regs, BUILT_IN},
     {"dividebyzero", "Genera una excepción de división por cero.", div0, BUILT_IN},
     {"opcode", "Genera una excepción de código de operación inválido.", op_code, BUILT_IN},
     {"clear", "Limpia la pantalla.", (void (*)(char **, uint64_t))libc_clear_screen, BUILT_IN},
-    {"ipod", "Inicia el reproductor de música.", ipod_menu, BUILT_IN},
-    // {"loop", "Crea un proceso que imprime un saludo.", loop_process, !BUILT_IN},
     {"testprio", "Testea las prioridades del scheduler.", test_prio, !BUILT_IN},
     {"kill", "Kills a process given its PID", kill_pid, BUILT_IN},
     {"block", "Hace un swap entre ready y blocked para el proceso pid.", shell_block, BUILT_IN},
@@ -71,10 +69,10 @@ static module modules[] = {
     {"testmm", "Testea el uso del malloc y free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
     {"ps", "Muestra información de los procesos.", libc_ps, !BUILT_IN},	
 	{"ps_loop", "does a ps every few moments", ps_loop, !BUILT_IN},
-	{"phylos", "filosofos hambrientos", phylos, !BUILT_IN},
+	{"phylo", "filosofos hambrientos", phylos, !BUILT_IN},
 	{"cat", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
 	{"loop", "Greets with its pid every specified amount of seconds", loop, !BUILT_IN},
-	{"filter", "Filters the vowels from the input.  DICE PHYLOS", phylos, !BUILT_IN},
+	{"filter", "Filters the vowels from the input.", filter, !BUILT_IN},
 	{"wc", "Counts the number of lines in the input.", wc, !BUILT_IN}
 };
 
@@ -89,7 +87,6 @@ filter: Filters the vowels from the input.
 
 int main()
 {
-
 	libc_set_font_size ( font_size );
 
 	libc_puts ( WELCOME );
@@ -314,12 +311,11 @@ static void interpret()
 				// 	// es un built-in, no puede ir a background
 				// }
 				fds[STDIN] = -1;
-				fds[STDOUT] = -1;
+				//fds[STDOUT] = -1;
 				libc_free(cmd.args[0][cmd.argc[0] - 1]);
 				cmd.argc[0]--;
 			}
-			libc_printf("out %d  err %d in %d\n", fds[0], fds[1], fds[2]);
-			int64_t pid = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
+   			int64_t pid = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
 			if(!is_bckg && pid > 0) {
 				libc_wait(pid, NULL);
 			}else if(is_bckg){
@@ -378,8 +374,8 @@ static void interpret()
 static void kill_pid(char ** argv, uint64_t argc)
 {
 	pid_t pid;
-
-	if (argc != 2 || argv == NULL || ((pid = satoi(argv[1])) < 0)) {
+	int64_t satoi_flag;
+	if (argc != 2 || argv == NULL || ((pid = satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
 		libc_fprintf(STDERR, "Usage: killpid <pid>\n");
 		return;
 	}
@@ -396,7 +392,8 @@ static void shell_wait_pid(char ** args, uint64_t argc){
 		return;
 	}
 	pid_t pid;
-	if((pid=satoi(args[1])) < 0 ){
+	int64_t satoi_flag;
+	if((pid=satoi(args[1], &satoi_flag)) < 0 || !satoi_flag ){
 		libc_fprintf(STDERR, "Error: pid must be positive\n");
 		return;
 	} 
@@ -495,8 +492,9 @@ static void get_regs()
 
 static void shell_nice(char **argv, uint64_t argc) {
     pid_t pid;
-    if (argc != 3 || ((pid = satoi(argv[1])) < 0)) {
-        libc_fprintf(STDERR, "Usage: nice <pid> <new_prio>");
+	int64_t satoi_flag;
+    if (argc != 3 || ((pid = satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
+        libc_fprintf(STDERR, "Usage: nice <pid> <new_prio>\n");
         return;
     }
     priority_t prio;
@@ -510,13 +508,16 @@ static void shell_nice(char **argv, uint64_t argc) {
         libc_fprintf(STDERR, "Invalid priority. Use 'low', 'medium', or 'high' for <newprio>.\n");
         return;
     }
-    libc_nice(pid, prio);
+    if(libc_nice(pid, prio) < 0){
+		libc_fprintf(STDERR, "Error: Couldn't change priority for pid %d.\n", pid);
+	}
 }
 
 
 static void shell_block(char **argv, uint64_t argc){
 	pid_t pid;
-    if (argc != 2 || ((pid = satoi(argv[1])) < 0)) {
+	int64_t satoi_flag;
+    if (argc != 2 || ((pid = satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
         libc_fprintf(STDERR, "Usage: block <pid>");
         return;
     }
@@ -535,7 +536,7 @@ static void shell_block(char **argv, uint64_t argc){
 static void loop_process(char ** argv, uint64_t argc){
 	pid_t pid = libc_get_pid();
 	while(1){
-		sys_nano_sleep((pid^10) + pid*10 + 100);
+		sys_ticks_sleep((pid^10) + pid*10 + 100);
 		libc_printf("\nHello my friend, my pid is %d, I hope you are well\n", pid);
 	}
 }

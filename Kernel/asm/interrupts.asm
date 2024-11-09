@@ -165,7 +165,6 @@ _irq00Handler:
 	mov rdi, 0 ; pasaje de parametro
 	call irq_dispatcher
 
-	;@TODO: STI y CLI?
     mov rdi, rsp
     call scheduler
     mov rsp, rax
@@ -200,9 +199,6 @@ _irq01Handler:
 
     mov rax, [rsp + 18 * 8]
 
-    ;Descomentar para ver que hay en la dir apuntada por RSP:
-    ;mov rbx, [rsp + 18* 8]
-    ;mov rax, [rbx]
 
     mov [regs_shot + 8 * 7 ], rax            ;rsp
 

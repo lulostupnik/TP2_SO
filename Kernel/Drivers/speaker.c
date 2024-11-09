@@ -39,6 +39,6 @@ static void nosound()
 void beep ( uint32_t freq, int time )
 {
 	play_sound ( freq );
-	nano_sleep ( time );
+	ticks_sleep ( time );
 	nosound();
 }

@@ -35,7 +35,7 @@ int64_t sys_call_handler ( stack_registers * regs )
 		case 10:
 			return sys_get_screen_information ( ( screen_information * ) regs->rdi );
 		case 11:
-			return sys_nano_sleep ( regs->rdi );
+			return sys_ticks_sleep ( regs->rdi );
 		case 12:
 			return sys_get_time ( ( time_struct * ) regs->rdi );
 		case 13:
@@ -247,9 +247,9 @@ int64_t sys_clear_screen()
 	} );
 }
 
-int64_t sys_nano_sleep ( uint64_t ns )
+int64_t sys_ticks_sleep ( uint64_t ns )
 {
-	return nano_sleep ( ns );
+	return ticks_sleep ( ns );
 }
 
 
