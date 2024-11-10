@@ -82,7 +82,7 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
   return 0;
 }
 
-uint64_t test_sync(char *argv[], uint64_t argc) { 
+int64_t test_sync(char *argv[], uint64_t argc) { 
   pid_t pids[2 * TOTAL_PAIR_PROCESSES];
 
  
