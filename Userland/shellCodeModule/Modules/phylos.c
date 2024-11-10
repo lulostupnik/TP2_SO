@@ -420,8 +420,6 @@ int64_t phylo(char ** argv, int argc) {
 
     clean_all();
     
-    libc_sem_close(state_mutex); // todo -> cambiar
-
     return 0;
 }
 
