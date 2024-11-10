@@ -12,9 +12,10 @@ void loop(char ** argv, int argc){
         return;
     }
     uint64_t ticks = seconds * 18;
-    while(1){
+	int64_t ans = 1;
+    while(ans > 0){
         libc_ticks_sleep(ticks);
-        libc_printf("Hello! I'm a loop with pid: %d\n", libc_get_pid());
+		ans = libc_printf("Hello! I'm a loop with pid: %d\n", libc_get_pid());
     }
 }
 
@@ -38,7 +39,6 @@ void wc(char ** argv, int argc){
         lines--;
     }
     libc_printf("Lines: %d\n", lines);
-
 	return;
 }
 
@@ -57,6 +57,7 @@ void cat(){
 	while((ans = libc_get_char()) > 0 ){
 		libc_printf("%c", ans);
 	}
+	libc_printf("\n");
 }
 
 

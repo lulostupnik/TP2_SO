@@ -261,7 +261,6 @@ static void interpret()
 			}else if(is_bckg){
 				libc_printf("Pid: %d in background\n", pid);
 			}
-			
 			return;
 		}
 		if(found_idx[1] != -1){
@@ -291,7 +290,7 @@ static void interpret()
 				libc_wait(pid2, NULL);
 				libc_wait(pid1, NULL);
 			}else if(is_bckg){
-				libc_printf("pid: %d in background.\n", pid2);
+				libc_printf("pid: %d and %d in background.\n", pid1, pid2);
 			}
 	
 			return;

@@ -95,8 +95,8 @@ int64_t pipe_read(int64_t id, uint8_t * buffer, uint64_t amount){
 	return i;
 }
 	
-int64_t pipe_write(int64_t id, uint8_t * buffer, uint64_t amount){
-    if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid() || pipes_array[id].was_closed_by_reader){
+int64_t pipe_write(int64_t id, uint8_t * buffer, uint64_t amount, pid_t pid){
+    if( BAD_ID(id) || pipes_array[id].pids[WRITER] != pid || pipes_array[id].was_closed_by_reader){
         return -1;
     }
     int i=0;
@@ -122,28 +122,32 @@ int64_t pipe_write(int64_t id, uint8_t * buffer, uint64_t amount){
 
 
 int64_t pipe_close(int64_t id, pid_t pid){
-    if( BAD_ID(id) || pid >= PCB_AMOUNT || pid < 0){
-        return -1;
-    }
     int flag = -1;
+    if( BAD_ID(id) || pid >= PCB_AMOUNT || pid < 0){
+        return flag;
+    }
+    
   
     if(pipes_array[id].pids[WRITER] == pid){
         uint8_t end_of_file[] = {EOF};
-        pipe_write(id, end_of_file , 1 );           // @todo y si me da -1?????? lcdm
+        pipe_write(id, end_of_file , 1, pid );           // @todo y si me da -1?????? lcdm
         flag = 0;
         pipes_array[id].pids[WRITER] = -1;
     }
     if(pipes_array[id].pids[READER] == pid){
         pipes_array[id].pids[READER] = -1;
-        my_sem_post(pipes_array[id].can_write_sem, 1);
+        my_sem_post_no_yield(pipes_array[id].can_write_sem);
         pipes_array[id].was_closed_by_reader = 1;
         flag = 0;
     }
     if(pipes_array[id].initialized_qtty == 2 && !flag && pipes_array[id].pids[WRITER] == -1 &&  pipes_array[id].pids[READER] == -1){
         pipes_array[id].current_read = pipes_array[id].current_write = pipes_array[id].was_closed_by_reader = 0;        
     }
-    my_sem_close(pipes_array[id].data_available_sem , 1);
-    my_sem_close(pipes_array[id].can_write_sem, 1);
+    if(flag == 0){
+        my_sem_close(pipes_array[id].data_available_sem , 1);
+        my_sem_close(pipes_array[id].can_write_sem, 1);
+    }
+
     return flag;
 }
 

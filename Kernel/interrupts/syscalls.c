@@ -94,7 +94,7 @@ int64_t sys_pipe_write(int64_t id, uint8_t * buffer, uint64_t amount){
 	if(id < 3){
 		return -1;
 	}
-	return pipe_write(id - 3, buffer, amount);
+	return pipe_write(id - 3, buffer, amount, get_pid());
 }
 int64_t sys_pipe_close(int64_t id){
 	if(id < 3){

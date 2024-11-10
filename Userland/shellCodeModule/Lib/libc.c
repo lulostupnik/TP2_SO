@@ -63,96 +63,102 @@ int64_t libc_puts ( const char * str )
 	return sys_write ( STDOUT, str, shared_libc_strlen ( str ) );
 }
 
-int64_t libc_fputc ( char c, uint64_t fd )
-{
-	return sys_write ( fd, &c, 1 ) == -1 ? -1 : 0;
+int64_t libc_fputc(char c, uint64_t fd) {
+    return sys_write(fd, &c, 1) == -1 ? -1 : 1;
 }
 
 #define BUFF_SIZE 64
-static int64_t libc_vfprintf ( uint64_t fd, const char * fmt, va_list argv )
-{
-	uint64_t flag = 0;
-	uint64_t written = 0;
-	char buffer[BUFF_SIZE];
 
+static int64_t libc_vfprintf(uint64_t fd, const char *fmt, va_list argv) {
+    uint64_t flag = 0;
+    int64_t written = 0;
+    char buffer[BUFF_SIZE];
 
-	for ( uint64_t i = 0; fmt[i] != '\0'; i++ ) {
-		if ( fmt[i] == '%' && !flag ) {
-			flag = 1;
-			i++;
-		}
+    for (uint64_t i = 0; fmt[i] != '\0'; i++) {
+        if (fmt[i] == '%' && !flag) {
+            flag = 1;
+            i++;
+        }
 
-		if ( !flag ) {
-			libc_fputc ( fmt[i], fd );
-			flag = 0;
-			written++;
-			continue;
-		}
-	
+        if (!flag) {
+            if (libc_fputc(fmt[i], fd) == -1) {
+                return -1;
+            }
+            flag = 0;
+            written++;
+            continue;
+        }
 
-		switch ( fmt[i] ) {
-			case 'c':
-				libc_fputc ( va_arg ( argv, int ), fd );
-				written++;
-				break;
-			case 'd':
-				written += libc_vfprintf ( fd, libc_num_to_string ( va_arg ( argv, uint64_t ), 10 , buffer, BUFF_SIZE), argv );
-				break;
-			case 'x':
-				written += libc_vfprintf ( fd, "0x", argv );
-				written += libc_vfprintf ( fd, libc_num_to_string ( va_arg ( argv, uint64_t ), 16, buffer, BUFF_SIZE ), argv );
-				break;
-			case 's':
-				written += libc_vfprintf ( fd, va_arg ( argv, char * ), argv );
-				break;
-			case '%':
-				libc_fputc ( '%', fd );
-				written++;
-				break;
-			default:
-				return -1;
-		}
+        switch (fmt[i]) {
+            case 'c':
+                if (libc_fputc(va_arg(argv, int), fd) == -1) {
+                    return -1;
+                }
+                written++;
+                break;
+            case 'd':
+                if ((written += libc_vfprintf(fd, libc_num_to_string(va_arg(argv, uint64_t), 10, buffer, BUFF_SIZE), argv)) == -1) {
+                    return -1;
+                }
+                break;
+            case 'x':
+                if (libc_vfprintf(fd, "0x", argv) == -1 ||
+                    (written += libc_vfprintf(fd, libc_num_to_string(va_arg(argv, uint64_t), 16, buffer, BUFF_SIZE), argv)) == -1) {
+                    return -1;
+                }
+                break;
+            case 's':
+                if ((written += libc_vfprintf(fd, va_arg(argv, char *), argv)) == -1) {
+                    return -1;
+                }
+                break;
+            case '%':
+                if (libc_fputc('%', fd) == -1) {
+                    return -1;
+                }
+                written++;
+                break;
+            default:
+                return -1;
+        }
+        flag = 0;
+    }
 
-		flag = 0;
-	}
-
-	return written;
+    return written;
 }
 
+int64_t libc_fprintf(uint64_t fd, const char *fmt, ...) {
+    va_list argv;
+    va_start(argv, fmt);
 
-int64_t libc_fprintf ( uint64_t fd, const char * fmt, ... )
-{
-	va_list argv;
-	va_start ( argv, fmt );
+    int64_t out = libc_vfprintf(fd, fmt, argv);
 
-	int64_t out = libc_vfprintf ( fd, fmt, argv );
-
-	va_end ( argv );
-	return out;
+    va_end(argv);
+    return out;
 }
 
-int64_t libc_printf ( const char * fmt, ... )
-{
-	va_list argv;
-	va_start ( argv, fmt );
+int64_t libc_printf(const char *fmt, ...) {
+    va_list argv;
+    va_start(argv, fmt);
 
-	int64_t out = libc_vfprintf ( STDOUT, fmt, argv );
+    int64_t out = libc_vfprintf(STDOUT, fmt, argv);
 
-	va_end ( argv );
-	return out;
+    va_end(argv);
+    return out;
 }
+
 
 char * libc_gets ( char * buffer, int n )
 {
 	int c;
 	int i = 0;
 
-	while ( ( c = libc_get_char() ) != '\n' ) {
-		if ( c == '\b' && i > 0 ) {
+	while ( ( c = libc_get_char() ) != '\n'  ) {
+		if ( c == '\b' && i > 0 && c != 0) {
 			libc_put_char ( c );
 			i--;
 		}
-		if ( c != '\b' && i < n - 1 ) {
+		if ( c != '\b' && i < n - 1 && c != 0) {
 			libc_put_char ( c );
 			buffer[i++] = ( char ) c;
 		}
