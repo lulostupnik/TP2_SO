@@ -100,20 +100,7 @@ void unblock_waiting_pcb(PCB * pcb){
 }
 
 
-int64_t make_me_zombie(int64_t retval){
-	PCB * pcb = get_running();
-	if ( (pcb == NULL) || (pcb->status == FREE) ) {
-		return -1;
-	}
-	pcb->ret = retval;
-	unschedule(pcb);
-	pcb->status = ZOMBIE;
 
-
-	unblock_waiting_me();
-	close_fds(pcb);
-	return 0; // todo ¿está bien?
-}
 
 
 PCB * get_running(){

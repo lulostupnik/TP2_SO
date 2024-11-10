@@ -11,7 +11,7 @@ uint64_t amount_of_processes = 0;
 static int64_t find_free_pcb();
 static int64_t set_free_pid(pid_t pid);
 static int64_t set_free_pcb(PCB * process);
-
+static int64_t setup_pipe(pid_t pid, fd_t fds[]);
 
 int8_t get_status(pid_t pid){
 	PCB * process = get_pcb(pid);
@@ -96,23 +96,39 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 		pcb_array[pid].fds[i] = fds ? fds[i]:-1;
 	}
 
-	if(fds){
-		for(int i = 0; i < CANT_FDS; i++){
-			if(fds[i] <= MAX_COMMON_FD){
-				continue;
-			}
-			pipe_mode_t mode = i == STDIN ? READER : WRITER;
-			if(pipe_open_pid(fds[i] - 3, mode, pid) == -1){
-				// my_free((void *)rsp_malloc);   //@TODO que va
-				// pcb_array[pid].status = FREE;
-				// return -1;
-			}
+	if(setup_pipe(pid, fds) == -1){
+		my_free((void *)rsp_malloc);
+		for (uint64_t i = 0; i < pcb_array[pid].argc ; i++) {
+			my_free((void *)pcb_array[pid].argv[i]);
 		}
+		my_free((void * )pcb_array[pid].argv);
+		pcb_array[pid].status = FREE;
+		return -1;
 	}
 
 	ready(&pcb_array[pid]);
 	amount_of_processes++;
 	return pid;
+}
+
+
+static int64_t setup_pipe(pid_t pid, fd_t fds[]){
+	if(!fds){
+		return 0;
+	}
+	for(int i = 0; i < CANT_FDS; i++){
+		if(fds[i] <= MAX_COMMON_FD){
+			continue;
+		}
+		pipe_mode_t mode = i == STDIN ? READER : WRITER;
+		if(pipe_open_pid(fds[i] - 3, mode, pid) == -1){
+			for(int j = 0; j<i ; j++){
+				pipe_close(fds[i] - 3, pid);
+			}
+			return -1;
+		}
+	}	
+	return 0;
 }
 
 static int64_t find_free_pcb()
@@ -143,6 +159,7 @@ static int64_t set_free_pcb(PCB * process)
 	if (process == NULL || process->status == FREE) {
 		return -1;
 	}
+	close_fds(process);
 	
 	my_free((void *)process->lowest_stack_address);
 	if (process->argv == NULL) {
@@ -182,7 +199,6 @@ int64_t kill_process_pcb(PCB * pcb){
 		unsleep_kill(pcb);
 	}
 	
-	close_fds(pcb);
 	sem_delete_from_blocked_queue(pcb);
 	if(set_free_pcb(pcb) != -1){
 		amount_of_processes--;
@@ -298,6 +314,19 @@ void close_fds(PCB * pcb){
 			pipe_close(pcb->fds[i]-CANT_FDS, pcb->pid);
 		}	
 	}
+}
+
+int64_t make_me_zombie(int64_t retval){
+	PCB * pcb = get_running();
+	if ( (pcb == NULL) || (pcb->status == FREE) ) {
+		return -1;
+	}
+	pcb->ret = retval;
+	unschedule(pcb);
+	pcb->status = ZOMBIE;
+	unblock_waiting_me();
+	close_fds(pcb);
+	return 0; 
 }
 
 
