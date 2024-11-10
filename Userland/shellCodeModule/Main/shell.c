@@ -44,7 +44,7 @@ static module modules[] = {
     {"wait", "Waits for the process with the given PID.", shell_wait_pid, BUILT_IN},
     {"nice", "Changes the priority of a process given its PID and the new priority.", shell_nice, BUILT_IN},
 	{"ps", "Displays process information.", ps_program, !BUILT_IN},    
-    {"phylo", "Hungry philosophers problem.", phylos, !BUILT_IN},
+    {"phylo", "Hungry philosophers problem.", phylo, !BUILT_IN},
     {"cat", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
     {"loop", "Greets with its PID every specified number of seconds.", loop, !BUILT_IN},
     {"filter", "Filters vowels from the input.", filter, !BUILT_IN},
