@@ -15,8 +15,8 @@ static void to_utc_minus_3 ( time_struct * time );
 static void free_args(char ** args, uint64_t argc);
 static void free_cmd_args(Command * cmd);
 static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t fds[CANT_FDS]);
-static int64_t piped_command_parse(char shellBuffer[], Command *cmd);
-static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count);
+static int64_t piped_command_parse(char shell_buffer[], Command *cmd);
+static char ** command_parse(char shell_buffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count);
 static void interpret();
 static void zoom_in();
 static void zoom_out();
@@ -117,13 +117,13 @@ static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t
 }
 
 
-static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count) {
+static char ** command_parse(char shell_buffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count) {
     if (argc == NULL || pipe_pos == NULL || pipe_count == NULL) {
         return NULL;
     }
     *pipe_pos = 0;
 
-    if (shellBuffer[0] == '|') {
+    if (shell_buffer[0] == '|') {
         (*pipe_count)++;
         return NULL;
     }
@@ -137,17 +137,17 @@ static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_p
     uint64_t args_count = 0;
     int i = 0;
 
-    while (shellBuffer[i] != '\0') {
-        while (shellBuffer[i] == ' ') {
+    while (shell_buffer[i] != '\0') {
+        while (shell_buffer[i] == ' ') {
             i++;
         }
-        if (shellBuffer[i] == '|') {
+        if (shell_buffer[i] == '|') {
             (*pipe_count)++;
 			*pipe_pos = i + 1;
             break;
         }
 
-        if (shellBuffer[i] == '\0') {
+        if (shell_buffer[i] == '\0') {
             break;
         }
 
@@ -162,8 +162,8 @@ static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_p
         }
 
         int j = 0;
-        while (shellBuffer[i] != ' ' && shellBuffer[i] != '\0' && shellBuffer[i] != '|') {
-            args[args_count][j++] = shellBuffer[i++];
+        while (shell_buffer[i] != ' ' && shell_buffer[i] != '\0' && shell_buffer[i] != '|') {
+            args[args_count][j++] = shell_buffer[i++];
         }
         args[args_count][j] = '\0';
         args_count++;
@@ -179,7 +179,7 @@ static char ** command_parse(char shellBuffer[], uint64_t *argc, int64_t *pipe_p
     return args;
 }
 
-static int64_t piped_command_parse(char shellBuffer[], Command *cmd) {
+static int64_t piped_command_parse(char shell_buffer[], Command *cmd) {
     if (cmd == NULL) {
         return -1;
     }
@@ -188,13 +188,13 @@ static int64_t piped_command_parse(char shellBuffer[], Command *cmd) {
 
     int64_t pipe_pos = -1, pipe_count = 0;
 
-    cmd->args[0] = command_parse(shellBuffer, &cmd->argc[0], &pipe_pos, &pipe_count);
+    cmd->args[0] = command_parse(shell_buffer, &cmd->argc[0], &pipe_pos, &pipe_count);
     if (cmd->args[0] == NULL) {
         return -1;
     }
 
     if (pipe_pos > 0) {
-        cmd->args[1] = command_parse(shellBuffer + pipe_pos, &cmd->argc[1], &pipe_pos, &pipe_count);
+        cmd->args[1] = command_parse(shell_buffer + pipe_pos, &cmd->argc[1], &pipe_pos, &pipe_count);
         if (cmd->args[1] == NULL || cmd->argc[1] == 0) {
 			free_cmd_args(cmd);
             return -1;
@@ -211,14 +211,14 @@ static int64_t piped_command_parse(char shellBuffer[], Command *cmd) {
 static void interpret()
 {
 	libc_puts ( PROMPT );
-	char shellBuffer[MAX_COMMAND_SIZE];
-	libc_gets ( shellBuffer, MAX_COMMAND_SIZE );
-	if ( shared_libc_strlen ( shellBuffer ) == 0 ) {
+	char shell_buffer[MAX_COMMAND_SIZE];
+	libc_gets ( shell_buffer, MAX_COMMAND_SIZE );
+	if ( shared_libc_strlen ( shell_buffer ) == 0 ) {
 		return;
 	}
 	
 	Command cmd;
-	if(piped_command_parse(shellBuffer, &cmd) != 0){
+	if(piped_command_parse(shell_buffer, &cmd) != 0){
 		libc_fprintf ( STDERR, "Invalid Command! Try Again >:(\n" );
 		return;
 	}
