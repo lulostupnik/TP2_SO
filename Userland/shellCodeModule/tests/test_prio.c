@@ -5,7 +5,7 @@
 
 int64_t prio[TOTAL_PROCESSES] = {LOW, MEDIUM, HIGH};
 
-void test_prio()
+int64_t test_prio()
 {
 	pid_t pids[TOTAL_PROCESSES];
 
@@ -51,5 +51,5 @@ void test_prio()
 		libc_kill(pids[i]);
 	}
 	libc_kill(libc_get_pid());
-	return;
+	return 0;
 }

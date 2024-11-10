@@ -10,7 +10,7 @@ typedef struct MM_rq {
 	uint64_t size;
 } mm_rq;
 
-uint64_t test_mm ( char * argv[],  uint64_t argc )
+int64_t test_mm ( char * argv[],  uint64_t argc )
 {
 
 	mm_rq mm_rqs[MAX_BLOCKS];

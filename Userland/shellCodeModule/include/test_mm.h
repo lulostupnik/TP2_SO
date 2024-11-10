@@ -9,7 +9,7 @@
 #include <libc.h>
 
 #define MAX_BLOCKS 100
-uint64_t test_mm ( char * argv[],  uint64_t argc );
+int64_t test_mm ( char * argv[],  uint64_t argc );
 
 
 #endif
