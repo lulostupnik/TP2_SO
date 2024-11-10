@@ -109,9 +109,14 @@ int64_t my_sem_wait(int64_t sem_id, uint8_t is_kernel){
         }
 
         PCB * running_pcb = get_running();
+        
+        if(enqueue(sem_array[sem_id].queue, running_pcb) == -1){
+            release(&sem_array[sem_id].lock); 
+            return -1;
+        }
         block_current_no_yield();
         running_pcb->blocked_by_sem = sem_id;
-        enqueue(sem_array[sem_id].queue, running_pcb);
+   
         release(&sem_array[sem_id].lock); 
         scheduler_yield(); 
         running_pcb->blocked_by_sem = -1;

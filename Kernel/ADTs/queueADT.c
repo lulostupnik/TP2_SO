@@ -30,7 +30,6 @@ queue_adt new_queue()
 
 uint64_t queue_is_empty(queue_adt queue){
     if(queue == NULL){
-        // @todo -> manejar error
         return 1;
     }
     return (queue->size == 0);
@@ -51,7 +50,6 @@ elem_type_ptr dequeue(queue_adt queue){
     return to_return;
 }
 
-//@todo test. 
 int64_t delete_from_queue(queue_adt queue, elem_type_ptr head) {
     if (queue_is_empty(queue)) {
         return -1; 
@@ -88,15 +86,13 @@ int64_t delete_from_queue(queue_adt queue, elem_type_ptr head) {
 
 
 
-void enqueue(queue_adt queue, elem_type_ptr head){
+int64_t enqueue(queue_adt queue, elem_type_ptr head){
     if(queue == NULL){
-        // @todo -> ¿manejar error?
-        return;
+        return -1;
     }
     t_queue new_node = my_malloc(sizeof(*new_node));
     if(new_node == NULL){
-        // @todo -> ¿manejar error?
-        return;
+        return -1;
     }
     new_node->head = head;
     new_node->tail = NULL;
@@ -104,14 +100,15 @@ void enqueue(queue_adt queue, elem_type_ptr head){
         queue->first = new_node;
         queue->last = new_node;
         queue->size++;
-        return;
+        return 0;
     }
     queue->size++;
     queue->last->tail = new_node;
     queue->last = new_node;
+    return 0;
 }
 
-void free_queue(queue_adt queue){ //@todo check mem leak
+void free_queue(queue_adt queue){ 
     if(queue == NULL){
         return;
     }

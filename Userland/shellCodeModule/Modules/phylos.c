@@ -101,7 +101,7 @@ static int64_t num_philosophers = 0;
 
 
 static void think(int i) {
-    libc_ticks_sleep(18 * get_uniform(3));
+    libc_ticks_sleep(THINK_CONSTANT* get_uniform(GET_UNIFORM_CONSTANT));
 }
 
 static void eat(int i) {
@@ -110,7 +110,7 @@ static void eat(int i) {
     display_state();
     libc_sem_post(state_mutex);
     
-    libc_ticks_sleep(3 * 18 * get_uniform(3));
+    libc_ticks_sleep(SLEEP_CONSTANT * get_uniform(GET_UNIFORM_CONSTANT));
 
     libc_sem_wait(state_mutex);
     philos_array[i].state = THINKING;
@@ -189,7 +189,7 @@ static int64_t create_process(int64_t i){
     char philo_num_buff[5];
     char * philo_number_str = itoa(i, philo_num_buff,5,10);
     if(philo_number_str == NULL){
-            //@todo some
+        return -1;
     }
     char *args[] = {"filo" , philo_number_str};
     fd_t fds[CANT_FDS];
@@ -249,8 +249,8 @@ static void add_philosopher() {
 
     int64_t new_sem;
     if((new_sem = libc_sem_open_get_id(1)) < 0){
-        libc_fprintf(STDERR, "Couldn't open sem\n");
-        // todo -> manejar error
+        libc_fprintf(STDERR, "Error: Couldn't open sem to add philosopher\n");
+        return;
     }
     
     libc_sem_wait(num_philos_mutex);

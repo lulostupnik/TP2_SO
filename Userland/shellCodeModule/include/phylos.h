@@ -14,6 +14,9 @@
 #define CONTINUE 1
 #define FINISH 0
 
+#define SLEEP_CONSTANT 3*18
+#define THINK_CONSTANT 18
+#define GET_UNIFORM_CONSTANT 3
 int64_t phylo(char ** argv, int argc);
 
 #endif
