@@ -7,7 +7,7 @@
 #include <stdint.h>
 #include <shared_defs.h>
 
-void my_mm_init ( void * p, uint64_t s );
+void my_mm_init ( void * p );
 void * my_malloc ( uint64_t size );
 void my_free ( void * p );
 int64_t my_mem_info( memory_info * info );

@@ -9,14 +9,12 @@ typedef struct MM_rq {
 } mm_rq;
 
 void * start;
-int size;
 int current;
 void * free_ptrs[BLOCK_COUNT];
 
-void my_mm_init ( void * p, uint64_t s )
+void my_mm_init ( void * p )
 {
 	start = p;
-	size = s;
 
 	for ( int i = 0; i < BLOCK_COUNT; i++ ) {
 		free_ptrs[i] = start + i * BLOCK_SIZE;
@@ -44,7 +42,7 @@ int64_t my_mem_info( memory_info * info )
 	if( info == NULL ) {
 		return -1;
 	}
-	info->total_size = size;
+	info->total_size = HEAP_SIZE;
 	info->free = (BLOCK_COUNT - current) * BLOCK_SIZE;
 	return 0;
 }

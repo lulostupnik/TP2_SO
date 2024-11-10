@@ -60,7 +60,7 @@ void idle_process()
 int main()
 {
 	load_idt();
-	my_mm_init ( heap, HEAP_SIZE );
+	my_mm_init ( heap );
 	char * argv_idle[] = {"idle"};
 	char * argv_shell[] = {"sh"};
 	fd_t idle_fds[3] = {-1, -1, -1};

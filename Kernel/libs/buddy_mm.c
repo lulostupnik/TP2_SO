@@ -32,7 +32,7 @@ int64_t my_mem_info(memory_info *info)
     return 0;
 }
 
-void my_mm_init ( void * p, uint64_t s )
+void my_mm_init ( void * p )
 {
     start = p;
     
