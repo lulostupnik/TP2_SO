@@ -25,6 +25,8 @@
 #define MAX_FONT_SIZE 3
 #define MIN_FONT_SIZE 1
 
+#define BUILTIN_BACKGROUND_ERROR 2
+
 typedef struct module
 {
 	char * name;
