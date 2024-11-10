@@ -268,7 +268,7 @@ static void interpret()
 				free_cmd_args(&cmd);
 				return;
 			}
-			fd_t fd = sys_pipe_reserve();
+			fd_t fd = libc_pipe_reserve();
 			
 			if(fd < 0){
 				libc_fprintf ( STDERR, "Error: Could not open pipe\n" );

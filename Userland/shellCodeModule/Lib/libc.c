@@ -388,3 +388,6 @@ int64_t libc_satoi ( char * str, int64_t * flag )
 	return res * sign;
 }
 
+int64_t libc_pipe_reserve(){
+	return sys_pipe_reserve();
+}
