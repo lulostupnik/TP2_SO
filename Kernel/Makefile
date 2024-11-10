@@ -43,7 +43,8 @@ $(LOADEROBJECT):
 	$(ASM) $(ASMFLAGS) $(LOADERSRC) -o $(LOADEROBJECT)
 
 clean:
-	rm -rf asm/*.o *.o *.bin Drivers/*.o interrupts/*.o libs/*.o tests/*.o ADTs/*.o ../SharedLibs/libs/*.o
+	rm -rf asm/*.o *.o *.bin Drivers/*.o interrupts/*.o libs/*.o tests/*.o ADTs/*.o
+	@if [ -e ../SharedLibs/libs/*.o ]; then rm -rf ../SharedLibs/libs/*.o; fi
 	rm -rf *.elf
 
 .PHONY: all clean

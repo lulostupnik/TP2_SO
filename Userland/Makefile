@@ -14,7 +14,8 @@ clean:
 	cd shellCodeModule; make clean
 	rm -rf *.bin
 	rm -rf *.elf
-	rm ../SharedLibs/libs/*.o
+	@if [ -e ../SharedLibs/libs/*.o ]; then rm -rf ../SharedLibs/libs/*.o; fi
+	
 
 
 .PHONY: shellCodeModule all clean
