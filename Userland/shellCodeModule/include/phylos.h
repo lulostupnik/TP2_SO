@@ -7,7 +7,7 @@
 #include <driversInformation.h>
 #include <shell.h>
 
-#define MAX_PHILOS 12
+#define MAX_PHILOS 15
 #define MIN_PHILOS 5
 #define EATING  1
 #define THINKING  0
