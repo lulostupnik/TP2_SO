@@ -100,7 +100,7 @@ int64_t sys_pipe_close(int64_t id){
 	if(id < 3){
 		return -1;
 	}
-	return pipe_close(id - 3);
+	return pipe_close(id - 3, get_pid());
 }
 int64_t sys_pipe_reserve(){
 	return pipe_reserve() + 3;

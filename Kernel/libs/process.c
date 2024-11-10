@@ -181,7 +181,7 @@ int64_t kill_process_pcb(PCB * pcb){
 	if(pcb->time != 0 || pcb->start != 0){
 		unsleep_kill(pcb);
 	}
-	//falta el sleep. 
+	
 	close_fds(pcb);
 	delete_from_blocked_queue(pcb);
 	if(set_free_pcb(pcb) != -1){
@@ -296,7 +296,7 @@ void close_fds(PCB * pcb){
 	}
 	for(int i=0; i<CANT_FDS ; i++){
 		if(pcb->fds[i] > MAX_COMMON_FD){
-			pipe_close(pcb->fds[i]);
+			pipe_close(pcb->fds[i]-CANT_FDS, pcb->pid);
 		}	
 	}
 }

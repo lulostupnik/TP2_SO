@@ -121,37 +121,12 @@ int64_t pipe_write(int64_t id, uint8_t * buffer, uint64_t amount){
 
 
 
-int64_t pipe_write2(int64_t id, uint8_t * buffer, uint64_t amount){
-    if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid() || pipes_array[id].was_closed_by_reader){
-        return -1;
-    }
-    int i=0;
-    for(; i<amount; i++){
-        pipes_array[id].buffer[pipes_array[id].current_write ++] = buffer[i];
-        if( pipes_array[id].current_write == PIPE_BUFFER_SIZE ){ //checkear caso limite. 
-            my_sem_post(pipes_array[id].data_available_sem,1 );
-            my_sem_wait(pipes_array[id].can_write_sem, 1); //agregar checkeo
-            pipes_array[id].current_write = 0;
-            pipes_array[id].current_read = 0;
-            if( pipes_array[id].was_closed_by_reader ){
-                return -1;
-            }
-        }
-    }
-    if(pipes_array[id].current_write != 0){
-        my_sem_post(pipes_array[id].data_available_sem, 1);
-    }
-    
-    return i;
-}
-
-
-int64_t pipe_close(int64_t id){
-    if( BAD_ID(id) ){
+int64_t pipe_close(int64_t id, pid_t pid){
+    if( BAD_ID(id) || pid >= PCB_AMOUNT || pid < 0){
         return -1;
     }
     int flag = -1;
-    pid_t pid = get_pid();
+  
     if(pipes_array[id].pids[WRITER] == pid){
         uint8_t end_of_file[] = {EOF};
         pipe_write(id, end_of_file , 1 );           // @todo y si me da -1?????? lcdm
