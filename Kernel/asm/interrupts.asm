@@ -105,7 +105,7 @@ SECTION .text
 %macro irqHandlerMaster 1
 	pushState
 
-	mov rdi, %1 ; pasaje de parametro
+	mov rdi, %1 
 	call irq_dispatcher
 
 	; signal pic EOI (End of Interrupt)
@@ -152,7 +152,7 @@ pic_master_mask:
 pic_slave_mask:
 	push    rbp
     mov     rbp, rsp
-    mov     ax, di  ; ax = mascara de 16 bits
+    mov     ax, di  	; ax = 16-bit mask
     out	0A1h,al
     pop     rbp
     retn
@@ -162,14 +162,14 @@ pic_slave_mask:
 _irq00Handler:
 	pushState
 
-	mov rdi, 0 ; pasaje de parametro
+	mov rdi, 0 
 	call irq_dispatcher
 
     mov rdi, rsp
     call scheduler
     mov rsp, rax
 
-	; signal pic EOI (End of Interrupt)
+	
 	mov al, 20h
 	out 20h, al
 
@@ -200,7 +200,7 @@ _irq01Handler:
     mov rax, [rsp + 18 * 8]
 
 
-    mov [regs_shot + 8 * 7 ], rax            ;rsp
+    mov [regs_shot + 8 * 7 ], rax          
 
     mov [regs_shot + 8 * 8 ], r8
     mov [regs_shot + 8 * 9 ], r9
@@ -210,14 +210,13 @@ _irq01Handler:
    	mov [regs_shot + 8 * 13], r13
    	mov [regs_shot + 8 * 14], r14
    	mov [regs_shot + 8 * 15], r15
-   	mov rax, [rsp+15*8]    ; posicion en el stack de la dir. de retorno (valor del rip previo al llamado de la interrupcion)
+   	mov rax, [rsp+15*8]    
    	mov [regs_shot + 8 * 16], rax
 
    	mov rax, 1
-    mov [regs_shot_available], rax          ; tenemos un snapshot de los registros
+    mov [regs_shot_available], rax          
 
 .keyboard_end:
-	; signal pic EOI (End of Interrupt)
 	mov al, 20h
 	out 20h, al
 
@@ -267,10 +266,8 @@ _irq80Handler:
 	mov [exception_regs + 8*4 ], rsi
 	mov [exception_regs + 8*5 ], rdi
 	mov [exception_regs + 8*6 ], rbp
-	; mov rax, rsp
-    ; add rax, 16 * 8                     ; RSP del contexto anterior
     mov rax, [rsp + 18 * 8]
-	mov [exception_regs + 8*7 ], rax	;
+	mov [exception_regs + 8*7 ], rax	
 	mov [exception_regs + 8*8 ], r8
 	mov [exception_regs + 8*9 ], r9
 	mov [exception_regs + 8*10], r10
@@ -279,21 +276,21 @@ _irq80Handler:
 	mov [exception_regs + 8*13], r13
 	mov [exception_regs + 8*14], r14
 	mov [exception_regs + 8*15], r15
-	mov rax, [rsp+15*8]                     ;RIP del contexto anterior
+	mov rax, [rsp+15*8]                     ;RIP of the previous context
 	mov [exception_regs + 8*16], rax
 	mov rax, [rsp+17*8]                     ; RFLAGS
 	mov [exception_regs + 8*17], rax
 
-	mov rdi, %1                             ; Parametros para exception_dispatcher
+	mov rdi, %1                             ; Parameters for exception_dispatcher
 	mov rsi, exception_regs
 
 	call exception_dispatcher
 
 	popState
     call get_stack_base
-	mov [rsp+24], rax ; El StackBase
+	mov [rsp+24], rax 						; StackBase
     mov rax, userland
-    mov [rsp], rax ; PISO la dirección de retorno
+    mov [rsp], rax 							; OVERWRITE the return address
 
     sti
     iretq
@@ -319,10 +316,10 @@ SECTION .bss
 
 
 SECTION .data
-    regs_shot dq 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ; 17 zeros
-    regs_shot_available dq 0 ; flag para saber si hay un regs_shot disponible
-    exception_regs dq 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ; 18 zeros
-	; %define REGS_AMOUNT 17
+    regs_shot dq 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 			; 17 zeros
+    regs_shot_available dq 0 												; flag to check if a regs_shot is available
+    exception_regs dq 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 	; 18 zeros
+
 
 SECTION .rodata
 userland equ 0x400000

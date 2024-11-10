@@ -75,7 +75,7 @@ int64_t pipe_read(int64_t id, uint8_t * buffer, uint64_t amount){
     }
     int max_write = pipes_array[id].current_write;
     
-    while ( i < amount && (pipes_array[id].current_read < max_write) && pipes_array[id].buffer[pipes_array[id].current_read] != EOF  ) { // race condition?? @todo test.....
+    while ( i < amount && (pipes_array[id].current_read < max_write) && pipes_array[id].buffer[pipes_array[id].current_read] != EOF  ) {
         buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read++];
 	}
     
@@ -135,13 +135,12 @@ int64_t pipe_close(int64_t id, pid_t pid){
         flag = 0;
     }
     if(pipes_array[id].initialized_qtty == 2 && !flag && pipes_array[id].pids[WRITER] == -1 &&  pipes_array[id].pids[READER] == -1){
-        pipes_array[id].current_read = pipes_array[id].current_write = pipes_array[id].was_closed_by_reader = 0;        
+        pipes_array[id].current_read = pipes_array[id].current_write = pipes_array[id].was_closed_by_reader = pipes_array[id].reserved = 0 ;        
     }
     if(flag == 0){
         my_sem_close(pipes_array[id].data_available_sem , 1);
         my_sem_close(pipes_array[id].can_write_sem, 1);
     }
-
     return flag;
 }
 

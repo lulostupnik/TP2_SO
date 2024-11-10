@@ -23,9 +23,6 @@
 
 typedef int (*main_function)(char ** argv, uint64_t argc);
 
-// extern uint64_t amount_of_processes;
-
-
 int64_t new_process(main_function rip, priority_t priority, uint8_t killable, char ** argv, uint64_t argc, fd_t fds[]);
 PCB * get_pcb(pid_t pid);
 void list_processes();
@@ -37,4 +34,5 @@ int8_t get_status(pid_t pid);
 void free_ps(process_info_list * ps);
 void close_fds(PCB * pcb);
 void ctrl_c_handler();
+int64_t make_me_zombie(int64_t retval);
 #endif
