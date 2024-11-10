@@ -18,7 +18,8 @@ static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t
 static int64_t piped_command_parse(char shell_buffer[], Command *cmd);
 static char ** command_parse(char shell_buffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count);
 static void interpret();
-
+static void help();
+static void show_current_time();
 static void show_current_time();
 static void get_regs();
 static void shell_wait_pid(char ** args, uint64_t argc);
@@ -40,15 +41,15 @@ static module modules[] = {
     {"block", " <PID>: ", "Swaps between ready and blocked state for the given PID.", shell_block, BUILT_IN},
     {"wait", " <PID>: ", "Waits for the process with the given PID.", shell_wait_pid, BUILT_IN},
     {"nice", " <PID> <new_priority>: ", "Changes the priority of a process given its PID and the new priority.", shell_nice, BUILT_IN},
-    {"ps", "", "Displays process information.", ps_program, !BUILT_IN},    
+    {"ps", "", "Displays process information.",(void (*)(char **, uint64_t)) ps_program, !BUILT_IN},    
     {"phylo", "", "Hungry philosophers problem.", (void (*)(char **, uint64_t)) phylo, !BUILT_IN},
-    {"cat", "", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
-    {"loop", " <sleep_ticks>: ", "Greets with its PID every specified number of seconds.", loop, !BUILT_IN},
-    {"filter", "", "Filters vowels from the input.", filter, !BUILT_IN},
-    {"wc", "", "Counts the number of lines in the input.", wc, !BUILT_IN},
-    {"mem", "", "Displays the memory status.", mem, !BUILT_IN},
+    {"cat", "", "Prints the stdin exactly as it is received.", (void (*)(char **, uint64_t)) cat, !BUILT_IN},
+    {"loop", " <sleep_ticks>: ", "Greets with its PID every specified number of seconds.", (void (*)(char **, uint64_t)) loop, !BUILT_IN},
+    {"filter", "", "Filters vowels from the input.", (void (*)(char **, uint64_t)) filter, !BUILT_IN},
+    {"wc", "", "Counts the number of lines in the input.", (void (*)(char **, uint64_t)) wc, !BUILT_IN},
+    {"mem", "", "Displays the memory status.", (void (*)(char **, uint64_t)) mem, !BUILT_IN},
     {"testproc", " <max_processes>: ", "Tests process creation.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
-    {"testsync", " <n> <use_sem (0 for false, other int for true)>: ", "Tests process synchronization.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
+    {"testsync", " <n> <use_sem (0 for false, other integer for true)>: ", "Tests process synchronization.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
     {"testmm", " <max_memory>: ", "Tests the use of malloc and free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
     {"testprio", "", "Tests the scheduler priorities.", test_prio, !BUILT_IN},
 };
@@ -299,8 +300,6 @@ static void interpret()
 
 }
 
-
-
 static void kill_pid(char ** argv, uint64_t argc)
 {
 	pid_t pid;
@@ -338,7 +337,7 @@ static void shell_wait_pid(char ** args, uint64_t argc){
 	return;
 }
 
-void help(char **args, uint64_t argc) {
+static void help() {
 	libc_printf("\n\n-------------------------------                      Built-in functions                      -----------------------------------\n\n");
     for (int i = 0; i < MAX_MODULES; i++) {
 		if(i == NUM_BUILT_INS){
@@ -347,14 +346,14 @@ void help(char **args, uint64_t argc) {
         if(i == MAX_MODULES-NUM_TESTS){
 			libc_printf("\n\n-------------------------------                      Functionality tests                      ----------------------------------\n\n");
 		}
-		libc_printf("- %s%s%s%s\n", modules[i].name, modules[i].args == "" ? ": ":"",modules[i].args, modules[i].desc);
+		libc_printf("- %s%s%s%s\n", modules[i].name, libc_strcmp(modules[i].args,"") == 0 ? ": ":"",modules[i].args, modules[i].desc);
     }
 	libc_printf("-------------------------------                                                              -----------------------------------\n\n");
 }
 
 
 
-void show_current_time()
+static void show_current_time()
 {
 	time_struct time;
 	libc_get_time ( &time );
