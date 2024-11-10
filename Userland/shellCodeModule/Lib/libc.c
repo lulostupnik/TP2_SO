@@ -153,7 +153,7 @@ char * libc_gets ( char * buffer, int n )
 	int i = 0;
 
 	while ( ( c = libc_get_char() ) != '\n'  ) {
-		if ( c == '\b' && i > 0 && c != 0) {
+		if ( c == '\b' && i > 0 ) {
 			libc_put_char ( c );
 			i--;
 		}

@@ -1,13 +1,14 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #ifdef BUDDY
 #include <memory_management.h>
 
-#define GET_SIBLING(i) (i % 2 ? i + 1 : i - 1)
-#define GET_PARENT(i) ((i - 1) / 2) // todo check
+#define GET_SIBLING(i) (((i) % 2) ? ((i) + 1) : ((i) - 1))
+#define GET_PARENT(i) (((i) - 1) / 2) // todo check
 
 #define MAX_MEM_SIZE HEAP_SIZE 
 #define MIN_BLOCK_SIZE BLOCK_SIZE 
 
-#define TREE_BIT_MAP_SIZE (((MAX_MEM_SIZE / MIN_BLOCK_SIZE) / 8) * 2)
 
 #define TREE_BIT_MAP_SIZE (((MAX_MEM_SIZE / MIN_BLOCK_SIZE)) * 2)
 

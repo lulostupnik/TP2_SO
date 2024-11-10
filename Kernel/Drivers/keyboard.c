@@ -202,7 +202,7 @@ void keyboard_handler()
 
 	function_key_handler ( code );
 	
-	if(!is_special_key(code) && special_key_pressed(LEFT_CONTROL) && key_is_pressed){
+	if(!is_special_key(code) && special_key_pressed(LEFT_CONTROL)){
 		if(code == 'D' || code == 'd'){
 			code = EOF;
 		}else if(code == 'c' || code == 'C'){
@@ -210,7 +210,7 @@ void keyboard_handler()
 			return;
 		}
 	}
-	if(is_special_key(code) || code < 0 || code > LAST_ASCII){
+	if(is_special_key(code) || code > LAST_ASCII){
 		return;
 	}
 

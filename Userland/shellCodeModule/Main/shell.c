@@ -229,7 +229,7 @@ static void interpret()
 	int found_idx[2] = {-1,-1};
 	int look_for_max = has_pipe ? 2:1;
 	for(int j = 0; j < look_for_max ; j++){
-		for ( int i = 0; i < MAX_MODULES && ((cmd.args[j] != NULL) || (cmd.argc[j] != 0)); i++ ) {
+		for ( int i = 0; i < MAX_MODULES && ((cmd.args[j] != NULL) && (cmd.argc[j] != 0)); i++ ) {
 			if ( libc_strcmp (cmd.args[j][0], modules[i].name ) == 0 ) {
 			found_idx[j] = i;
 			break;
@@ -445,7 +445,7 @@ static void shell_block(char **argv, uint64_t argc){
 	}
 	if(status == BLOCKED){
 		libc_unblock(pid);
-	}else if(status == READY){
+	}else{
 		libc_block(pid);
 	}
 }

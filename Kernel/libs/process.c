@@ -311,7 +311,7 @@ void ctrl_c_handler(){
 
 	//primero se hace wait al de la derecha del pipe.
 	PCB * other_process_in_pipe = NULL;
-	if(foreground_process != NULL && foreground_process->fds[STDIN] > MAX_COMMON_FD){
+	if(foreground_process->fds[STDIN] > MAX_COMMON_FD){
 		other_process_in_pipe = get_pcb(pipe_get_pid(foreground_process->fds[STDIN]-3, WRITER));
 	}
 	kill_process_pcb(foreground_process);
