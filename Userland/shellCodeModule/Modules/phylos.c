@@ -101,7 +101,7 @@ static int64_t num_philosophers = 0;
 
 
 static void think(int i) {
-    libc_ticks_sleep(THINK_CONSTANT* get_uniform(GET_UNIFORM_CONSTANT));
+    libc_sleep(THINK_CONSTANT * get_uniform(GET_UNIFORM_CONSTANT));
 }
 
 static void eat(int i) {
@@ -110,7 +110,7 @@ static void eat(int i) {
     display_state();
     libc_sem_post(state_mutex);
     
-    libc_ticks_sleep(SLEEP_CONSTANT * get_uniform(GET_UNIFORM_CONSTANT));
+    libc_sleep(SLEEP_CONSTANT * get_uniform(GET_UNIFORM_CONSTANT));
 
     libc_sem_wait(state_mutex);
     philos_array[i].state = THINKING;

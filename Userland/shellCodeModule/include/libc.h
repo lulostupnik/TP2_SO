@@ -45,6 +45,7 @@ int64_t libc_sem_wait ( int64_t sem_id );
 int64_t libc_sem_post ( int64_t sem_id );
 int64_t libc_sem_close ( int64_t sem_id );
 int64_t libc_ticks_sleep ( uint64_t ticks );
+int64_t libc_sleep(uint64_t seconds);
 int8_t libc_get_status(pid_t pid);
 int64_t libc_pipe_open(int64_t id, pipe_mode_t mode);
 int64_t libc_pipe_open_free(pipe_mode_t mode);

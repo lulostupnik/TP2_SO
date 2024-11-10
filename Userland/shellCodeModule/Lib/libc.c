@@ -353,6 +353,9 @@ int64_t libc_ticks_sleep ( uint64_t ticks ){
 	return sys_ticks_sleep(ticks);
 }
 
+int64_t libc_sleep(uint64_t seconds){
+	return libc_ticks_sleep(seconds * 18);
+}
 
 int64_t libc_satoi ( char * str, int64_t * flag )
 {
