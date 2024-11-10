@@ -6,18 +6,14 @@
 char libc_get_char()
 {
     int64_t ans = 0;
-	uint16_t c = 0;
-	char flag = 0;
-    do {
-        ans = sys_read( &c, 1);  
-    } while (ans != 0 && c > 255);   
-	
-    return ans == 0 ? ans : (char) c;
+	uint8_t c = 0;
+	ans = sys_read( &c, 1);  
+    return ans <= 0 ? 0 : (char) c;
 }
 
 void libc_put_char ( char c )
 {
-	sys_write ( STDOUT, &c, 1 );
+	sys_write ( STDOUT, (uint8_t *) &c, 1 );
 }
 
 int64_t libc_beep ( uint64_t frequency, uint64_t duration )
@@ -58,18 +54,21 @@ char * libc_num_to_string(uint64_t num, uint64_t base, char *buffer, size_t buff
     return ptr;  
 }
 
-int64_t libc_puts ( const char * str )
+int64_t libc_puts (  char * str )
 {
-	return sys_write ( STDOUT, str, shared_libc_strlen ( str ) );
+	return sys_write ( STDOUT, (uint8_t * )str, shared_libc_strlen ( str ) );
 }
 
 int64_t libc_fputc(char c, uint64_t fd) {
-    return sys_write(fd, &c, 1) == -1 ? -1 : 1;
+	if(c < 0){
+		return -1;
+	}
+    return sys_write(fd, (uint8_t * ) &c, 1) == -1 ? -1 : 1;
 }
 
 #define BUFF_SIZE 64
 
-static int64_t libc_vfprintf(uint64_t fd, const char *fmt, va_list argv) {
+static int64_t libc_vfprintf(uint64_t fd, char *fmt, va_list argv) {
     uint64_t flag = 0;
     int64_t written = 0;
     char buffer[BUFF_SIZE];
@@ -127,7 +126,7 @@ static int64_t libc_vfprintf(uint64_t fd, const char *fmt, va_list argv) {
     return written;
 }
 
-int64_t libc_fprintf(uint64_t fd, const char *fmt, ...) {
+int64_t libc_fprintf(uint64_t fd, char *fmt, ...) {
     va_list argv;
     va_start(argv, fmt);
 
@@ -137,7 +136,7 @@ int64_t libc_fprintf(uint64_t fd, const char *fmt, ...) {
     return out;
 }
 
-int64_t libc_printf(const char *fmt, ...) {
+int64_t libc_printf( char *fmt, ...) {
     va_list argv;
     va_start(argv, fmt);
 
@@ -154,7 +153,7 @@ char * libc_gets ( char * buffer, int n )
 	int i = 0;
 
 	while ( ( c = libc_get_char() ) != '\n'  ) {
-		if ( c == '\b' && i > 0 && c != 0) {
+		if ( c == '\b' && i > 0 ) {
 			libc_put_char ( c );
 			i--;
 		}
@@ -170,7 +169,7 @@ char * libc_gets ( char * buffer, int n )
 }
 
 
-int64_t libc_strcmp ( const char * str1, const char * str2 )
+int64_t libc_strcmp (  char * str1,  char * str2 )
 {
 	while ( *str1 && ( *str1 == *str2 ) ) {
 		str1++;
@@ -179,7 +178,7 @@ int64_t libc_strcmp ( const char * str1, const char * str2 )
 	return * ( unsigned char * ) str1 - * ( unsigned char * ) str2;
 }
 
-int64_t libc_strnocasecmp(const char *str1, const char *str2) {
+int64_t libc_strnocasecmp( char *str1,  char *str2) {
     while (*str1 && *str2) {
         char c1 = *str1;
         char c2 = *str2;

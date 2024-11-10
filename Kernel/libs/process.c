@@ -183,7 +183,7 @@ int64_t kill_process_pcb(PCB * pcb){
 	}
 	
 	close_fds(pcb);
-	delete_from_blocked_queue(pcb);
+	sem_delete_from_blocked_queue(pcb);
 	if(set_free_pcb(pcb) != -1){
 		amount_of_processes--;
 	}
@@ -242,13 +242,12 @@ void get_process_info(PCB * pcb, process_info * process)
 	process->lowest_stack_address = pcb->lowest_stack_address;
 	process->status = pcb->status;
 	process->is_background = !is_foreground(pcb);
-	PCB * pcb2;
 	
 	
 	
 
 	for(int i = 0; i < 3; i++){
-		process->fds[i] = pcb->fds ? pcb->fds[i] : -1;
+		process->fds[i] = pcb->fds[i] ? pcb->fds[i] : -1;
 	}
 }
 
@@ -312,7 +311,7 @@ void ctrl_c_handler(){
 
 	//primero se hace wait al de la derecha del pipe.
 	PCB * other_process_in_pipe = NULL;
-	if(foreground_process != NULL && foreground_process->fds[STDIN] > MAX_COMMON_FD){
+	if(foreground_process->fds[STDIN] > MAX_COMMON_FD){
 		other_process_in_pipe = get_pcb(pipe_get_pid(foreground_process->fds[STDIN]-3, WRITER));
 	}
 	kill_process_pcb(foreground_process);

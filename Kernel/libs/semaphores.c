@@ -1,3 +1,5 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <semaphores.h>
 
 
@@ -89,7 +91,6 @@ static int64_t open_id_after_acquire(int64_t sem_id, int value, uint8_t is_kerne
 
 int64_t my_sem_wait(int64_t sem_id, uint8_t is_kernel){
 
-
     if(!is_valid_id(sem_id, is_kernel)){
         return -1;
     }
@@ -108,12 +109,18 @@ int64_t my_sem_wait(int64_t sem_id, uint8_t is_kernel){
         }
 
         PCB * running_pcb = get_running();
+        
+        if(enqueue(sem_array[sem_id].queue, running_pcb) == -1){
+            release(&sem_array[sem_id].lock); 
+            return -1;
+        }
         block_current_no_yield();
         running_pcb->blocked_by_sem = sem_id;
-        enqueue(sem_array[sem_id].queue, running_pcb);
+   
         release(&sem_array[sem_id].lock); 
         scheduler_yield(); 
         running_pcb->blocked_by_sem = -1;
+        return 0;
 }
 
 
@@ -147,7 +154,7 @@ int64_t my_sem_close(int64_t sem_id, uint8_t is_kernel){
 
 
 
-int64_t delete_from_blocked_queue(PCB * pcb){
+int64_t sem_delete_from_blocked_queue(PCB * pcb){
     
     if( pcb == NULL){
         return -1;

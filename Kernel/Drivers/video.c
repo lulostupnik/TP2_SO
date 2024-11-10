@@ -126,7 +126,7 @@ int64_t vdriver_set_mode ( uint64_t mode, color c )
 }
 
 
-int64_t vdriver_text_write ( uint64_t fd, const char * buffer, int64_t amount )
+int64_t vdriver_text_write ( uint64_t fd,  char * buffer, int64_t amount )
 {
 	if ( !in_text_mode() ) {
 		return 0;

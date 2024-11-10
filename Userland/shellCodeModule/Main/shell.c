@@ -18,8 +18,7 @@ static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t
 static int64_t piped_command_parse(char shell_buffer[], Command *cmd);
 static char ** command_parse(char shell_buffer[], uint64_t *argc, int64_t *pipe_pos, int64_t *pipe_count);
 static void interpret();
-static void zoom_in();
-static void zoom_out();
+
 static void show_current_time();
 static void get_regs();
 static void shell_wait_pid(char ** args, uint64_t argc);
@@ -44,7 +43,7 @@ static module modules[] = {
     {"wait", "Waits for the process with the given PID.", shell_wait_pid, BUILT_IN},
     {"nice", "Changes the priority of a process given its PID and the new priority.", shell_nice, BUILT_IN},
 	{"ps", "Displays process information.", ps_program, !BUILT_IN},    
-    {"phylo", "Hungry philosophers problem.", phylo, !BUILT_IN},
+    {"phylo", "Hungry philosophers problem.", (void (*)(char **, uint64_t)) phylo, !BUILT_IN},
     {"cat", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
     {"loop", "Greets with its PID every specified number of seconds.", loop, !BUILT_IN},
     {"filter", "Filters vowels from the input.", filter, !BUILT_IN},
@@ -105,7 +104,7 @@ static int64_t call_function_process(module m, char ** args, uint64_t argc, fd_t
 	if (m.is_built_in) {
 		m.function(args, argc);
 		free_args(args, argc);
-		return;
+		return 0;
 	}
 	int64_t ans = libc_create_process((main_function)m.function, LOW, args, argc, fds);
 	
@@ -247,7 +246,7 @@ static void interpret()
 	int found_idx[2] = {-1,-1};
 	int look_for_max = has_pipe ? 2:1;
 	for(int j = 0; j < look_for_max ; j++){
-		for ( int i = 0; i < MAX_MODULES && ((cmd.args[j] != NULL) || (cmd.argc[j] != 0)); i++ ) {
+		for ( int i = 0; i < MAX_MODULES && ((cmd.args[j] != NULL) && (cmd.argc[j] != 0)); i++ ) {
 			if ( libc_strcmp (cmd.args[j][0], modules[i].name ) == 0 ) {
 			found_idx[j] = i;
 			break;
@@ -375,30 +374,6 @@ void help(char **args, uint64_t argc) {
 
 
 
-static void zoom_in()
-{
-	if ( font_size < MAX_FONT_SIZE ) {
-		font_size++;
-		libc_set_font_size ( font_size );
-	} else {
-		libc_puts ( "Maximum font size reached!\n" );
-	}
-	return;
-}
-
-
-void zoom_out()
-{
-	if ( font_size > MIN_FONT_SIZE ) {
-		font_size--;
-		libc_set_font_size ( font_size );
-	} else {
-		libc_puts ( "Minimum font size reached!\n" );
-	}
-	return;
-}
-
-
 void show_current_time()
 {
 	time_struct time;
@@ -487,7 +462,7 @@ static void shell_block(char **argv, uint64_t argc){
 	}
 	if(status == BLOCKED){
 		libc_unblock(pid);
-	}else if(status == READY){
+	}else{
 		libc_block(pid);
 	}
 }

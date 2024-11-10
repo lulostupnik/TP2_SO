@@ -13,6 +13,8 @@
 #include <kernel_libc.h>
 #include <driversInformation.h>
 #include <pipe.h>
+#include <keyboard.h>
+#include <time.h>
 
 #define PCB_AMOUNT 100
 

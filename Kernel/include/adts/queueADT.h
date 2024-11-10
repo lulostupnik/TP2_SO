@@ -13,7 +13,8 @@ typedef int (*t_compare)(elem_type_ptr e1, elem_type_ptr e2);
 queue_adt new_queue();
 uint64_t queue_is_empty(queue_adt queue);
 elem_type_ptr dequeue(queue_adt queue);
-void enqueue(queue_adt queue, elem_type_ptr value);
+int64_t enqueue(queue_adt queue, elem_type_ptr value);
 void free_queue(queue_adt queue);
+int64_t delete_from_queue(queue_adt queue, elem_type_ptr head);
 
 #endif

@@ -1,5 +1,6 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <pipe.h>
-
 #define BAD_ID(id) (((id) < 0) || ((id) >= AMOUNT_OF_PIPES))
 
 
@@ -82,7 +83,6 @@ int64_t pipe_read(int64_t id, uint8_t * buffer, uint64_t amount){
         sem_post_if_value_is_zero(pipes_array[id].data_available_sem,1);
     }
     if(pipes_array[id].current_read == PIPE_BUFFER_SIZE ){
-        process_info_list * p = sys_ps();
         my_sem_post(pipes_array[id].can_write_sem, 1);
     }
    
