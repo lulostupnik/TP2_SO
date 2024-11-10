@@ -36,8 +36,10 @@ GLOBAL sys_pipe_close
 GLOBAL sys_pipe_reserve
 GLOBAL sys_sem_open_get_id
 GLOBAL sys_get_my_fds
+GLOBAL sys_mem_info
 
 section .text
+
 
 %macro pushState 0
     push rax
@@ -55,6 +57,7 @@ section .text
     push r14
     push r15
 %endmacro
+
 
 %macro popState 0
     pop r15
@@ -88,6 +91,7 @@ section .text
 
 %endmacro
 
+
 %macro popStateMinusRax 0
     pop r15
     pop r14
@@ -106,7 +110,6 @@ section .text
         mov rax, %1
         int 80h
 %endmacro
-
 
 
 %macro simple_sys_handler 1
@@ -185,6 +188,7 @@ sys_nice:
 
 sys_kill:
     simple_sys_handler 21
+
 sys_wait:
     simple_sys_handler 22
 
@@ -205,6 +209,7 @@ sys_sem_close:
 
 sys_ps:
     simple_sys_handler 27
+
 sys_free_ps:
     simple_sys_handler 28
 
@@ -213,12 +218,16 @@ sys_get_status:
 
 sys_pipe_open:
     simple_sys_handler 30
+
 sys_pipe_open_free:
     simple_sys_handler 31
+
 sys_pipe_read:
     simple_sys_handler 32
+
 sys_pipe_write:
     simple_sys_handler 33
+
 sys_pipe_close:
     simple_sys_handler 34
 
@@ -227,5 +236,9 @@ sys_pipe_reserve:
 
 sys_sem_open_get_id:
     simple_sys_handler 36
+
 sys_get_my_fds:
     simple_sys_handler 37
+
+sys_mem_info:
+    simple_sys_handler 38

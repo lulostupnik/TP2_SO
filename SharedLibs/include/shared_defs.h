@@ -68,6 +68,10 @@ typedef struct process_info_list {
 	process_info * processes;
 } process_info_list;
 
+typedef struct memory_info {
+	uint64_t total_size;
+	uint64_t free;
+} memory_info;
 
 #define FREE 0  
 #define READY 1

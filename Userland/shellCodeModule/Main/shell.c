@@ -49,7 +49,7 @@ static module modules[] = {
     {"loop", "Greets with its PID every specified number of seconds.", loop, !BUILT_IN},
     {"filter", "Filters vowels from the input.", filter, !BUILT_IN},
     {"wc", "Counts the number of lines in the input.", wc, !BUILT_IN},
-	{"mem", "Displays the memory status. (HACE WC POR AHORA)", wc, !BUILT_IN},
+	{"mem", "Displays the memory status.", mem, !BUILT_IN},
 	{"testproc", "Tests process creation.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
     {"testsync", "Tests process synchronization.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
     {"testmm", "Tests the use of malloc and free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},

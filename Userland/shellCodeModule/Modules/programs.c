@@ -108,3 +108,13 @@ void ps_program(){
     }
 	sys_free_ps(process_list);
 }
+
+void mem(){
+	memory_info info;
+	if(sys_mem_info(&info) == -1){
+		libc_fprintf(STDERR, "Error while getting memory info\n");
+		return;
+	}
+	libc_printf("Total memory: %x\n", info.total_size);
+	libc_printf("Free memory: %x\n", info.free);
+}

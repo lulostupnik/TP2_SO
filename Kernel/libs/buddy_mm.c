@@ -11,6 +11,7 @@
 
 #define TREE_BIT_MAP_SIZE (((MEM_SIZE / MIN_BLOCK_SIZE)) * 2)
 
+uint64_t free_mem = MEM_SIZE;
 
 int next_power_of_2(int n);
 int get_index_level(int index);
@@ -22,15 +23,23 @@ char tree_bitmap[TREE_BIT_MAP_SIZE]; // 2 bits por bloque = 256MB / 4KB * 2 = 12
 // char * tree_bitmap;
 void *start;
 
+int64_t my_mem_info(memory_info *info)
+{
+    if(info == NULL){
+        return -1;
+    }
+    info->total_size = MEM_SIZE;
+    info->free = free_mem;
+    return 0;
+}
+
 void my_mm_init ( void * p, uint64_t s )
 {
     start = p;
-    // memset(tree_bitmap, 0, TREE_BIT_MAP_SIZE);
+    
 	for(int i = 0; i < TREE_BIT_MAP_SIZE; i++){
 		tree_bitmap[i] = 0;
 	}
-    // printf("tree_bitmap: %p\n", tree_bitmap);
-    // malloc?
 }
 
 void *my_alloc(int index, int level)
@@ -69,15 +78,24 @@ void * my_malloc ( uint64_t size )
     int real_size = npo2 >= MIN_BLOCK_SIZE ? npo2 : MIN_BLOCK_SIZE;
     int level = get_size_level(real_size);
 
-    return my_alloc(0, level);
+    void * ptr = my_alloc(0, level);
+    if(ptr != NULL){
+        free_mem -= real_size;
+    }
+
+    return ptr;
 }
 
-void my_free_idx(int index)
+void my_free_idx(int index, int * flag, int n)
 {
     if (index == 0)
     {
         tree_bitmap[index] = 0;
         return;
+    }
+    if(tree_bitmap[index] == 1 && !(*flag)){
+        free_mem += MIN_BLOCK_SIZE * n;
+        *flag = 1;
     }
     tree_bitmap[index] = 0;
 
@@ -85,7 +103,7 @@ void my_free_idx(int index)
     {
         return;
     }
-    my_free_idx(GET_PARENT(index));
+    my_free_idx(GET_PARENT(index), flag, n * 2 );
 }
 
 void my_free ( void * p )
@@ -96,7 +114,9 @@ void my_free ( void * p )
     }
 
     int index = ((p - start) / MIN_BLOCK_SIZE) + MEM_SIZE / MIN_BLOCK_SIZE - 1; // arrancamos por el bloque de granularidad maxima
-    my_free_idx(index);
+    int flag = 0;
+    int n = 1;
+    my_free_idx(index, &flag, n);
 }
 
 int next_power_of_2(int n)
