@@ -3,11 +3,6 @@
 #ifdef FROM_SCRATCH
 #include <memory_management.h>
 
-typedef struct MM_rq {
-	void * address;
-	uint32_t size;
-} mm_rq;
-
 void * start;
 int current;
 void * free_ptrs[BLOCK_COUNT];

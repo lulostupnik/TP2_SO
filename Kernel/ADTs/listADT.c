@@ -6,7 +6,6 @@
 
 
 
-
 typedef struct node {
 	elem_type_ptr head;
 	struct node * tail;
@@ -19,6 +18,8 @@ struct list_cdt {
 	size_t size;
 	t_compare cmp;
 };
+
+
 
 list_adt new_list(t_compare cmp)
 {

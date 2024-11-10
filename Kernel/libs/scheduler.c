@@ -12,6 +12,8 @@ static PCB * idle_pcb;
 static int initialized = 0;
 static PCB * shell_pcb;
 
+
+
 int compare_elements(elem_type_ptr e1, elem_type_ptr e2)
 {
 	return e1 - e2;
