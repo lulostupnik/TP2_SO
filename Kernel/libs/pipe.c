@@ -1,9 +1,3 @@
-
-//  Si la shell se bloquea y hay otro proceso en foreground --> este proceso tiene el pipe abierto con el buffer del teclado. 
-//  Cuando se desbloquea la shell --> este tiene el pipe con el buffer del teclado. 
-//  SHELL / FOREGROUND un pipe especial que STDIN es KEYBOARD y STDOUT/STDERR es VIDEO
-//Array de pipe_adt[ ( NUMPROCESS/2 ) + 1 ] o similar
-
 #include <pipe.h>
 
 #define BAD_ID(id) (((id) < 0) || ((id) >= AMOUNT_OF_PIPES))
@@ -14,10 +8,10 @@ typedef struct pipe_cdt{
     uint8_t reserved;
     uint8_t was_closed_by_reader;
     uint8_t initialized_qtty;
-    uint8_t buffer[PIPE_BUFFER_SIZE];  //@TODO change vdriver_text_write para que is hay algo mayor a 255 no lo escriba. 
+    uint8_t buffer[PIPE_BUFFER_SIZE]; 
     uint64_t current_read; 
-    uint64_t current_write;             // ¿o meter un único current?
-    uint64_t data_available_sem; 	    //Todo cambiar los semaforos a sem_t
+    uint64_t current_write;           
+    uint64_t data_available_sem; 	    //@Todo cambiar los semaforos a sem_t
     uint64_t can_write_sem; 
 } pipe_cdt;
 
@@ -102,9 +96,9 @@ int64_t pipe_write(int64_t id, uint8_t * buffer, uint64_t amount, pid_t pid){
     int i=0;
     for(; i<amount; i++){
         pipes_array[id].buffer[pipes_array[id].current_write ++] = buffer[i];
-        if( pipes_array[id].current_write == PIPE_BUFFER_SIZE ){ //checkear caso limite. 
+        if( pipes_array[id].current_write == PIPE_BUFFER_SIZE ){ 
             sem_post_if_value_is_zero(pipes_array[id].data_available_sem,1 );
-            my_sem_wait(pipes_array[id].can_write_sem, 1); //agregar checkeo
+            my_sem_wait(pipes_array[id].can_write_sem, 1); 
             pipes_array[id].current_write = 0;
             pipes_array[id].current_read = 0;
             if( pipes_array[id].was_closed_by_reader ){
@@ -130,7 +124,7 @@ int64_t pipe_close(int64_t id, pid_t pid){
   
     if(pipes_array[id].pids[WRITER] == pid){
         uint8_t end_of_file[] = {EOF};
-        pipe_write(id, end_of_file , 1, pid );           // @todo y si me da -1?????? lcdm
+        pipe_write(id, end_of_file , 1, pid );         
         flag = 0;
         pipes_array[id].pids[WRITER] = -1;
     }
@@ -169,15 +163,3 @@ pid_t pipe_reserve(){
     }
     return -1;
 }
-
-//Hacemos un write: si la salida es pantalla, escribe en pantalla. Si la salida es un proceso lo escribimos en el buffer. 
-//Cambio la syscall read para que si FD es STDIN llama a keyboard driver y si no es STDIN llama al ADT. 
-
-//agregar sem_close y sacar sem_open de sem_init
-
-
-
-//  Si la shell se bloquea y hay otro proceso en foreground --> este proceso tiene el pipe abierto con el buffer del teclado. 
-//  Cuando se desbloquea la shell --> este tiene el pipe con el buffer del teclado. 
-//  SHELL / FOREGROUND un pipe especial que STDIN es KEYBOARD y STDOUT/STDERR es VIDEO
-//Array de pipe_adt[ ( NUMPROCESS/2 ) + 1 ] o similar

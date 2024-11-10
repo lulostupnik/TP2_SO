@@ -13,13 +13,14 @@
 #define MAX_COMMAND_SIZE 100
 #define MAX_ZOOM 3
 #define MIN_ZOOM 1
-#define MAX_MODULES 20
+#define MAX_MODULES 19
 #define NUM_TESTS 4
+#define NUM_BUILT_INS 8
 #define MAX_ARGS 10
 #define MAX_ARGS_SIZE 20
 //Constants for the shell
 
-#define WELCOME "Bienvenido a BarriOS!\n\n"
+#define WELCOME "\nBienvenido a BarriOS!"
 #define PROMPT "BarriOS>User> "
 #define MAX_FONT_SIZE 3
 #define MIN_FONT_SIZE 1

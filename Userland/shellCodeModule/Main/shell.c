@@ -38,8 +38,6 @@ static module modules[] = {
     {"help", "Displays all available operating system modules.", help, BUILT_IN},
     {"time", "Shows the current system time.", show_current_time, BUILT_IN},
     {"getregs", "Displays the current state of the registers.", get_regs, BUILT_IN},
-    {"dividebyzero", "Generates a divide-by-zero exception.", div0, BUILT_IN},
-    {"opcode", "Generates an invalid opcode exception.", op_code, BUILT_IN},
     {"clear", "Clears the screen.", (void (*)(char **, uint64_t))libc_clear_screen, BUILT_IN},
     {"kill", "Kills a process given its PID.", kill_pid, BUILT_IN},
     {"block", "Swaps between ready and blocked state for the given PID.", shell_block, BUILT_IN},
@@ -51,6 +49,7 @@ static module modules[] = {
     {"loop", "Greets with its PID every specified number of seconds.", loop, !BUILT_IN},
     {"filter", "Filters vowels from the input.", filter, !BUILT_IN},
     {"wc", "Counts the number of lines in the input.", wc, !BUILT_IN},
+	{"mem", "Displays the memory status. (HACE WC POR AHORA)", wc, !BUILT_IN},
 	{"testproc", "Tests process creation.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
     {"testsync", "Tests process synchronization.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
     {"testmm", "Tests the use of malloc and free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
@@ -340,13 +339,17 @@ static void shell_wait_pid(char ** args, uint64_t argc){
 }
 
 void help(char **args, uint64_t argc) {
+	libc_printf("\n\n-------------------------------                      Built-in functions                      -----------------------------------\n\n");
     for (int i = 0; i < MAX_MODULES; i++) {
+		if(i == NUM_BUILT_INS){
+			libc_printf("\n\n-------------------------------                      Processes                                ----------------------------------\n\n");
+		}
         if(i == MAX_MODULES-NUM_TESTS){
-			libc_printf("\n\n-------------------------------                      Functionality tests                      ---------------------------------\n\n");
+			libc_printf("\n\n-------------------------------                      Functionality tests                      ----------------------------------\n\n");
 		}
 		libc_printf("- %s: %s\n", modules[i].name, modules[i].desc);
     }
-	libc_printf("\n");
+	libc_printf("-------------------------------                                                              -----------------------------------\n\n");
 }
 
 
