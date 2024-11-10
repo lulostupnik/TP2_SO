@@ -196,8 +196,9 @@ static int64_t create_process(int64_t i){
     char *args[] = {"filo" , philo_number_str};
     fd_t fds[CANT_FDS];
   
-    if(sys_get_my_fds(fds) == -1){
-            //
+    if(libc_get_my_fds(fds) == -1){
+        libc_fprintf(STDERR, "Error getting fds\n");
+        return -1;
     }
     return libc_create_process(&philosopher, LOW, args, 2, fds);
 }
@@ -206,10 +207,10 @@ static int64_t create_process(int64_t i){
 static int64_t add_first_phylos(){
 
     for(int i = 0; i < MIN_PHILOS; i++){
-        philos_array[i].left_fork = forks[i] = sys_sem_open_get_id(1);
+        philos_array[i].left_fork = forks[i] = libc_sem_open_get_id(1);
         if(forks[i] < 0){
             for(int j = 0; j < i; j++){
-                sys_sem_close(forks[j]);
+                libc_sem_close(forks[j]);
             }
             return -1;
         }
@@ -241,13 +242,13 @@ static int64_t add_first_phylos(){
 }
 /*
 static int64_t add_first_phylos2(){
-    philos_array[0].left_fork=  forks[0] = sys_sem_open_get_id(1);
-    philos_array[0].right_fork = forks[1] = sys_sem_open_get_id(1);
+    philos_array[0].left_fork=  forks[0] = libc_sem_open_get_id(1);
+    philos_array[0].right_fork = forks[1] = libc_sem_open_get_id(1);
     philos_array[1].right_fork =  philos_array[0].left_fork;
     philos_array[1].left_fork =  philos_array[0].right_fork;
 
     for(int i = 2; i < MIN_PHILOS ; i++){
-        philos_array[i].left_fork = forks[i] = sys_sem_open_get_id(1);
+        philos_array[i].left_fork = forks[i] = libc_sem_open_get_id(1);
         philos_array[i - 1].right_fork =  philos_array[i].left_fork;
         philos_array[i].right_fork = philos_array[0].left_fork;
     }
@@ -282,7 +283,7 @@ static void add_philosopher() {
 
 
     int64_t new_sem;
-    if((new_sem = sys_sem_open_get_id(1)) < 0){
+    if((new_sem = libc_sem_open_get_id(1)) < 0){
         libc_fprintf(STDERR, "Couldn't open sem\n");
         // todo -> manejar error
     }
@@ -398,29 +399,29 @@ static void clean_all(){
 }
 
 static int64_t open_mutexes(){
-    state_mutex = sys_sem_open_get_id(1);
+    state_mutex = libc_sem_open_get_id(1);
     if(state_mutex == -1){
         return -1;
     }
-    added_min_sem = sys_sem_open_get_id(0);
+    added_min_sem = libc_sem_open_get_id(0);
     if(added_min_sem == -1){
         libc_sem_close(state_mutex);
         return -1;
     }
-    num_philos_mutex = sys_sem_open_get_id(1);
+    num_philos_mutex = libc_sem_open_get_id(1);
     if(num_philos_mutex == -1){
         libc_sem_close(state_mutex);
         libc_sem_close(added_min_sem);
         return -1;
     }
-    last_mutex = sys_sem_open_get_id(1);
+    last_mutex = libc_sem_open_get_id(1);
     if(last_mutex == -1){
         libc_sem_close(state_mutex);
         libc_sem_close(added_min_sem);
         libc_sem_close(num_philos_mutex);
         return -1;
     }
-    second_last_mutex = sys_sem_open_get_id(1);
+    second_last_mutex = libc_sem_open_get_id(1);
     if(second_last_mutex == -1){
         libc_sem_close(state_mutex);
         libc_sem_close(added_min_sem);
