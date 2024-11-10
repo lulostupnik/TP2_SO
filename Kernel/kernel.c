@@ -16,7 +16,7 @@ static void * const shellDataModuleAddress = ( void * ) 0x500000;
 
 static void * const heap = ( void * ) 0x600000;
 
-
+static memory_manager_adt kernel_mem, userland_mem;
 
 
 typedef int ( *EntryPoint ) ();
@@ -55,12 +55,19 @@ void idle_process()
 	}
 }
 
+memory_manager_adt get_userland_mem(){
+	return userland_mem;
+}
+memory_manager_adt get_kernel_mem(){
+	return kernel_mem;
+}
 
 
 int main()
 {
 	load_idt();
-	my_mm_init ( heap );
+	kernel_mem = my_mm_init ( heap );
+	userland_mem = my_mm_init ( heap + HEAP_SIZE);
 	char * argv_idle[] = {"idle"};
 	char * argv_shell[] = {"sh"};
 	fd_t idle_fds[3] = {-1, -1, -1};

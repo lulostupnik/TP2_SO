@@ -3,42 +3,64 @@
 #ifdef FROM_SCRATCH
 #include <memory_management.h>
 
-void * start;
-int current;
-void * free_ptrs[BLOCK_COUNT];
 
-void my_mm_init ( void * p )
-{
-	start = p;
+#define BLOCK_COUNT ((HEAP_SIZE) / BLOCK_SIZE)
 
-	for ( int i = 0; i < BLOCK_COUNT; i++ ) {
-		free_ptrs[i] = start + i * BLOCK_SIZE;
+
+typedef struct {
+    void *start;
+    int64_t current;
+    void *free_ptrs[BLOCK_COUNT];
+} memory_manager_cdt;
+
+
+
+
+memory_manager_adt my_mm_init(void *p) {
+    memory_manager_cdt * aux = (memory_manager_cdt *) p;
+
+    for (int i = 0; i < BLOCK_COUNT; i++) {
+        aux->free_ptrs[i] = (void *)((char *)p + i * BLOCK_SIZE);
+    }
+
+	aux->start = (void *) ((char *)p);
+	aux->current = 0;
+	for(int i=0; i<= (sizeof(memory_manager_cdt) / BLOCK_SIZE); i++){
+		my_malloc(1, (memory_manager_adt) aux);														//reserves the space for the CDT
 	}
 
-	current = 0;
+    return (memory_manager_adt )aux;
 }
 
-void * my_malloc ( uint64_t size )
+void * my_malloc(uint64_t size,  memory_manager_adt mem) {
+    memory_manager_cdt * aux = (memory_manager_cdt *) mem;
+	if (aux == NULL || size > BLOCK_SIZE || aux->current >= BLOCK_COUNT) {
+        return NULL;
+    }
+
+    return aux->free_ptrs[aux->current++];
+}
+
+
+
+void my_free ( void * p , memory_manager_adt mem)
 {
-	if ( size > BLOCK_SIZE || current >= BLOCK_COUNT ) {
-		return NULL;
+	memory_manager_cdt * aux = (memory_manager_cdt *) mem;
+	if(aux == NULL){
+		return;
 	}
-
-	return free_ptrs[current++];
+	aux->current--;
+	aux->free_ptrs[aux->current] = p;
 }
 
-void my_free ( void * p )
+int64_t my_mem_info( memory_info * info, memory_manager_adt mem )
 {
-	free_ptrs[--current] = p;
-}
-
-int64_t my_mem_info( memory_info * info )
-{
-	if( info == NULL ) {
+	memory_manager_cdt * aux = (memory_manager_cdt *) mem;
+	if( aux == NULL || info == NULL ) {
 		return -1;
 	}
 	info->total_size = HEAP_SIZE;
-	info->free = (BLOCK_COUNT - current) * BLOCK_SIZE;
+	info->free = ((BLOCK_COUNT - aux->current) * BLOCK_SIZE);
 	return 0;
 }
 

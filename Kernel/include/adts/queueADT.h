@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <PCB.h>
 #include <memory_management.h>
+#include <kernel.h>
 
 typedef struct queue_cdt * queue_adt;
 typedef PCB * elem_type_ptr;

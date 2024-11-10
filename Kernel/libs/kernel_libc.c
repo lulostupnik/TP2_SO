@@ -8,7 +8,7 @@ char * new_str_copy(char * string){
 		return NULL;
 	}
 	uint64_t len = shared_libc_strlen(string) + 1;
-	char * copy = my_malloc(len);
+	char * copy = my_malloc(len, get_kernel_mem());
 	if(copy == NULL){
 		return NULL;
 	}
@@ -22,7 +22,7 @@ char ** copy_argv(pid_t pid, char ** argv, uint64_t argc)
 		return NULL;
 	}
 
-	char ** ans = my_malloc(sizeof(char *) * (argc + 1));
+	char ** ans = my_malloc(sizeof(char *) * (argc + 1), get_kernel_mem());
 
 	if (ans == NULL) {
 		return NULL;
@@ -32,9 +32,9 @@ char ** copy_argv(pid_t pid, char ** argv, uint64_t argc)
 		ans[i] = new_str_copy(argv[i]);
 		if (ans[i] == NULL) {
 			for (uint64_t j = 0; j < i; j++) {
-				my_free((void *)ans[j]);
+				my_free((void *)ans[j], get_kernel_mem());
 			}
-			my_free((void *)ans);
+			my_free((void *)ans, get_kernel_mem());
 			return NULL;
 		}
 	}

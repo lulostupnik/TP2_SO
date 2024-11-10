@@ -115,12 +115,15 @@ int64_t ps_program(){
 }
 
 int64_t mem(){
-	memory_info info;
-	if(sys_mem_info(&info) == -1){
+	memory_info info[2];
+	if(sys_mem_info(info) < 0){
 		libc_fprintf(STDERR, "Error while getting memory info\n");
 		return 1;
 	}
-	libc_printf("Total memory: %x\n", info.total_size);
-	libc_printf("Free memory: %x\n", info.free);
+	libc_printf("Total memory in userland: %x\n", info[USER_MEM_INFO].total_size);
+	libc_printf("Free memory in userland: %x\n", info[USER_MEM_INFO].free);
+	
+	libc_printf("\nTotal memory in kernel: %x\n", info[KERNEL_MEM_INFO].total_size);
+	libc_printf("Free memory in kernel: %x\n", info[KERNEL_MEM_INFO].free);
 	return 0;
 }

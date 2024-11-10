@@ -4,7 +4,7 @@
 #define _ordered_list_adt_H
 #include <memory_management.h>
 #include <PCB.h>
-
+#include <kernel.h>
 typedef struct list_cdt * ordered_list_adt;
 typedef PCB * elem_type;
 

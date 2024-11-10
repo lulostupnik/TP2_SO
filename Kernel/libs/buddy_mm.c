@@ -12,111 +12,131 @@
 
 #define TREE_BIT_MAP_SIZE (((MAX_MEM_SIZE / MIN_BLOCK_SIZE)) * 2)
 
-uint64_t free_mem = MAX_MEM_SIZE;
 
 int next_power_of_2(int n);
 int get_index_level(int index);
 int get_size_level(int size);
 int get_block_from_index(int index);
 
-char tree_bitmap[TREE_BIT_MAP_SIZE]; 
+void my_free_idx(int index, int * flag, int n, memory_manager_adt mem);
+void *my_alloc(int index, int level, memory_manager_adt mem);
 
-void *start;
 
-int64_t my_mem_info(memory_info *info)
+typedef struct {
+    void *start;
+    char tree_bitmap[TREE_BIT_MAP_SIZE]; 
+    uint64_t free_mem;
+} memory_manager_cdt;
+
+
+
+int64_t my_mem_info( memory_info * info, memory_manager_adt mem )
 {
-    if(info == NULL){
+    memory_manager_cdt * aux = (memory_manager_cdt *) mem;
+    if(info == NULL || aux == NULL){
         return -1;
     }
     info->total_size = MAX_MEM_SIZE;
-    info->free = free_mem;
+    info->free = aux->free_mem;
     return 0;
 }
 
-void my_mm_init ( void * p )
+memory_manager_adt my_mm_init(void *p)
 {
-    start = p;
+    memory_manager_cdt * aux = (memory_manager_cdt *) p;
     
+    aux->start = (void *) ((char *)p);
+
 	for(int i = 0; i < TREE_BIT_MAP_SIZE; i++){
-		tree_bitmap[i] = 0;
+		aux->tree_bitmap[i] = 0;
 	}
+    aux->free_mem = MAX_MEM_SIZE;
+    memory_manager_adt ans = my_malloc(sizeof(*aux), (memory_manager_adt) aux);
+    return ans;
 }
 
-void *my_alloc(int index, int level)
+void *my_alloc(int index, int level, memory_manager_adt mem)
 {
+    memory_manager_cdt * aux = (memory_manager_cdt *) mem;
+    if(aux == NULL){
+        return NULL;
+    }
     if (level == 0)
     {
-        if (tree_bitmap[index])
+        if (aux->tree_bitmap[index])
         {
             return NULL;
         }
-        tree_bitmap[index] = 1;
-        return start + get_block_from_index(index) * MIN_BLOCK_SIZE;
+        aux->tree_bitmap[index] = 1;
+        return aux->start + get_block_from_index(index) * MIN_BLOCK_SIZE;
     }
-    if (tree_bitmap[index] && !tree_bitmap[2 * index + 1] && !tree_bitmap[index * 2 + 2])
+    if (aux->tree_bitmap[index] && !aux->tree_bitmap[2 * index + 1] && !aux->tree_bitmap[index * 2 + 2])
     {
         return NULL;
     }
     // This is because if the block is occupied, but its children are free, it means the block is not divided but rather fully occupied
 
-    void *ptr = my_alloc(index * 2 + 1, level - 1);
+    void *ptr = my_alloc(index * 2 + 1, level - 1, mem);
     if (ptr == NULL)
     {
-        ptr = my_alloc(index * 2 + 2, level - 1);
+        ptr = my_alloc(index * 2 + 2, level - 1, mem);
         if (ptr == NULL)
         {
             return NULL;
         }
     }
-    tree_bitmap[index] = 1;
+    aux->tree_bitmap[index] = 1;
     return ptr;
 }
 
-void * my_malloc ( uint64_t size )
+void * my_malloc( uint64_t size,  memory_manager_adt mem)
 {
+    memory_manager_cdt * aux = (memory_manager_cdt *) mem;
     int npo2 = next_power_of_2(size);
     int real_size = npo2 >= MIN_BLOCK_SIZE ? npo2 : MIN_BLOCK_SIZE;
     int level = get_size_level(real_size);
 
-    void * ptr = my_alloc(0, level);
+    void * ptr = my_alloc(0, level, mem);
     if(ptr != NULL){
-        free_mem -= real_size;
+        aux->free_mem -= real_size;
     }
 
     return ptr;
 }
 
-void my_free_idx(int index, int * flag, int n)
+void my_free_idx(int index, int * flag, int n, memory_manager_adt mem)
 {
+    memory_manager_cdt * aux = (memory_manager_cdt *) mem;
     if (index == 0)
     {
-        tree_bitmap[index] = 0;
+        aux->tree_bitmap[index] = 0;
         return;
     }
-    if(tree_bitmap[index] == 1 && !(*flag)){
-        free_mem += MIN_BLOCK_SIZE * n;
+    if(aux->tree_bitmap[index] == 1 && !(*flag)){
+        aux->free_mem += MIN_BLOCK_SIZE * n;
         *flag = 1;
     }
-    tree_bitmap[index] = 0;
+    aux->tree_bitmap[index] = 0;
 
-    if (tree_bitmap[GET_SIBLING(index)]) // si el "buddy" está ocupado
+    if (aux->tree_bitmap[GET_SIBLING(index)]) // si el "buddy" está ocupado
     {
         return;
     }
-    my_free_idx(GET_PARENT(index), flag, n * 2 );
+    my_free_idx(GET_PARENT(index), flag, n * 2, mem );
 }
 
-void my_free ( void * p )
+void my_free ( void * p , memory_manager_adt mem)
 {
-    if ((p - start) % MIN_BLOCK_SIZE != 0)
+    memory_manager_cdt * aux = (memory_manager_cdt *) mem;
+    if ((p - aux->start) % MIN_BLOCK_SIZE != 0)
     {
         return;
     }
 
-    int index = ((p - start) / MIN_BLOCK_SIZE) + MAX_MEM_SIZE / MIN_BLOCK_SIZE - 1; // we start with the block of maximum granularity
+    int index = ((p - aux->start) / MIN_BLOCK_SIZE) + MAX_MEM_SIZE / MIN_BLOCK_SIZE - 1; // we aux->start with the block of maximum granularity
     int flag = 0;
     int n = 1;
-    my_free_idx(index, &flag, n);
+    my_free_idx(index, &flag, n, mem);
 }
 
 int next_power_of_2(int n)

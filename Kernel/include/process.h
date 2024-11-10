@@ -15,6 +15,7 @@
 #include <pipe.h>
 #include <keyboard.h>
 #include <time.h>
+#include <kernel.h>
 
 #define PCB_AMOUNT 100
 

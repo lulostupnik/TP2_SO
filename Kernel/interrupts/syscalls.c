@@ -238,11 +238,11 @@ int64_t sys_get_time ( time_struct * time )
 
 void * sys_malloc ( uint64_t size )
 {
-	return my_malloc ( size );
+	return my_malloc ( size, get_userland_mem());
 }
 static int64_t sys_free_wrapper ( void * p )
 {
-	my_free ( p );
+	my_free ( p, get_userland_mem() );
 	return 0;
 }
 
@@ -330,6 +330,6 @@ int8_t sys_get_status(pid_t pid){
 
 
 
-int64_t sys_mem_info(memory_info * info){
-	return my_mem_info(info);
+int64_t sys_mem_info(memory_info info[2]){
+	return my_mem_info(&info[0], get_userland_mem()) + my_mem_info(&info[1], get_kernel_mem()) ;
 }

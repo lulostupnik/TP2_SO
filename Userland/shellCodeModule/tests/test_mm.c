@@ -38,7 +38,6 @@ int64_t test_mm ( char * argv[],  uint64_t argc )
 		while ( rq < MAX_BLOCKS && total < max_memory ) {
 			mm_rqs[rq].size = get_uniform ( max_memory - total - 1 ) + 1;
 			mm_rqs[rq].address = libc_malloc ( mm_rqs[rq].size );
-
 			if ( mm_rqs[rq].address ) {
 				total += mm_rqs[rq].size;
 				rq++;

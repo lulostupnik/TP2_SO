@@ -23,7 +23,7 @@ struct list_cdt {
 
 list_adt new_list(t_compare cmp)
 {
-	list_adt aux = my_malloc(sizeof(*aux));
+	list_adt aux = my_malloc(sizeof(*aux), get_kernel_mem());
 	if (aux == NULL) {
 		return NULL;
 	}
@@ -42,9 +42,9 @@ void free_list(list_adt list)
 	for (int i = 0; i < list->size; i++) {
 		t_list aux = list->pre_next;
 		list->pre_next = list->pre_next->tail;
-		my_free(aux);
+		my_free(aux, get_kernel_mem());
 	}
-	my_free(list);
+	my_free(list, get_kernel_mem());
 }
 
 int is_empty_list(const list_adt list)
@@ -66,7 +66,7 @@ int add_list(list_adt list, elem_type_ptr elem)
 		return -1;
 	}
 
-	t_list new_node = my_malloc(sizeof(*new_node));
+	t_list new_node = my_malloc(sizeof(*new_node), get_kernel_mem());
 	if (new_node == NULL) {
 		return -1;
 	}
@@ -112,7 +112,7 @@ int delete_list(list_adt list, elem_type_ptr elem)
 		if (list->cmp(elem, list->pre_next->head) != 0) {
 			return -1;
 		}
-		my_free(list->pre_next);
+		my_free(list->pre_next, get_kernel_mem());
 		list->pre_next = NULL;
 		list->size = 0;
 		return 0;
@@ -126,7 +126,7 @@ int delete_list(list_adt list, elem_type_ptr elem)
 			if (list->pre_next == current) {
 				list->pre_next = ant;
 			}
-			my_free(current);
+			my_free(current, get_kernel_mem());
 			list->size -- ;
 			return 0;
 		}

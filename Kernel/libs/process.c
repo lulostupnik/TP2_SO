@@ -65,7 +65,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 		return -1;
 	}
 
-	uint64_t rsp_malloc = (uint64_t) my_malloc(STACK_SIZE) ;
+	uint64_t rsp_malloc = (uint64_t) my_malloc(STACK_SIZE,  get_kernel_mem()) ;
 	uint64_t rsp = rsp_malloc + STACK_SIZE;
 
 	if ((void *)rsp_malloc == NULL) {
@@ -74,7 +74,7 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 
 	char ** args_cpy = copy_argv(pid, argv, argc);
 	if (argc > 0 && args_cpy == NULL) {
-		my_free((void *)rsp_malloc);
+		my_free((void *)rsp_malloc, get_kernel_mem());
 		pcb_array[pid].status = FREE;
 		return -1;
 	}
@@ -97,11 +97,11 @@ int64_t new_process(main_function rip, priority_t priority, uint8_t killable, ch
 	}
 
 	if(setup_pipe(pid, fds) == -1){
-		my_free((void *)rsp_malloc);
+		my_free((void *)rsp_malloc, get_kernel_mem());
 		for (uint64_t i = 0; i < pcb_array[pid].argc ; i++) {
-			my_free((void *)pcb_array[pid].argv[i]);
+			my_free((void *)pcb_array[pid].argv[i], get_kernel_mem());
 		}
-		my_free((void * )pcb_array[pid].argv);
+		my_free((void * )pcb_array[pid].argv, get_kernel_mem());
 		pcb_array[pid].status = FREE;
 		return -1;
 	}
@@ -161,15 +161,15 @@ static int64_t set_free_pcb(PCB * process)
 	}
 	close_fds(process);
 	
-	my_free((void *)process->lowest_stack_address);
+	my_free((void *)process->lowest_stack_address, get_kernel_mem());
 	if (process->argv == NULL) {
 		process->status = FREE;
 		return 0;
 	}
 	for (uint64_t i = 0; i < process->argc ; i++) {
-		my_free((void *)process->argv[i]);
+		my_free((void *)process->argv[i], get_kernel_mem());
 	}
-	my_free((void * )process->argv);
+	my_free((void * )process->argv, get_kernel_mem());
 	process->status = FREE;
 	
 	return 0;
@@ -266,14 +266,14 @@ void get_process_info(PCB * pcb, process_info * process)
 
 process_info_list * ps()
 {
-	process_info_list * process_list = my_malloc(sizeof(process_info_list));
+	process_info_list * process_list = my_malloc(sizeof(process_info_list),  get_kernel_mem());
 	if (process_list == NULL) {
 		return NULL;
 	}
 	process_list->amount_of_processes = amount_of_processes;
-	process_info * processes = my_malloc(amount_of_processes * sizeof(process_info));
+	process_info * processes = my_malloc(amount_of_processes * sizeof(process_info), get_kernel_mem());
 	if (processes == NULL) {
-		my_free((void *) process_list);
+		my_free((void *) process_list, get_kernel_mem());
 		return NULL;
 	}
 
@@ -294,11 +294,11 @@ void free_ps(process_info_list * ps){
 	}
 	for(int i=0; i < ps->amount_of_processes ;i++){
 		if(ps->processes[i].name){
-			my_free(ps->processes[i].name);
+			my_free(ps->processes[i].name,  get_kernel_mem());
 		}
 	}
-	my_free(ps->processes);
-	my_free(ps);
+	my_free(ps->processes, get_kernel_mem());
+	my_free(ps, get_kernel_mem());
 }
 
 void close_fds(PCB * pcb){

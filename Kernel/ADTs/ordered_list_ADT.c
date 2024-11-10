@@ -20,7 +20,7 @@ struct list_cdt {
 
 
 ordered_list_adt new_ordered_list(t_compare cmp){
-    ordered_list_adt aux = my_malloc(sizeof(*aux));
+    ordered_list_adt aux = my_malloc(sizeof(*aux), get_kernel_mem());
     if(aux == NULL){
         return NULL;
     }
@@ -35,12 +35,12 @@ static void free_ordered_list_rec(t_ordered_list list){
         return;
     }
     free_ordered_list_rec(list->tail);
-    my_free(list);
+    my_free(list, get_kernel_mem());
 }
 
 void free_ordered_list(ordered_list_adt list){
     free_ordered_list_rec(list->first);
-    my_free(list);
+    my_free(list, get_kernel_mem());
 }
 
 int is_empty_ordered_list(const ordered_list_adt list){
@@ -57,7 +57,7 @@ size_t size_ordered_list(const ordered_list_adt list){
 static t_ordered_list add_ordered_list_rec(t_ordered_list list, elem_type elem, t_compare cmp, int * flag){
     int c;
     if(list == NULL || (c = cmp(elem, list->head)) < 0){
-        t_ordered_list aux = my_malloc(sizeof(*aux));
+        t_ordered_list aux = my_malloc(sizeof(*aux), get_kernel_mem());
         if(aux == NULL){
             *flag = 0;
             return list;
@@ -113,7 +113,7 @@ static t_ordered_list delete_rec(t_ordered_list list, elem_type elem, t_compare 
     }
     *flag = 1;
     t_ordered_list aux = list->tail;
-    my_free(list);
+    my_free(list, get_kernel_mem());
     return aux;
 
 }
@@ -162,7 +162,7 @@ int ordered_list_delete_current(ordered_list_adt list) {
         list->previous->tail = list->next;  
     }
 
-    my_free(list->current);
+    my_free(list->current, get_kernel_mem());
     list->size--;
 
     list->current = NULL;

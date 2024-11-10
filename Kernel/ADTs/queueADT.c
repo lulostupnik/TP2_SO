@@ -18,7 +18,7 @@ struct queue_cdt {
 
 queue_adt new_queue()
 {
-    queue_adt to_return = my_malloc(sizeof(*to_return));
+    queue_adt to_return = my_malloc(sizeof(*to_return), get_kernel_mem());
     if(to_return == NULL){
         return NULL;
     }
@@ -42,7 +42,7 @@ elem_type_ptr dequeue(queue_adt queue){
     queue->size--;
     elem_type_ptr to_return = queue->first->head;
     t_queue aux = queue->first->tail;
-    my_free(queue->first);
+    my_free(queue->first, get_kernel_mem());
     queue->first = aux;
     if(aux == NULL){
         queue->last = NULL;
@@ -77,7 +77,7 @@ int64_t delete_from_queue(queue_adt queue, elem_type_ptr head) {
         queue->last = previous;
     }
 
-    my_free(current);
+    my_free(current, get_kernel_mem());
     queue->size--;
 
     return 0; 
@@ -90,7 +90,7 @@ int64_t enqueue(queue_adt queue, elem_type_ptr head){
     if(queue == NULL){
         return -1;
     }
-    t_queue new_node = my_malloc(sizeof(*new_node));
+    t_queue new_node = my_malloc(sizeof(*new_node),  get_kernel_mem());
     if(new_node == NULL){
         return -1;
     }
@@ -115,7 +115,7 @@ void free_queue(queue_adt queue){
     while(!queue_is_empty(queue)){
         dequeue(queue);
     }
-    my_free(queue);
+    my_free(queue, get_kernel_mem());
 }
 
 
