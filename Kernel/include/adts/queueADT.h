@@ -15,5 +15,6 @@ uint64_t queue_is_empty(queue_adt queue);
 elem_type_ptr dequeue(queue_adt queue);
 void enqueue(queue_adt queue, elem_type_ptr value);
 void free_queue(queue_adt queue);
+int64_t delete_from_queue(queue_adt queue, elem_type_ptr head);
 
 #endif

@@ -27,7 +27,7 @@ static uint8_t * num_to_string ( uint64_t num, uint64_t base )
 
 static void print_regs ( uint8_t * message, uint8_t cant_chars_message )
 {
-	const char * regs[] = {"rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rbp", "rsp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rip", "rflags"};
+	char * regs[] = {"rax", "rbx", "rcx", "rdx", "rsi", "rdi", "rbp", "rsp", "r8", "r9", "r10", "r11", "r12", "r13", "r14", "r15", "rip", "rflags"};
 	color col = {255, 255, 255};
 	vdriver_clear_screen ( col );
 	vdriver_set_mode ( TEXT_MODE, col );

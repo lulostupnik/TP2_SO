@@ -74,10 +74,10 @@ typedef struct {
 
 static void think(int i);
 static void eat(int i);
-static int64_t philosopher(char ** argv, int argc);
+static int64_t philosopher(char ** argv, uint64_t argc);
 static int64_t create_process(int64_t i);
 static int64_t add_first_phylos();
-static void print_philosophers_sems();
+
 static void add_philosopher();
 static void remove_philosopher();
 static void display_state();
@@ -118,10 +118,9 @@ static void eat(int i) {
     libc_sem_post(state_mutex);
 }
 
-static int64_t philosopher(char ** argv, int argc) {
+static int64_t philosopher(char ** argv, uint64_t argc) {
     int64_t flag = 0;
     int i = libc_satoi(argv[1], &flag);
-    // TODO -> validacion al dope?
     if (flag == 0) {
         libc_fprintf(STDERR, "Error: Invalid philosopher number\n");
         return -1;
@@ -189,7 +188,6 @@ static int64_t philosopher(char ** argv, int argc) {
 static int64_t create_process(int64_t i){
     char philo_num_buff[5];
     char * philo_number_str = itoa(i, philo_num_buff,5,10);
-    int64_t ans;
     if(philo_number_str == NULL){
             //@todo some
     }
@@ -200,7 +198,7 @@ static int64_t create_process(int64_t i){
         libc_fprintf(STDERR, "Error getting fds\n");
         return -1;
     }
-    return libc_create_process(&philosopher, LOW, args, 2, fds);
+    return libc_create_process((main_function )&philosopher, LOW, args, 2, fds);
 }
 
 
@@ -240,40 +238,7 @@ static int64_t add_first_phylos(){
     }
     return num_philosophers;
 }
-/*
-static int64_t add_first_phylos2(){
-    philos_array[0].left_fork=  forks[0] = libc_sem_open_get_id(1);
-    philos_array[0].right_fork = forks[1] = libc_sem_open_get_id(1);
-    philos_array[1].right_fork =  philos_array[0].left_fork;
-    philos_array[1].left_fork =  philos_array[0].right_fork;
 
-    for(int i = 2; i < MIN_PHILOS ; i++){
-        philos_array[i].left_fork = forks[i] = libc_sem_open_get_id(1);
-        philos_array[i - 1].right_fork =  philos_array[i].left_fork;
-        philos_array[i].right_fork = philos_array[0].left_fork;
-    }
-
-    for(int i = 0; i < MIN_PHILOS ; i++){
-        philosophers_pids[i] = create_process(i);
-        if(philosophers_pids[i] >= 0){
-            num_philosophers++;
-        }
-    }
-    for(int i = 0; i < MIN_PHILOS ; i++){
-        libc_sem_post(added_min_sem);
-    }
-    libc_sem_close(added_min_sem);
-    return num_philosophers;
-}
-*/
-
-static void print_philosophers_sems(){
-    libc_printf("\n");
-    for(int i = 0; i < num_philosophers; i++){
-        libc_printf("%d | %d | %d |\t", philosophers_pids[i], philos_array[i].left_fork, philos_array[i].right_fork);
-    }
-    libc_printf("\n");
-}
 
 static void add_philosopher() {
     if(num_philosophers >= MAX_PHILOS){

@@ -7,7 +7,7 @@
 #include <shared_defs.h>
 #include <syscalls.h>
 #include <stddef.h>
-
+#include <shared_libc.h>
 
 char libc_get_char();
 
@@ -28,20 +28,20 @@ int64_t libc_set_font_size ( uint64_t size );
 
 char * libc_num_to_string(uint64_t num, uint64_t base, char *buffer, size_t buffer_size);
 
-int64_t libc_puts ( const char * str );
+int64_t libc_puts (  char * str );
 
 int64_t libc_fputc ( char c, uint64_t fd );
 
-int64_t libc_fprintf ( uint64_t fd, const char * fmt, ... );
+int64_t libc_fprintf ( uint64_t fd,  char * fmt, ... );
 
-int64_t libc_printf ( const char * fmt, ... );
+int64_t libc_printf (  char * fmt, ... );
 
 char * libc_gets ( char * buffer, int n );
 
-int64_t libc_strcmp ( const char * str1, const char * str2 );
+int64_t libc_strcmp (  char * str1,  char * str2 );
 
 
-int64_t libc_strnocasecmp(const char *str1, const char *str2);
+int64_t libc_strnocasecmp( char *str1,  char *str2);
 
 void libc_print_register_snapshot();
 
@@ -54,8 +54,6 @@ int64_t libc_draw_letter ( uint64_t x, uint64_t y, char letter, color color, uin
 
 
 int64_t libc_enter_text_mode();
-
-
 
 
 int64_t libc_enter_video_mode();

@@ -72,7 +72,7 @@ typedef struct vbe_mode_info_structure * vbe_info_ptr;
 
 
 
-int64_t vdriver_text_write ( uint64_t fd, const char * buffer, int64_t amount );
+int64_t vdriver_text_write ( uint64_t fd, char * buffer, int64_t amount );
 int64_t vdriver_text_set_font_size ( uint64_t size );
 void vdriver_set_font_color ( color c );
 

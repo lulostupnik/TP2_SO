@@ -126,11 +126,9 @@ int64_t sys_write ( uint64_t fd,  uint8_t * buffer, uint64_t amount )
 	}
 
 	fd_t actual_fd = get_running()->fds[fd];
-	// if(actual_fd == -1){
-	// 	return -1;
-	// }
+	
 	if(actual_fd == STDOUT || actual_fd == STDERR){
-		return vdriver_text_write ( fd, buffer, amount );
+		return vdriver_text_write ( fd, (char * ) buffer, amount );
 	}
 
 	return sys_pipe_write(actual_fd,buffer, amount);
