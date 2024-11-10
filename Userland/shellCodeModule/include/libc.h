@@ -98,8 +98,8 @@ int8_t libc_get_status(pid_t pid);
 
 int64_t libc_pipe_open(int64_t id, pipe_mode_t mode);
 int64_t libc_pipe_open_free(pipe_mode_t mode);
-int64_t libc_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount);
-int64_t libc_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount);
+int64_t libc_pipe_read(int64_t id, uint8_t * buffer, uint64_t amount);
+int64_t libc_pipe_write(int64_t id, uint8_t * buffer, uint64_t amount);
 int64_t libc_pipe_close(int64_t id);
 int64_t libc_satoi ( char * str, int64_t * flag );
 int64_t libc_get_my_fds(fd_t fds[CANT_FDS]);

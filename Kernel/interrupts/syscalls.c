@@ -84,13 +84,13 @@ int64_t sys_pipe_open_free(pipe_mode_t mode){
 	return pipe_open_free(mode) + 3 ;
 }
 
-int64_t sys_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
+int64_t sys_pipe_read(int64_t id, uint8_t * buffer, uint64_t amount){
 	if(id < 3){
 		return -1;
 	}
 	return pipe_read(id - 3, buffer, amount);
 }
-int64_t sys_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
+int64_t sys_pipe_write(int64_t id, uint8_t * buffer, uint64_t amount){
 	if(id < 3){
 		return -1;
 	}

@@ -32,16 +32,7 @@ static uint64_t font_size = 1;
 
 
 
-void cat(){
-	uint16_t buff[1000];
-	int amount = 0;
-	while((amount = sys_read(buff, 999)) > 0 ){
-		buff[amount] = 0;
-		libc_fprintf(STDERR, "%s", buff);
-	}
-}
 
-static void ps_loop(char **argv, uint64_t argc) ;
 
 static module modules[] = {
     {"help", "Displays all available operating system modules.", help, BUILT_IN},

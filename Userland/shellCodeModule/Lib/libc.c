@@ -331,10 +331,10 @@ int64_t libc_pipe_open(int64_t id, pipe_mode_t mode){
 int64_t libc_pipe_open_free(pipe_mode_t mode){
 	return sys_pipe_open_free(mode);
 }
-int64_t libc_pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
+int64_t libc_pipe_read(int64_t id, uint8_t * buffer, uint64_t amount){
 	return sys_pipe_read( id,  buffer,  amount);
 }
-int64_t libc_pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
+int64_t libc_pipe_write(int64_t id, uint8_t * buffer, uint64_t amount){
 	return sys_pipe_write( id,  buffer, amount);
 }
 int64_t libc_pipe_close(int64_t id){

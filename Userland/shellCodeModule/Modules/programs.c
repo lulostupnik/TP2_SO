@@ -50,8 +50,15 @@ void filter(){
 			libc_printf("%c", ans);
 		}
 	}
-
 }
+
+void cat(){
+	char ans;
+	while((ans = libc_get_char()) > 0 ){
+		libc_printf("%c", ans);
+	}
+}
+
 
 void ps_program(){
 

@@ -11,9 +11,8 @@ void filter();
 
 void ps_program();
 
-// void cat();
+void cat();
 
-// void ps();
 
 
 #endif // PROGRAMS_H

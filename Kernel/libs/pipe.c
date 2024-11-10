@@ -14,9 +14,9 @@ typedef struct pipe_cdt{
     uint8_t reserved;
     uint8_t was_closed_by_reader;
     uint8_t initialized_qtty;
-    uint16_t buffer[PIPE_BUFFER_SIZE];  //@TODO change vdriver_text_write para que is hay algo mayor a 255 no lo escriba. 
-    uint32_t current_read; 
-    uint32_t current_write;             // ¿o meter un único current?
+    uint8_t buffer[PIPE_BUFFER_SIZE];  //@TODO change vdriver_text_write para que is hay algo mayor a 255 no lo escriba. 
+    uint64_t current_read; 
+    uint64_t current_write;             // ¿o meter un único current?
     uint64_t data_available_sem; 	    //Todo cambiar los semaforos a sem_t
     uint64_t can_write_sem; 
 } pipe_cdt;
@@ -69,7 +69,7 @@ int64_t pipe_open_free(pipe_mode_t mode){
 }
 
 
-int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
+int64_t pipe_read(int64_t id, uint8_t * buffer, uint64_t amount){
 	if( BAD_ID(id) || pipes_array[id].pids[READER] != get_pid() ){
         return -1;
     }
@@ -79,12 +79,12 @@ int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
         return -1;
     }
     int max_write = pipes_array[id].current_write;
-
+    
     while ( i < amount && (pipes_array[id].current_read < max_write) && pipes_array[id].buffer[pipes_array[id].current_read] != EOF  ) { // race condition?? @todo test.....
         buffer[i++] = pipes_array[id].buffer[pipes_array[id].current_read++];
 	}
-
-    if(pipes_array[id].current_read < max_write || (pipes_array[id].buffer[pipes_array[id].current_read] == EOF)){
+    
+    if(pipes_array[id].current_read < max_write || (pipes_array[id].current_read > 0 && (pipes_array[id].buffer[pipes_array[id].current_read - 1] == EOF))){
         sem_post_if_value_is_zero(pipes_array[id].data_available_sem,1);
     }
     if(pipes_array[id].current_read == PIPE_BUFFER_SIZE ){
@@ -95,7 +95,7 @@ int64_t pipe_read(int64_t id, uint16_t * buffer, uint64_t amount){
 	return i;
 }
 	
-int64_t pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
+int64_t pipe_write(int64_t id, uint8_t * buffer, uint64_t amount){
     if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid() || pipes_array[id].was_closed_by_reader){
         return -1;
     }
@@ -121,7 +121,7 @@ int64_t pipe_write(int64_t id, uint16_t * buffer, uint64_t amount){
 
 
 
-int64_t pipe_write2(int64_t id, uint16_t * buffer, uint64_t amount){
+int64_t pipe_write2(int64_t id, uint8_t * buffer, uint64_t amount){
     if( BAD_ID(id) || pipes_array[id].pids[WRITER] != get_pid() || pipes_array[id].was_closed_by_reader){
         return -1;
     }
@@ -153,7 +153,7 @@ int64_t pipe_close(int64_t id){
     int flag = -1;
     pid_t pid = get_pid();
     if(pipes_array[id].pids[WRITER] == pid){
-        uint16_t end_of_file[] = {EOF};
+        uint8_t end_of_file[] = {EOF};
         pipe_write(id, end_of_file , 1 );           // @todo y si me da -1?????? lcdm
         flag = 0;
         pipes_array[id].pids[WRITER] = -1;
