@@ -13,6 +13,6 @@ void ps_program();
 
 void cat();
 
-
+void mem();
 
 #endif // PROGRAMS_H

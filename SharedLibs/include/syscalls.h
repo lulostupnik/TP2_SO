@@ -6,7 +6,7 @@
 #include <driversInformation.h>
 
 #define NOT_VALID_SYS_ID -1
-#define NUM_SYSCALLS 38 
+#define NUM_SYSCALLS 39 
 
 int64_t sys_read (uint8_t * buffer, uint64_t amount);
 int64_t sys_write (uint64_t fd, uint8_t * buffer, uint64_t amount);
@@ -46,6 +46,7 @@ int64_t sys_pipe_write(int64_t id, uint8_t * buffer, uint64_t amount);
 int64_t sys_pipe_close(int64_t id);
 int64_t sys_pipe_reserve();
 int64_t sys_get_my_fds(fd_t fds[CANT_FDS]);
+int64_t sys_mem_info(memory_info * info);
 
 #endif
 

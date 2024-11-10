@@ -50,7 +50,8 @@ static sys_function syscall_table[NUM_SYSCALLS] = {
     (sys_function) sys_pipe_close,                 // 34
     (sys_function) sys_pipe_reserve,               // 35
     (sys_function) sys_sem_open_get_id,            // 36
-    (sys_function) sys_get_my_fds                  // 37
+    (sys_function) sys_get_my_fds,                 // 37
+	(sys_function) sys_mem_info                    // 38
 };
 
 int64_t sys_call_handler(stack_registers * regs) {
@@ -330,3 +331,7 @@ int8_t sys_get_status(pid_t pid){
 
 
 
+
+int64_t sys_mem_info(memory_info * info){
+	return my_mem_info(info);
+}

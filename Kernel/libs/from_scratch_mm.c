@@ -39,5 +39,14 @@ void my_free ( void * p )
 	free_ptrs[--current] = p;
 }
 
+int64_t my_mem_info( memory_info * info )
+{
+	if( info == NULL ) {
+		return -1;
+	}
+	info->total_size = size;
+	info->free = (BLOCK_COUNT - current) * BLOCK_SIZE;
+	return 0;
+}
 
 #endif
