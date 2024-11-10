@@ -4,7 +4,7 @@
 #include <memory_management.h>
 
 #define GET_SIBLING(i) (((i) % 2) ? ((i) + 1) : ((i) - 1))
-#define GET_PARENT(i) (((i) - 1) / 2) // todo check
+#define GET_PARENT(i) (((i) - 1) / 2)
 
 #define MAX_MEM_SIZE HEAP_SIZE 
 #define MIN_BLOCK_SIZE BLOCK_SIZE 
@@ -51,7 +51,7 @@ void *my_alloc(int index, int level)
             return NULL;
         }
         tree_bitmap[index] = 1;
-        return start + get_block_from_index(index) * MIN_BLOCK_SIZE; // todo -> MAL -> debería ser start + get_block_from_index(index) * MIN_BLOCK_SIZE
+        return start + get_block_from_index(index) * MIN_BLOCK_SIZE;
     }
     if (tree_bitmap[index] && !tree_bitmap[2 * index + 1] && !tree_bitmap[index * 2 + 2])
     {
