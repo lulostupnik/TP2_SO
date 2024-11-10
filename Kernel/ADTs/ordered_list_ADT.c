@@ -103,7 +103,7 @@ elem_type get(const ordered_list_adt list, size_t idx){
 
 static t_ordered_list delete_rec(t_ordered_list list, elem_type elem, t_compare cmp, int * flag){
     int c;
-    if(list==NULL || (c = cmp(list->head, elem)) > 0 ){ // cmp(e1,e2) > 0 si e1 esta despues que e2
+    if(list==NULL || (c = cmp(list->head, elem)) > 0 ){ 
         *flag = 0;
         return NULL;
     }
@@ -111,7 +111,6 @@ static t_ordered_list delete_rec(t_ordered_list list, elem_type elem, t_compare 
         list->tail = delete_rec(list->tail, elem, cmp, flag);
         return list;
     }
-    //son iguales
     *flag = 1;
     t_ordered_list aux = list->tail;
     my_free(list);
@@ -130,10 +129,6 @@ int delete_ordered_list(ordered_list_adt list, elem_type elem){
 }
 
 
-// void ordered_list_to_begin(ordered_list_adt list){
-//     list->next = list->first;
-// }
-
 void ordered_list_to_begin(ordered_list_adt list) {
     list->next = list->first;
     list->current = NULL;
@@ -145,14 +140,6 @@ int ordered_list_has_next(const ordered_list_adt list){
     return list->next != NULL;
 }
 
-// elem_type ordered_list_next(ordered_list_adt list){
-//     if(!ordered_list_has_next(list)){
-//         return NULL;
-//     }
-//     elem_type aux = list->next->head;
-//     list->next = list->next->tail;
-//     return aux;
-// }
 
 elem_type ordered_list_next(ordered_list_adt list) {
     if (!ordered_list_has_next(list)) {
