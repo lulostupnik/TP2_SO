@@ -31,29 +31,28 @@ static uint64_t font_size = 1;
 
 
 
-
-
 static module modules[] = {
-    {"help", "Displays all available operating system modules.", help, BUILT_IN},
-    {"time", "Shows the current system time.", show_current_time, BUILT_IN},
-    {"getregs", "Displays the current state of the registers.", get_regs, BUILT_IN},
-    {"clear", "Clears the screen.", (void (*)(char **, uint64_t))libc_clear_screen, BUILT_IN},
-    {"kill", "Kills a process given its PID.", kill_pid, BUILT_IN},
-    {"block", "Swaps between ready and blocked state for the given PID.", shell_block, BUILT_IN},
-    {"wait", "Waits for the process with the given PID.", shell_wait_pid, BUILT_IN},
-    {"nice", "Changes the priority of a process given its PID and the new priority.", shell_nice, BUILT_IN},
-	{"ps", "Displays process information.", ps_program, !BUILT_IN},    
-    {"phylo", "Hungry philosophers problem.", (void (*)(char **, uint64_t)) phylo, !BUILT_IN},
-    {"cat", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
-    {"loop", "Greets with its PID every specified number of seconds.", loop, !BUILT_IN},
-    {"filter", "Filters vowels from the input.", filter, !BUILT_IN},
-    {"wc", "Counts the number of lines in the input.", wc, !BUILT_IN},
-	{"mem", "Displays the memory status.", mem, !BUILT_IN},
-	{"testproc", "Tests process creation.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
-    {"testsync", "Tests process synchronization.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
-    {"testmm", "Tests the use of malloc and free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
-	{"testprio", "Tests the scheduler priorities.", test_prio, !BUILT_IN},
+    {"help", "", "Displays all available operating system modules.", help, BUILT_IN},
+    {"time", "", "Shows the current system time.", show_current_time, BUILT_IN},
+    {"getregs", "", "Displays the current state of the registers.", get_regs, BUILT_IN},
+    {"clear", "", "Clears the screen.", (void (*)(char **, uint64_t))libc_clear_screen, BUILT_IN},
+    {"kill", " <PID>: ", "Kills a process given its PID.", kill_pid, BUILT_IN},
+    {"block", " <PID>: ", "Swaps between ready and blocked state for the given PID.", shell_block, BUILT_IN},
+    {"wait", " <PID>: ", "Waits for the process with the given PID.", shell_wait_pid, BUILT_IN},
+    {"nice", " <PID> <new_priority>: ", "Changes the priority of a process given its PID and the new priority.", shell_nice, BUILT_IN},
+    {"ps", "", "Displays process information.", ps_program, !BUILT_IN},    
+    {"phylo", "", "Hungry philosophers problem.", (void (*)(char **, uint64_t)) phylo, !BUILT_IN},
+    {"cat", "", "Prints the stdin exactly as it is received.", cat, !BUILT_IN},
+    {"loop", " <sleep_ticks>: ", "Greets with its PID every specified number of seconds.", loop, !BUILT_IN},
+    {"filter", "", "Filters vowels from the input.", filter, !BUILT_IN},
+    {"wc", "", "Counts the number of lines in the input.", wc, !BUILT_IN},
+    {"mem", "", "Displays the memory status.", mem, !BUILT_IN},
+    {"testproc", " <max_processes>: ", "Tests process creation.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
+    {"testsync", " <n> <use_sem (0 for false, other int for true)>: ", "Tests process synchronization.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
+    {"testmm", " <max_memory>: ", "Tests the use of malloc and free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
+    {"testprio", "", "Tests the scheduler priorities.", test_prio, !BUILT_IN},
 };
+
 
 
 
@@ -294,7 +293,6 @@ static void interpret()
 	}else if(is_bckg){
 		libc_printf("pid: %d and %d in background.\n", pid1, pid2);
 	}
-
 	return;
 
 
@@ -308,7 +306,7 @@ static void kill_pid(char ** argv, uint64_t argc)
 	pid_t pid;
 	int64_t satoi_flag;
 	if (argc != 2 || argv == NULL || ((pid = libc_satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
-		libc_fprintf(STDERR, "Usage: killpid <pid>\n");
+		libc_fprintf(STDERR, "Usage: kill <pid>\n");
 		return;
 	}
 
@@ -349,7 +347,7 @@ void help(char **args, uint64_t argc) {
         if(i == MAX_MODULES-NUM_TESTS){
 			libc_printf("\n\n-------------------------------                      Functionality tests                      ----------------------------------\n\n");
 		}
-		libc_printf("- %s: %s\n", modules[i].name, modules[i].desc);
+		libc_printf("- %s%s%s%s\n", modules[i].name, modules[i].args == "" ? ": ":"",modules[i].args, modules[i].desc);
     }
 	libc_printf("-------------------------------                                                              -----------------------------------\n\n");
 }
@@ -410,7 +408,7 @@ static void shell_nice(char **argv, uint64_t argc) {
     pid_t pid;
 	int64_t satoi_flag;
     if (argc != 3 || ((pid = libc_satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
-        libc_fprintf(STDERR, "Usage: nice <pid> <new_prio>\n");
+        libc_fprintf(STDERR, "Usage: nice <pid> <new_priority>\n");
         return;
     }
     priority_t prio;
@@ -434,7 +432,7 @@ static void shell_block(char **argv, uint64_t argc){
 	pid_t pid;
 	int64_t satoi_flag;
     if (argc != 2 || ((pid = libc_satoi(argv[1], &satoi_flag)) < 0) || !satoi_flag) {
-        libc_fprintf(STDERR, "Usage: block <pid>");
+        libc_fprintf(STDERR, "Usage: block <pid>\n");
         return;
     }
 	int8_t status = libc_get_status(pid);

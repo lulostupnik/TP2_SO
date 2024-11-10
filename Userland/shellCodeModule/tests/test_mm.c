@@ -19,13 +19,13 @@ uint64_t test_mm ( char * argv[],  uint64_t argc )
 	uint64_t max_memory;
 
 	if ( argc != 2 ) {
-		libc_fprintf(STDERR, "Error: argc must be 2" );
+		libc_fprintf(STDERR, "Usage: testmm <max_memory>\n" );
 		return -1;
 	}
 
 	int64_t satoi_flag;
 	if ( ( max_memory = libc_satoi ( argv[1], &satoi_flag ) ) <= 0 ) {
-		libc_fprintf(STDERR, "Error: could not read from argv" );
+		libc_fprintf(STDERR, "Error: <max_memory> must be a positive integer.\n" );
 		return -1;
 	}
 
@@ -56,7 +56,7 @@ uint64_t test_mm ( char * argv[],  uint64_t argc )
 		for ( i = 0; i < rq; i++ )
 			if ( mm_rqs[i].address )
 				if ( !memcheck ( mm_rqs[i].address, i, mm_rqs[i].size ) ) {
-					libc_fprintf(STDERR, "test_mm ERROR\n" );
+					libc_fprintf(STDERR, "ERROR: memcheck is not true\n" );
 					return -1;
 				}
 

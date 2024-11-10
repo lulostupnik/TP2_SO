@@ -17,7 +17,7 @@ void test_prio()
 		fd_t fds[] = {STDOUT, STDERR, -1};
 		pids[i] = libc_create_process((main_function)endless_loop_print_main, 0, argv, 2, fds);
 		if (pids[i] < 0) {
-			libc_fprintf ( STDERR, "Failed to create process number %d\n", i + 1 );
+			libc_fprintf ( STDERR, "Error: Failed to create process number %d\n", i + 1 );
 		}
 	}
 	bussy_wait(WAIT);

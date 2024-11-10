@@ -46,14 +46,14 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
   int8_t use_sem;
 
   if(check_params(argv, 4, &n, &inc, &use_sem) != 0 ){
-    libc_fprintf(STDERR, "Error: Usage: test_sync <n> <inc> <use_sem>");  
+    libc_fprintf(STDERR, "Error: Usage: my_process_inc <n> <inc> <use_sem>");  
     return -1;
   }
  
 
   if (use_sem){
     if (libc_sem_open(SEM_ID, 1) == -1) {
-      libc_fprintf(STDERR, "test_sync: ERROR opening semaphore\n");
+      libc_fprintf(STDERR, "ERROR opening semaphore\n");
       return -1;
     } 
   }
@@ -61,14 +61,14 @@ uint64_t my_process_inc(char *argv[], uint64_t argc) {
   for (i = 0; i < n; i++) {
     if (use_sem){
       if(libc_sem_wait(SEM_ID) == -1){
-        libc_fprintf(STDERR, "test_sync: ERROR waiting semaphore\n");
+        libc_fprintf(STDERR, "ERROR waiting semaphore\n");
         return -1;
       }
     }
     slowInc(&global, inc);
     if (use_sem){
       if(libc_sem_post(SEM_ID) == -1){
-        libc_fprintf(STDERR, "test_sync: ERROR posting semaphore\n");
+        libc_fprintf(STDERR, "ERROR posting semaphore\n");
         return -1;
       }
     }
@@ -87,7 +87,7 @@ uint64_t test_sync(char *argv[], uint64_t argc) {
 
  
   if (argc != 3){
-    libc_fprintf(STDERR, "Usage: test_sync <n> <use_sem>\n");
+    libc_fprintf(STDERR, "Usage: testsync <n> <use_sem>\n");
     return -1;
   }
   
@@ -95,7 +95,7 @@ uint64_t test_sync(char *argv[], uint64_t argc) {
   char *argvInc[] = {"test_sync_inc", argv[1], "1", argv[2], NULL};
 
   if(check_params(argvDec, 4, NULL, NULL, NULL) != 0 || check_params(argvInc, 4, NULL, NULL, NULL)){
-    libc_fprintf(STDERR, "Usage: test_sync <n> <use_sem>\n");
+    libc_fprintf(STDERR, "Usage: testsync <n> <use_sem>\n");
     return -1;
   }
 
@@ -110,7 +110,7 @@ uint64_t test_sync(char *argv[], uint64_t argc) {
     pids[i + TOTAL_PAIR_PROCESSES] = libc_create_process((main_function) my_process_inc, 1, argvInc, 4, fds);
    
     if(pids[i] == -1 || pids[i+TOTAL_PAIR_PROCESSES] == -1){
-      libc_fprintf(STDOUT, "test_sync: ERROR creating process %d\n", pids[i]);
+      libc_fprintf(STDOUT, "ERROR creating process %d\n", pids[i]);
       flag = 0;
     }
   }
@@ -118,10 +118,10 @@ uint64_t test_sync(char *argv[], uint64_t argc) {
   
   for (i = 0; i < last_wait_idx; i++) {
     if(libc_wait(pids[i], NULL) == -1){
-      libc_fprintf(STDOUT, "test_sync: ERROR waiting for process %d\n", pids[i]);
+      libc_fprintf(STDOUT, "ERROR waiting for process %d\n", pids[i]);
     }
     if(libc_wait(pids[i + TOTAL_PAIR_PROCESSES], NULL) == -1){
-      libc_fprintf(STDOUT, "test_sync: ERROR waiting for process %d\n", pids[i + TOTAL_PAIR_PROCESSES]);
+      libc_fprintf(STDOUT, "ERROR waiting for process %d\n", pids[i + TOTAL_PAIR_PROCESSES]);
     }
   }
   

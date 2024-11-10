@@ -10,7 +10,7 @@
 #define CANT_REGS 18
 
 extern uint64_t exception_regs[CANT_REGS];
-//Orden: RAX, RBX, RCX, RDX, RSI, RDI, RBP, RSP, R8, R9, R10, R11, R12, R13, R14, R15, RIP, RFLAGS
+//Order: RAX, RBX, RCX, RDX, RSI, RDI, RBP, RSP, R8, R9, R10, R11, R12, R13, R14, R15, RIP, RFLAGS
 
 
 static uint8_t * num_to_string ( uint64_t num, uint64_t base )
@@ -70,7 +70,7 @@ void exception_dispatcher ( uint64_t exception )
 	print_regs ( message, message_cant_chars );
 	vdriver_text_write ( STDERR, "\nPress any key to continue", 30 );
 
-	pic_master_mask ( 0xfd );                 //solo habilito interrupciones de teclado
+	pic_master_mask ( 0xfd );                 //only keyboard interrupts
 	_sti();
 	while(!buffer_has_next()){
 		_hlt();

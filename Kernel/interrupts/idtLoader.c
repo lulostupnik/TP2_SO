@@ -5,10 +5,10 @@
 #include <idtLoader.h>
 
 
-#pragma pack(push)		/* Push de la alineación actual */
-#pragma pack (1) 		/* Alinear las siguiente estructuras a 1 byte */
+#pragma pack(push)	
+#pragma pack (1) 		
 
-/* Descriptor de interrupcion */
+
 typedef struct {
 	uint16_t offset_l, selector;
 	uint8_t cero, access;
@@ -16,11 +16,11 @@ typedef struct {
 	uint32_t offset_h, other_cero;
 } DESCR_INT;
 
-#pragma pack(pop)		/* Reestablece la alinceación actual */
+#pragma pack(pop)		
 
 
 
-DESCR_INT * idt = ( DESCR_INT * ) 0;	// IDT de 255 entradas
+DESCR_INT * idt = ( DESCR_INT * ) 0;	
 
 static void setup_idt_entry ( int index, uint64_t offset );
 

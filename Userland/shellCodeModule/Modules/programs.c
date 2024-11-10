@@ -4,7 +4,7 @@
 
 int64_t loop(char ** argv, int argc){
     if(argc != 2){
-        libc_fprintf(STDERR, "Usage: loop <seconds>\n");
+        libc_fprintf(STDERR, "Usage: loop <sleep_ticks>\n");
         return 1;
     }
     int64_t satoi_flag;
@@ -41,7 +41,7 @@ int64_t wc(char ** argv, int argc){
     if(prev == 0 || prev == '\n'){
         lines--;
     }
-    libc_printf("Lines: %d\n", lines);
+    libc_printf("\nLines: %d\n", lines);
 	return 0;
 }
 
