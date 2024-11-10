@@ -3,16 +3,16 @@
 
 #include <libc.h>   
 
-void loop();
+int64_t loop();
 
-void wc();
+int64_t wc();
 
-void filter();
+int64_t filter();
 
-void ps_program();
+int64_t ps_program();
 
-void cat();
+int64_t cat();
 
-void mem();
+int64_t mem();
 
 #endif // PROGRAMS_H
