@@ -4,23 +4,22 @@
 #define GET_SIBLING(i) (i % 2 ? i + 1 : i - 1)
 #define GET_PARENT(i) ((i - 1) / 2) // todo check
 
-#define MEM_SIZE HEAP_SIZE // 0x400    // = 1024
-#define MIN_BLOCK_SIZE BLOCK_SIZE // 16 // 0x10 // 4KB
+#define MAX_MEM_SIZE HEAP_SIZE 
+#define MIN_BLOCK_SIZE BLOCK_SIZE 
 
-#define TREE_BIT_MAP_SIZE (((MEM_SIZE / MIN_BLOCK_SIZE) / 8) * 2)
+#define TREE_BIT_MAP_SIZE (((MAX_MEM_SIZE / MIN_BLOCK_SIZE) / 8) * 2)
 
-#define TREE_BIT_MAP_SIZE (((MEM_SIZE / MIN_BLOCK_SIZE)) * 2)
+#define TREE_BIT_MAP_SIZE (((MAX_MEM_SIZE / MIN_BLOCK_SIZE)) * 2)
 
-uint64_t free_mem = MEM_SIZE;
+uint64_t free_mem = MAX_MEM_SIZE;
 
 int next_power_of_2(int n);
 int get_index_level(int index);
 int get_size_level(int size);
 int get_block_from_index(int index);
 
-char tree_bitmap[TREE_BIT_MAP_SIZE]; // 2 bits por bloque = 256MB / 4KB * 2 = 128K bits = 16KB
+char tree_bitmap[TREE_BIT_MAP_SIZE]; 
 
-// char * tree_bitmap;
 void *start;
 
 int64_t my_mem_info(memory_info *info)
@@ -28,12 +27,12 @@ int64_t my_mem_info(memory_info *info)
     if(info == NULL){
         return -1;
     }
-    info->total_size = MEM_SIZE;
+    info->total_size = MAX_MEM_SIZE;
     info->free = free_mem;
     return 0;
 }
 
-void my_mm_init ( void * p, uint64_t s )
+void my_mm_init ( void * p )
 {
     start = p;
     
@@ -113,7 +112,7 @@ void my_free ( void * p )
         return;
     }
 
-    int index = ((p - start) / MIN_BLOCK_SIZE) + MEM_SIZE / MIN_BLOCK_SIZE - 1; // arrancamos por el bloque de granularidad maxima
+    int index = ((p - start) / MIN_BLOCK_SIZE) + MAX_MEM_SIZE / MIN_BLOCK_SIZE - 1; // arrancamos por el bloque de granularidad maxima
     int flag = 0;
     int n = 1;
     my_free_idx(index, &flag, n);
@@ -145,7 +144,7 @@ int get_index_level(int index)
 int get_size_level(int size)
 {
     int level = 0;
-    for (; 2 * size - 1 < MEM_SIZE; level++)
+    for (; 2 * size - 1 < MAX_MEM_SIZE; level++)
     {
         size *= 2;
     }
@@ -155,7 +154,7 @@ int get_size_level(int size)
 int get_block_from_index(int index)
 {
     int level = get_index_level(index);
-    return (index + 1 - (1 << level)) * ((MEM_SIZE / MIN_BLOCK_SIZE) / (1 << level));
+    return (index + 1 - (1 << level)) * ((MAX_MEM_SIZE / MIN_BLOCK_SIZE) / (1 << level));
 }
 
 #endif
