@@ -51,7 +51,7 @@ static module modules[] = {
     {"testproc", " <max_processes>: ", "Tests process creation.", (void (*)(char **, uint64_t))test_processes, !BUILT_IN},
     {"testsync", " <n> <use_sem (0 for false, other integer for true)>: ", "Tests process synchronization.", (void (*)(char **, uint64_t))test_sync, !BUILT_IN},
     {"testmm", " <max_memory>: ", "Tests the use of malloc and free.", (void (*)(char **, uint64_t))test_mm, !BUILT_IN},
-    {"testprio", "", "Tests the scheduler priorities.", test_prio, !BUILT_IN},
+    {"testprio", "", "Tests the scheduler priorities.", (void (*)(char **, uint64_t)) test_prio, !BUILT_IN},
 };
 
 
