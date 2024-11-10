@@ -7,7 +7,7 @@
 //https://stanislavs.org/helppc/make_codes.html
 
 const uint16_t pressed_key_shift_map[][2] = {
-	{00, 00},               // El scan_code empieza en 0x01, lo pongo para poder entrar directamente en lo que me dan.
+	{00, 00},               // The scan_code starts at 0x01, I set it to enter directly with the given value.
 	{0x1B, 0x1B},           // Escape key
 	{'1', '!'},
 	{'2', '@'},
@@ -92,8 +92,8 @@ const uint16_t pressed_key_shift_map[][2] = {
 	{INS_KEYPAD, '0'},
 	{DEL_KEYPAD, '.'},
 	{SYS_REQ_AT, SYS_REQ_AT},
-	{0, 0},                         //scan code (0x55) vacio
-	{0, 0},                         //scan code (0x56) vacio
+	{0, 0},                         //scan code (0x55) empty
+	{0, 0},                         //scan code (0x56) empty
 	{F11, F11},
 	{F12, F12}
 };

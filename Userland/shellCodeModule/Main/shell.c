@@ -57,16 +57,6 @@ static module modules[] = {
 
 
 
-
-/*
-mem: Prints the memory status.
-loop: Prints its ID with a greeting every specified number of seconds.
-nice: Changes the priority of a process given its ID and the new priority.
-block: Changes the state of a process between blocked and ready, given its ID.
-filter: Filters the vowels from the input.
-*/
-
-
 int main()
 {
 	libc_set_font_size ( font_size );
@@ -379,7 +369,7 @@ void show_current_time()
 	time_struct time;
 	libc_get_time ( &time );
 	to_utc_minus_3 ( &time );
-	libc_printf ( "%d/%d/%d [d/m/y]\n", time.day, time.month, time.year ); //Obs: En el PVS aparece como warning porque no implementamos %u (uint8_t)
+	libc_printf ( "%d/%d/%d [d/m/y]\n", time.day, time.month, time.year );
 	int64_t h = time.hour;
 	libc_printf ( "%d:%d:%d [hour/min/sec] (Argentina)\n", h, time.minutes, time.seconds ); // la hora es -3 para que este en tiempo argentino.
 

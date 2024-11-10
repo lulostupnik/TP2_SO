@@ -16,7 +16,6 @@ uint64_t unblock_arbitrary(pid_t pid);
 int64_t nice ( pid_t pid, uint64_t new_prio );
 void block_current();
 PCB * get_running();
-
 void unblock_waiting_me();
 void unblock_waiting_pid(pid_t pid);
 void unblock_waiting_pcb(PCB * pcb);
@@ -24,4 +23,5 @@ void block_current_no_yield();
 PCB * get_idle_pcb();
 PCB * get_shell_pcb();
 void set_running_null();
+
 #endif

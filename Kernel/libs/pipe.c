@@ -12,7 +12,7 @@ typedef struct pipe_cdt{
     uint8_t buffer[PIPE_BUFFER_SIZE]; 
     uint64_t current_read; 
     uint64_t current_write;           
-    uint64_t data_available_sem; 	    //@Todo cambiar los semaforos a sem_t
+    uint64_t data_available_sem; 	   
     uint64_t can_write_sem; 
 } pipe_cdt;
 

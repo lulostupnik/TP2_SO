@@ -35,7 +35,7 @@ static void nosound()
 	outb ( 0x61, tmp );
 }
 
-//make a libc_beep
+//make a beep
 void beep ( uint32_t freq, int time )
 {
 	play_sound ( freq );

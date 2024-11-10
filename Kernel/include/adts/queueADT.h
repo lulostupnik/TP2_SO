@@ -8,7 +8,6 @@
 
 typedef struct queue_cdt * queue_adt;
 typedef PCB * elem_type_ptr;
-
 typedef int (*t_compare)(elem_type_ptr e1, elem_type_ptr e2);
 queue_adt new_queue();
 uint64_t queue_is_empty(queue_adt queue);

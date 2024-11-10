@@ -7,8 +7,8 @@
 #define SCREEN_WIDTH vbe_mode_info->width
 #define SCREEN_HEIGHT vbe_mode_info->height
 
-#define CHAR_BUFFER_ROWS  48         // Numero de caracteres disponibles con la fuente en 1 (en x).
-#define CHAR_BUFFER_COLS  128        // Numero de caracteres disponibles con la fuente en 1 (en y).
+#define CHAR_BUFFER_ROWS  48        	// Number of characters available with font size 1 (in x).
+#define CHAR_BUFFER_COLS  128        	// Number of characters available with font size 1 (in y).
 #define Y_FONT_OFFSET (FONT_HEIGHT * font_size)
 #define X_FONT_OFFSET (FONT_WIDTH * font_size)
 
@@ -336,7 +336,7 @@ static void back_space()
 
 
 
-#define rows_to_rebuffer(rows_in_screen) (((rows_in_screen)/(2))+1)     // hace que el re_buffer me imprima la ultima mitad de la pantalla
+#define rows_to_rebuffer(rows_in_screen) (((rows_in_screen)/(2))+1)     
 static void re_buffer_print()
 {
 	uint64_t aux = buffer_index; // con el clear screen se setea en 0

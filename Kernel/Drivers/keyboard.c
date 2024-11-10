@@ -6,7 +6,7 @@
 
 
 /*
- * buffer --> es "circular". si se llena, pisa lo que primero se puso.
+* buffer --> is "circular". If it fills up, it overwrites the oldest data.
  */
 #define cant_function_keys 12
 #define special_key_pressed_map_idx(code) ((code) -FIRST_SPECIAL_KEY)
@@ -36,7 +36,7 @@ PCB * get_keyboard_blocked(){
 
 int64_t stdin_read (uint8_t * buff, uint64_t amount )
 {
-	if(blocked != NULL){	// un proceso ya esta esperando...
+	if(blocked != NULL){	// a process is already waiting to get a key...
 		return -1;
 	}
 
@@ -47,7 +47,6 @@ int64_t stdin_read (uint8_t * buff, uint64_t amount )
 		block_current();
 	}
 	
-	//if not buffer_has_next block. 
 	while ( i < amount && buffer_has_next() && buffer[buffer_current] != EOF) {
 		buff[i] = get_current();
 		i++;
@@ -182,7 +181,7 @@ void keyboard_handler()
 	uint8_t key_is_pressed = is_pressed ( key ) ? 1 : 0;
 
 	if ( !key_is_pressed ) {
-		key = released_key_to_pressed_mask ( key ); //la tabla es para pressed !
+		key = released_key_to_pressed_mask ( key ); //table is for pressed keys
 	}
 
 	uint16_t code = pressed_key_shift_map[key][shift_caps_lock_pressed()];

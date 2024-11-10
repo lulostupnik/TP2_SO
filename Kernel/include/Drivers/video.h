@@ -50,19 +50,6 @@ struct vbe_mode_info_structure {
 } __attribute__ ( ( packed ) );
 
 
-/**
- * Structure representing a color
- */
-
-
-/**
- * Structure representing the dimensions of the screen.
- */
-// typedef struct {
-// 	int64_t width;
-// 	int64_t height;
-// } screen_information;
-
 
 
 

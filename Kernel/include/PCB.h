@@ -5,7 +5,6 @@
 #include <driversInformation.h>
 
 
-
 typedef struct PCB {
 	pid_t pid;
 	uint64_t rsp;

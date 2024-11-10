@@ -57,7 +57,7 @@ void *my_alloc(int index, int level)
     {
         return NULL;
     }
-    // esto puesto que si el bloque está ocupado, pero sus hijos están libres, significa que el bloque no está dividido, sino que está ocupado
+    // This is because if the block is occupied, but its children are free, it means the block is not divided but rather fully occupied
 
     void *ptr = my_alloc(index * 2 + 1, level - 1);
     if (ptr == NULL)
@@ -113,7 +113,7 @@ void my_free ( void * p )
         return;
     }
 
-    int index = ((p - start) / MIN_BLOCK_SIZE) + MAX_MEM_SIZE / MIN_BLOCK_SIZE - 1; // arrancamos por el bloque de granularidad maxima
+    int index = ((p - start) / MIN_BLOCK_SIZE) + MAX_MEM_SIZE / MIN_BLOCK_SIZE - 1; // we start with the block of maximum granularity
     int flag = 0;
     int n = 1;
     my_free_idx(index, &flag, n);

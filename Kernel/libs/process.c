@@ -26,7 +26,7 @@ int8_t get_status(pid_t pid){
 pid_t wait(pid_t pid, int64_t * ret){
 
 	PCB * pcb_to_wait = get_pcb(pid);
-	if((pcb_to_wait == NULL) || (pcb_to_wait->status == FREE) || (pcb_to_wait->waiting_me != NULL) || (pid == get_pid()) /*|| (pcb_to_wait == get_idle_pcb())*/){
+	if((pcb_to_wait == NULL) || (pcb_to_wait->status == FREE) || (pcb_to_wait->waiting_me != NULL) || (pid == get_pid()) ){
 		return -1;
 	}
 	if(!(pcb_to_wait->status == ZOMBIE)){
@@ -36,7 +36,7 @@ pid_t wait(pid_t pid, int64_t * ret){
 		block_current();
 		running->waiting_for = NULL;
 	}
-	if(!((pcb_to_wait->status == ZOMBIE))){ // Esto podria pasar si lo mataron
+	if(!((pcb_to_wait->status == ZOMBIE))){ // This could happen if it was killed
 		return -1;
 	}
 	
@@ -251,17 +251,13 @@ static int64_t is_foreground(PCB * pcb){
 
 void get_process_info(PCB * pcb, process_info * process)
 {
-	process->name = new_str_copy(pcb->argv != NULL ? pcb->argv[0] : NULL); // Si falla el malloc lo imprimimos como "No name" pero dejamos el resto del estado. 
+	process->name = new_str_copy(pcb->argv != NULL ? pcb->argv[0] : NULL);// If malloc fails, we print it as "No name" but keep the rest of the state.
 	process->pid = pcb->pid;
 	process->priority = pcb->priority;
 	process->stack_pointer = pcb->rsp;
 	process->lowest_stack_address = pcb->lowest_stack_address;
 	process->status = pcb->status;
 	process->is_background = !is_foreground(pcb);
-	
-	
-	
-
 	for(int i = 0; i < 3; i++){
 		process->fds[i] = pcb->fds[i] ? pcb->fds[i] : -1;
 	}
@@ -337,8 +333,7 @@ void ctrl_c_handler(){
 	if(shell_pcb == NULL || ((foreground_process = shell_pcb->waiting_for) == NULL)){
 		return;
 	}
-
-	//primero se hace wait al de la derecha del pipe.
+	// first, we wait on the right side of the pipe.
 	PCB * other_process_in_pipe = NULL;
 	if(foreground_process->fds[STDIN] > MAX_COMMON_FD){
 		other_process_in_pipe = get_pcb(pipe_get_pid(foreground_process->fds[STDIN]-3, WRITER));

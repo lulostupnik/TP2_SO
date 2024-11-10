@@ -11,10 +11,11 @@
 typedef struct list_cdt * list_adt;
 typedef PCB * elem_type_ptr;
 
+
 /*
-*  < 0 si e1 debe estar antes que e2 (aka e1< e2, en caso ascendente)
-*  > 0 si e1 debe estar despues que e2 (aka e1 > e2)
-*  0 si son "iguales"
+ *  < 0 if e1 should be before e2 (i.e., e1 < e2 in ascending order)
+ *  > 0 if e1 should be after e2 (i.e., e1 > e2)
+ *  0 if they are "equal"
 */
 
 
