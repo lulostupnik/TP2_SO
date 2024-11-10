@@ -229,7 +229,7 @@ static void interpret()
 
 	int found_idx[2] = {-1,-1};
 	int look_for_max = has_pipe ? 2:1;
-	for(int j=0; j<look_for_max ; j++){
+	for(int j = 0; j < look_for_max ; j++){
 		for ( int i = 0; i < MAX_MODULES && ((cmd.args[j] != NULL) || (cmd.argc[j] != 0)); i++ ) {
 			if ( libc_strcmp (cmd.args[j][0], modules[i].name ) == 0 ) {
 			found_idx[j] = i;
@@ -237,66 +237,70 @@ static void interpret()
 			}
 		}
 	}
+
+	if(found_idx[0] == -1){
+		libc_fprintf ( STDERR, "Error: Invalid Command! Try Again.\n" );
+		return;
+	}
+
 	fd_t fds[] = {STDOUT, STDERR, STDIN};
 	fd_t writer_fds[] = {STDOUT,STDERR, STDIN};
 	fd_t reader_fds[] = {STDOUT,STDERR, STDIN};
 
-	if(found_idx[0] != -1){
-		if(!has_pipe){
-			uint8_t is_bckg = (libc_strcmp(cmd.args[0][cmd.argc[0] - 1], "&") == 0);
-			if(is_bckg && modules[found_idx[0]].is_built_in){
-				libc_fprintf ( STDERR, "Error: Cannot use built-in in background\n" );
-				free_cmd_args(&cmd);
-				return;
-			}
-			if(is_bckg){
-				fds[STDIN] = -1;
-				libc_free(cmd.args[0][cmd.argc[0] - 1]);
-				cmd.argc[0]--;
-			}
-   			int64_t pid = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
-			if(!is_bckg && pid > 0) {
-				libc_wait(pid, NULL);
-			}else if(is_bckg){
-				libc_printf("Pid: %d in background\n", pid);
-			}
+	if(!has_pipe){
+		uint8_t is_bckg = (libc_strcmp(cmd.args[0][cmd.argc[0] - 1], "&") == 0);
+		if(is_bckg && modules[found_idx[0]].is_built_in){
+			libc_fprintf ( STDERR, "Error: Cannot use built-in in background\n" );
+			free_cmd_args(&cmd);
 			return;
 		}
-		if(found_idx[1] != -1){
-			if(modules[found_idx[0]].is_built_in || modules[found_idx[1]].is_built_in){
-				libc_fprintf ( STDERR, "Cannot use built-in in pipe\n" );
-				free_cmd_args(&cmd);
-				return;
-			}
-			fd_t fd = libc_pipe_reserve();
-			
-			if(fd < 0){
-				libc_fprintf ( STDERR, "Error: Could not open pipe\n" );
-				free_cmd_args(&cmd);
-				return;
-			}
+		if(is_bckg){
+			fds[STDIN] = -1;
+			libc_free(cmd.args[0][cmd.argc[0] - 1]);
+			cmd.argc[0]--;
+		}
+		int64_t pid = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], fds);
+		if(!is_bckg && pid > 0) {
+			libc_wait(pid, NULL);
+		}else if(is_bckg){
+			libc_printf("Pid: %d in background\n", pid);
+		}
+		return;
+	}
+	if(found_idx[1] != -1){
+		if(modules[found_idx[0]].is_built_in || modules[found_idx[1]].is_built_in){
+			libc_fprintf ( STDERR, "Cannot use built-in in pipe\n" );
+			free_cmd_args(&cmd);
+			return;
+		}
+		fd_t fd = libc_pipe_reserve();
+		
+		if(fd < 0){
+			libc_fprintf ( STDERR, "Error: Could not open pipe\n" );
+			free_cmd_args(&cmd);
+			return;
+		}
 
-			uint8_t is_bckg = (libc_strcmp(cmd.args[1][cmd.argc[1] - 1], "&") == 0) && !modules[found_idx[1]].is_built_in;
-			if(is_bckg){
-				libc_free(cmd.args[1][cmd.argc[1] - 1]);
-				cmd.argc[1]--;
-			}
-			writer_fds[STDOUT] = fd;
-			int64_t pid1 = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], writer_fds);
-			reader_fds[STDIN] = fd;
-			int64_t pid2 = call_function_process(modules[found_idx[1]], cmd.args[1], cmd.argc[1], reader_fds);
-			if(!is_bckg && pid2 > 0) {
-				libc_wait(pid2, NULL);
-				libc_wait(pid1, NULL);
-			}else if(is_bckg){
-				libc_printf("pid: %d and %d in background.\n", pid1, pid2);
-			}
-	
-			return;
+		uint8_t is_bckg = (libc_strcmp(cmd.args[1][cmd.argc[1] - 1], "&") == 0) && !modules[found_idx[1]].is_built_in;
+		if(is_bckg){
+			libc_free(cmd.args[1][cmd.argc[1] - 1]);
+			cmd.argc[1]--;
 		}
+		writer_fds[STDOUT] = fd;
+		int64_t pid1 = call_function_process(modules[found_idx[0]], cmd.args[0], cmd.argc[0], writer_fds);
+		reader_fds[STDIN] = fd;
+		int64_t pid2 = call_function_process(modules[found_idx[1]], cmd.args[1], cmd.argc[1], reader_fds);
+		if(!is_bckg && pid2 > 0) {
+			libc_wait(pid2, NULL);
+			libc_wait(pid1, NULL);
+		}else if(is_bckg){
+			libc_printf("pid: %d and %d in background.\n", pid1, pid2);
+		}
+
+		return;
 	}
 
-	libc_fprintf ( STDERR, "Error: Invalid Command! Try Again.\n" );
+
 }
 
 
