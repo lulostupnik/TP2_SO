@@ -12,6 +12,6 @@
 
 #define TOTAL_PROCESSES 3
 
-void test_prio();
+int64_t test_prio();
 
 #endif
