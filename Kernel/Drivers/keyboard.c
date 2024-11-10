@@ -5,8 +5,6 @@
 #include <libasm.h>
 
 
-
-
 /*
  * buffer --> es "circular". si se llena, pisa lo que primero se puso.
  */
@@ -14,7 +12,7 @@
 #define special_key_pressed_map_idx(code) ((code) -FIRST_SPECIAL_KEY)
 
 
-static uint16_t buffer[BUFFER_SIZE];
+static uint8_t buffer[BUFFER_SIZE];
 static uint64_t buffer_dim = 0;
 static uint64_t buffer_current = 0;
 static uint8_t reg_shot_flag = 0;
@@ -36,7 +34,7 @@ PCB * get_keyboard_blocked(){
 	return blocked;
 }
 
-int64_t stdin_read (uint16_t * buff, uint64_t amount )
+int64_t stdin_read (uint8_t * buff, uint64_t amount )
 {
 	if(blocked != NULL){	// un proceso ya esta esperando...
 		return -1;
@@ -54,6 +52,7 @@ int64_t stdin_read (uint16_t * buff, uint64_t amount )
 		buff[i] = get_current();
 		i++;
 	}
+
 	if(buffer[buffer_current] == EOF){
 		get_current();
 	}
@@ -210,6 +209,9 @@ void keyboard_handler()
 			ctrl_c_handler();
 			return;
 		}
+	}
+	if(is_special_key(code) || code < 0 || code > LAST_ASCII){
+		return;
 	}
 
 	buffer[buffer_dim] = code;

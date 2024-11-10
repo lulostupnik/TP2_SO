@@ -8,8 +8,8 @@
 #define NOT_VALID_SYS_ID -1
 #define NUM_SYSCALLS 38 
 
-int64_t sys_read (uint16_t * buffer, uint64_t amount);
-int64_t sys_write (uint64_t fd, const char * buffer, uint64_t amount);
+int64_t sys_read (uint8_t * buffer, uint64_t amount);
+int64_t sys_write (uint64_t fd, uint8_t * buffer, uint64_t amount);
 int64_t sys_get_register_snapshot (snapshot * snapshot);
 int64_t sys_beep (uint32_t frequency, uint32_t duration);
 int64_t sys_set_font_size (uint64_t size);

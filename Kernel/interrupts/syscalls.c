@@ -107,7 +107,7 @@ int64_t sys_pipe_reserve(){
 }
 
 
-int64_t sys_read (  uint16_t * buffer, uint64_t amount )
+int64_t sys_read (  uint8_t * buffer, uint64_t amount )
 {
 	fd_t fd = get_running()->fds[STDIN];
 	if(fd == STDIN) {
@@ -118,7 +118,7 @@ int64_t sys_read (  uint16_t * buffer, uint64_t amount )
 
 
 //modo texto:
-int64_t sys_write ( uint64_t fd, const char * buffer, uint64_t amount )
+int64_t sys_write ( uint64_t fd,  uint8_t * buffer, uint64_t amount )
 {
 	if(fd != STDOUT && fd != STDERR){
 		return -1;

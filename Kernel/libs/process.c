@@ -183,7 +183,7 @@ int64_t kill_process_pcb(PCB * pcb){
 	}
 	
 	close_fds(pcb);
-	delete_from_blocked_queue(pcb);
+	sem_delete_from_blocked_queue(pcb);
 	if(set_free_pcb(pcb) != -1){
 		amount_of_processes--;
 	}
@@ -242,13 +242,12 @@ void get_process_info(PCB * pcb, process_info * process)
 	process->lowest_stack_address = pcb->lowest_stack_address;
 	process->status = pcb->status;
 	process->is_background = !is_foreground(pcb);
-	PCB * pcb2;
 	
 	
 	
 
 	for(int i = 0; i < 3; i++){
-		process->fds[i] = pcb->fds ? pcb->fds[i] : -1;
+		process->fds[i] = pcb->fds[i] ? pcb->fds[i] : -1;
 	}
 }
 
