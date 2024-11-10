@@ -163,14 +163,10 @@ static int64_t philosopher(char ** argv, uint64_t argc) {
     
         eat(i);
 
-        if(i % 2 == 0){
-            libc_sem_post(philos_array[i].right_fork);
-            libc_sem_post(philos_array[i].left_fork);
-        }else{
-            libc_sem_post(philos_array[i].right_fork);
-            libc_sem_post(philos_array[i].left_fork);
-        }
-        
+        libc_sem_post(philos_array[i].right_fork);
+        libc_sem_post(philos_array[i].left_fork);
+    
+    
         if(have_last_sem){
             libc_sem_post(last_mutex);
         }
