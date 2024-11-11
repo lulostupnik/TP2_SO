@@ -44,7 +44,7 @@ static module modules[] = {
 {"ps", "", "Displays process information.", ( void ( * ) ( char **, uint64_t ) ) ps_program, !BUILT_IN},
 {"phylo", "", "Hungry philosophers problem.", ( void ( * ) ( char **, uint64_t ) ) phylo, !BUILT_IN},
 {"cat", "", "Prints the stdin exactly as it is received.", ( void ( * ) ( char **, uint64_t ) ) cat, !BUILT_IN},
-{"loop", " <sleep_ticks>: ", "Greets with its PID every specified number of seconds.", ( void ( * ) ( char **, uint64_t ) ) loop, !BUILT_IN},
+{"loop", " <seconds>: ", "Greets with its PID every specified number of seconds.", ( void ( * ) ( char **, uint64_t ) ) loop, !BUILT_IN},
 {"filter", "", "Filters vowels from the input.", ( void ( * ) ( char **, uint64_t ) ) filter, !BUILT_IN},
 {"wc", "", "Counts the number of lines in the input.", ( void ( * ) ( char **, uint64_t ) ) wc, !BUILT_IN},
 {"mem", "", "Displays the memory status.", ( void ( * ) ( char **, uint64_t ) ) mem, !BUILT_IN},

@@ -5,7 +5,7 @@
 int64_t loop ( char ** argv, int argc )
 {
 	if ( argc != 2 ) {
-		libc_fprintf ( STDERR, "Usage: loop <sleep_ticks>\n" );
+		libc_fprintf ( STDERR, "Usage: loop <seconds>\n" );
 		return 1;
 	}
 	int64_t satoi_flag;
@@ -14,10 +14,9 @@ int64_t loop ( char ** argv, int argc )
 		libc_fprintf ( STDERR, "Error: Invalid amount of seconds\n" );
 		return 1;
 	}
-	uint64_t ticks = seconds * 18;
 	int64_t ans = 1;
 	while ( ans > 0 ) {
-		libc_ticks_sleep ( ticks );
+		libc_sleep ( seconds );
 		ans = libc_printf ( "Hello! I'm a loop with pid: %d\n", libc_get_pid() );
 	}
 	return 0;

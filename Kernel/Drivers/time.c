@@ -3,9 +3,10 @@
 
 #include <time.h>
 extern void _hlt();
-static unsigned long ticks = 0;
+static uint64_t ticks = 0;
 
 static ordered_list_adt sleeping_list;
+static uint64_t closest_tick = 0;
 
 int compare ( PCB * pcb1, PCB * pcb2 )
 {
@@ -30,6 +31,9 @@ void timer_handler()
 {
 	ticks++;
 	if ( sleeping_list == NULL ) {
+		return;
+	}
+	if(ticks < closest_tick){
 		return;
 	}
 	ordered_list_to_begin ( sleeping_list );
