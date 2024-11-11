@@ -11,7 +11,7 @@
 #include <shared_defs.h>
 #include <semaphores.h>
 #include <kernel_libc.h>
-#include <driversInformation.h>
+#include <drivers_information.h>
 #include <pipe.h>
 #include <keyboard.h>
 #include <time.h>

@@ -4,7 +4,7 @@
 #include <libc.h>
 #include <shared_libc.h>
 #include <shared_defs.h>
-#include <driversInformation.h>
+#include <drivers_information.h>
 #include <shell.h>
 
 #define MAX_PHILOS 15

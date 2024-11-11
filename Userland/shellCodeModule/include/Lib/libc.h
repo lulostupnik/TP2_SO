@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stdarg.h>
-#include <driversInformation.h>
+#include <drivers_information.h>
 #include <shared_defs.h>
 #include <syscalls.h>
 #include <stddef.h>

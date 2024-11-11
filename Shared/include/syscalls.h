@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <shared_defs.h>
-#include <driversInformation.h>
+#include <drivers_information.h>
 
 #define NOT_VALID_SYS_ID -1
 #define NUM_SYSCALLS 39
