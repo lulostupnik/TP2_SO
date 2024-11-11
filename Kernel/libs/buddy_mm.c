@@ -122,7 +122,7 @@ static void *my_alloc ( int index, int level, memory_manager_adt mem )
 static void my_free_idx ( int index, int * flag, int n, memory_manager_adt mem )
 {
 	memory_manager_cdt * aux = ( memory_manager_cdt * ) mem;
-	if(aux == NULL){
+	if( aux == NULL ){
 		return;
 	}
 	if ( index == 0 ) {
