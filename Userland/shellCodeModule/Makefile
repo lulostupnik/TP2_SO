@@ -1,7 +1,7 @@
 include ../Makefile.inc
 
 MODULE=0000-shellCodeModule
-SOURCES=$(wildcard */*.c) $(wildcard ../../SharedLibs/libs/*.c)
+SOURCES=$(wildcard */*.c) $(wildcard ../../Shared/libs/*.c)
 
 SOURCES_ASM=$(wildcard */*.asm)
 OBJECTS=$(SOURCES:.c=.o)
@@ -9,7 +9,7 @@ OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
 LOADERSRC=_loader.c
 LOADEROBJECT=$(LOADERSRC:.c=.o)
 
-INCLUDE_DIRS=$(shell find include -type d) $(shell find ../../SharedLibs/include -type d)
+INCLUDE_DIRS=$(shell find include -type d) $(shell find ../../Shared/include -type d)
 INCLUDE_FLAGS=$(addprefix -I,$(INCLUDE_DIRS))
 
 all: $(MODULE)

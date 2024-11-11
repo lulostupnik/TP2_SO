@@ -14,7 +14,7 @@ clean:
 	cd shellCodeModule; make clean
 	rm -rf *.bin
 	rm -rf *.elf
-	@if [ -e ../SharedLibs/libs/*.o ]; then rm -rf ../SharedLibs/libs/*.o; fi
+	@if [ -e ../Shared/libs/*.o ]; then rm -rf ../Shared/libs/*.o; fi
 	
 
 

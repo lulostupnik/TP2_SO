@@ -8,7 +8,7 @@ SOURCES_INTERRUPTS=$(wildcard interrupts/*.c)
 SOURCES_LIBS=$(wildcard libs/*.c) 
 SOURCES_TESTS=$(wildcard tests/*.c)  
 SOURCES_ADTS=$(wildcard ADTs/*.c)
-SOURCES_SHARED=$(wildcard ../SharedLibs/libs/*.c)
+SOURCES_SHARED=$(wildcard ../Shared/libs/*.c)
 OBJECTS=$(SOURCES:.c=.o)
 OBJECTS_SHARED=$(SOURCES_SHARED:.c=.o)
 OBJECTS_ASM=$(SOURCES_ASM:.asm=.o)
@@ -22,7 +22,7 @@ LOADERSRC=loader.asm
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
-INCLUDE_DIRS=$(shell find include -type d) $(shell find ../SharedLibs/include -type d)
+INCLUDE_DIRS=$(shell find include -type d) $(shell find ../Shared/include -type d)
 INCLUDE_FLAGS=$(addprefix -I,$(INCLUDE_DIRS))
 
 
@@ -44,7 +44,7 @@ $(LOADEROBJECT):
 
 clean:
 	rm -rf asm/*.o *.o *.bin Drivers/*.o interrupts/*.o libs/*.o tests/*.o ADTs/*.o
-	@if [ -e ../SharedLibs/libs/*.o ]; then rm -rf ../SharedLibs/libs/*.o; fi
+	@if [ -e ../Shared/libs/*.o ]; then rm -rf ../Shared/libs/*.o; fi
 	rm -rf *.elf
 
 .PHONY: all clean
