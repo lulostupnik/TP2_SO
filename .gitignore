@@ -33,3 +33,5 @@ complie_out_toolchain.txt
 .tmux.conf
 tgdb
 report.task
+Kernel/kernel.elf
+Userland/0000-shellCodeModule.elf
