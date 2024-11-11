@@ -6,7 +6,7 @@
 #include <string.h>
 #include <module_loader.h>
 #include <video.h>
-#include <idtLoader.h>
+#include <idt_loader.h>
 #include <syscalls.h>
 #include <keyboard.h>
 #include <memory_management.h>

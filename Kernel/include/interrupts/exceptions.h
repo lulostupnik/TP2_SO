@@ -4,8 +4,8 @@
 #define TPE_ARQUI_EXCEPTIONS_H
 
 #include <video.h>
-#include <idtLoader.h>
-#include <syscallsKernel.h>
+#include <idt_loader.h>
+#include <syscalls_kernel.h>
 #include <interrupts.h>
 #include <keyboard.h>
 

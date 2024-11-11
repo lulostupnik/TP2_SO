@@ -1,6 +1,6 @@
 #ifndef _TIME_H_
 #define _TIME_H_
-#include <ordered_list_ADT.h>
+#include <ordered_list_adt.h>
 #include <process.h>
 void timer_handler();
 int ticks_elapsed();
