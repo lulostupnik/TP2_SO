@@ -6,16 +6,13 @@ toolchain:
 	cd Toolchain; make all
 bootloader:
 	cd Bootloader; make all
-
 kernel:
 	cd Kernel; make all MM=-D$(MM)
-
 userland:
 	cd Userland; make all
 
 image: kernel bootloader userland
 	cd Image; make all
-
 
 buddy: MM=BUDDY
 buddy: toolchain bootloader kernel userland image
