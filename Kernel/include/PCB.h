@@ -18,7 +18,7 @@ typedef struct PCB {
 	struct PCB * waiting_me;
 	struct PCB * waiting_for;
 	int64_t blocked_by_sem;
-  	fd_t fds[CANT_FDS];
+	fd_t fds[CANT_FDS];
 	uint64_t time;
 	uint64_t start;
 } PCB;

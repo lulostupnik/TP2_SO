@@ -29,11 +29,11 @@
 
 typedef struct module
 {
-    char *name;
-	char *args; 
-    char *desc;
-    void (*function)(char **args, uint64_t argc);
-    uint8_t is_built_in;
+	char *name;
+	char *args;
+	char *desc;
+	void ( *function ) ( char **args, uint64_t argc );
+	uint8_t is_built_in;
 } module;
 
 int main();

@@ -138,22 +138,22 @@ parse_opt ( int key, char * arg, struct argp_state * state )
 	struct arguments * arguments = state->input;
 
 	switch ( key ) {
-		case 'o':
-			arguments->output_file = arg;
-			break;
+	case 'o':
+		arguments->output_file = arg;
+		break;
 
-		case ARGP_KEY_ARG:
-			arguments->argv[state->arg_num] = arg;
-			break;
+	case ARGP_KEY_ARG:
+		arguments->argv[state->arg_num] = arg;
+		break;
 
-		case ARGP_KEY_END:
-			if ( state->arg_num < 1 )
-				argp_usage ( state );
-			arguments->count = state->arg_num;
-			break;
+	case ARGP_KEY_END:
+		if ( state->arg_num < 1 )
+			argp_usage ( state );
+		arguments->count = state->arg_num;
+		break;
 
-		default:
-			return ARGP_ERR_UNKNOWN;
+	default:
+		return ARGP_ERR_UNKNOWN;
 	}
 	return 0;
 }

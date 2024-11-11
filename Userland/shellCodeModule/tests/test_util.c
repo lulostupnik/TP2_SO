@@ -44,30 +44,30 @@ void endless_loop()
 	while ( 1 );
 }
 
-void endless_loop_print_main(char ** argv, uint64_t argc)
+void endless_loop_print_main ( char ** argv, uint64_t argc )
 {
-	
-	if (argv == NULL || argc != 2) {
+
+	if ( argv == NULL || argc != 2 ) {
 		libc_fprintf ( STDERR, "Error: Wrong parameters\n" );
 		return;
 	}
 
 	int64_t satoi_flag;
-	uint64_t wait = libc_satoi(argv[1], &satoi_flag);
-	
-	if (wait <= 0 || !satoi_flag) {
+	uint64_t wait = libc_satoi ( argv[1], &satoi_flag );
+
+	if ( wait <= 0 || !satoi_flag ) {
 		libc_fprintf ( STDERR, "Error: argv[1] must be a positive integer\n" );
 		return;
 	}
 
-	endless_loop_print(wait);
+	endless_loop_print ( wait );
 }
 
-void endless_loop_print(uint64_t wait)
+void endless_loop_print ( uint64_t wait )
 {
 	pid_t pid = libc_get_pid();
-	while (1) {
-		libc_printf("%d ", pid);
-		bussy_wait(wait);
+	while ( 1 ) {
+		libc_printf ( "%d ", pid );
+		bussy_wait ( wait );
 	}
 }

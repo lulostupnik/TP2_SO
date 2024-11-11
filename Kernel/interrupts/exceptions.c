@@ -72,7 +72,7 @@ void exception_dispatcher ( uint64_t exception )
 
 	pic_master_mask ( 0xfd );                 //only keyboard interrupts
 	_sti();
-	while(!buffer_has_next()){
+	while ( !buffer_has_next() ) {
 		_hlt();
 	}
 	get_current();

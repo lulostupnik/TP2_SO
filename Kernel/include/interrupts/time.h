@@ -7,6 +7,6 @@ int ticks_elapsed();
 int seconds_elapsed();
 int64_t ticks_sleep ( int time );
 void init_timer_handler();
-void unsleep_kill(PCB * pcb);
+void unsleep_kill ( PCB * pcb );
 
 #endif

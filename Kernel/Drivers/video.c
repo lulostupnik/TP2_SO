@@ -138,22 +138,22 @@ int64_t vdriver_text_write ( uint64_t fd,  char * buffer, int64_t amount )
 	uint64_t i = 0;
 	while ( i < amount && buffer[i] != 0 ) {
 		switch ( buffer[i] ) {
-			case '\n':
-				new_line();
-				break;
-			case '\b':
-				back_space();
-				break;
-			case '\t':
-				tabulator();
-				break;
-			default:
-				if ( buffer[i] >= FIRST_ASCII_FONT && buffer[i] <= LAST_ASCII_FONT ) {
-					char_buffer_type c = {buffer[i], fd};
-					add_char_to_buffer ( buffer[i], fd );
-					print_font ( c );
-				}
-				break;
+		case '\n':
+			new_line();
+			break;
+		case '\b':
+			back_space();
+			break;
+		case '\t':
+			tabulator();
+			break;
+		default:
+			if ( buffer[i] >= FIRST_ASCII_FONT && buffer[i] <= LAST_ASCII_FONT ) {
+				char_buffer_type c = {buffer[i], fd};
+				add_char_to_buffer ( buffer[i], fd );
+				print_font ( c );
+			}
+			break;
 		}
 		i++;
 	}
@@ -336,7 +336,7 @@ static void back_space()
 
 
 
-#define rows_to_rebuffer(rows_in_screen) (((rows_in_screen)/(2))+1)     
+#define rows_to_rebuffer(rows_in_screen) (((rows_in_screen)/(2))+1)
 static void re_buffer_print()
 {
 	uint64_t aux = buffer_index; // con el clear screen se setea en 0

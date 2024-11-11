@@ -5,8 +5,8 @@
 #include <idtLoader.h>
 
 
-#pragma pack(push)	
-#pragma pack (1) 		
+#pragma pack(push)
+#pragma pack (1)
 
 
 typedef struct {
@@ -16,11 +16,11 @@ typedef struct {
 	uint32_t offset_h, other_cero;
 } DESCR_INT;
 
-#pragma pack(pop)		
+#pragma pack(pop)
 
 
 
-DESCR_INT * idt = ( DESCR_INT * ) 0;	
+DESCR_INT * idt = ( DESCR_INT * ) 0;
 
 static void setup_idt_entry ( int index, uint64_t offset );
 

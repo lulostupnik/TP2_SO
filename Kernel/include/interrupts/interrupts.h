@@ -29,8 +29,8 @@ void pic_slave_mask ( uint8_t mask );
 
 void haltcpu ( void );
 
-void timer_tick( void );
+void timer_tick ( void );
 
-void yield( void );
+void yield ( void );
 
 #endif

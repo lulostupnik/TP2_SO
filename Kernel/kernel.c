@@ -50,15 +50,17 @@ void * initializeKernelBinary()
 
 void idle_process()
 {
-	while (1) {
+	while ( 1 ) {
 		_hlt();
 	}
 }
 
-memory_manager_adt get_userland_mem(){
+memory_manager_adt get_userland_mem()
+{
 	return userland_mem;
 }
-memory_manager_adt get_kernel_mem(){
+memory_manager_adt get_kernel_mem()
+{
 	return kernel_mem;
 }
 
@@ -67,12 +69,12 @@ int main()
 {
 	load_idt();
 	kernel_mem = my_mm_init ( heap );
-	userland_mem = my_mm_init ( heap + HEAP_SIZE);
+	userland_mem = my_mm_init ( heap + HEAP_SIZE );
 	char * argv_idle[] = {"idle"};
 	char * argv_shell[] = {"sh"};
 	fd_t idle_fds[3] = {-1, -1, -1};
 	fd_t shell_fds[3] = {STDOUT, STDERR, STDIN};
-	initialize_scheduler(new_process((main_function) shellCodeModuleAddress, HIGH, 0, argv_shell, 1, shell_fds),new_process((main_function) idle_process, LOW, 0, argv_idle, 1, idle_fds));	
+	initialize_scheduler ( new_process ( ( main_function ) shellCodeModuleAddress, HIGH, 0, argv_shell, 1, shell_fds ), new_process ( ( main_function ) idle_process, LOW, 0, argv_idle, 1, idle_fds ) );
 	pipe_init();
 	init_timer_handler();
 	timer_tick();

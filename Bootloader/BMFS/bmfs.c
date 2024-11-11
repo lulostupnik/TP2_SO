@@ -261,25 +261,25 @@ int initialize ( char * diskname, char * size, char * mbr, char * boot, char * k
 			ret = 1;
 		} else {
 			switch ( toupper ( ch ) ) {
-				case 'K':
-					diskSizeFactor = 1;
-					break;
-				case 'M':
-					diskSizeFactor = 2;
-					break;
-				case 'G':
-					diskSizeFactor = 3;
-					break;
-				case 'T':
-					diskSizeFactor = 4;
-					break;
-				case 'P':
-					diskSizeFactor = 5;
-					break;
-				default:
-					printf ( "Error: Invalid disk size string: '%s'\n", size );
-					ret = 1;
-					break;
+			case 'K':
+				diskSizeFactor = 1;
+				break;
+			case 'M':
+				diskSizeFactor = 2;
+				break;
+			case 'G':
+				diskSizeFactor = 3;
+				break;
+			case 'T':
+				diskSizeFactor = 4;
+				break;
+			case 'P':
+				diskSizeFactor = 5;
+				break;
+			default:
+				printf ( "Error: Invalid disk size string: '%s'\n", size );
+				ret = 1;
+				break;
 			}
 
 			// If this character is a valid unit indicator, but is not at the

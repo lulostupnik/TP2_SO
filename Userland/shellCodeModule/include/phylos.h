@@ -17,6 +17,6 @@
 #define SLEEP_CONSTANT 3
 #define THINK_CONSTANT 1
 #define GET_UNIFORM_CONSTANT 3
-int64_t phylo(char ** argv, int argc);
+int64_t phylo ( char ** argv, int argc );
 
 #endif

@@ -21,10 +21,10 @@ struct list_cdt {
 
 
 
-list_adt new_list(t_compare cmp)
+list_adt new_list ( t_compare cmp )
 {
-	list_adt aux = my_malloc(sizeof(*aux), get_kernel_mem());
-	if (aux == NULL) {
+	list_adt aux = my_malloc ( sizeof ( *aux ), get_kernel_mem() );
+	if ( aux == NULL ) {
 		return NULL;
 	}
 	aux->size = 0;
@@ -34,66 +34,66 @@ list_adt new_list(t_compare cmp)
 }
 
 
-void free_list(list_adt list)
+void free_list ( list_adt list )
 {
-	if (list == NULL) {
+	if ( list == NULL ) {
 		return;
 	}
-	for (int i = 0; i < list->size; i++) {
+	for ( int i = 0; i < list->size; i++ ) {
 		t_list aux = list->pre_next;
 		list->pre_next = list->pre_next->tail;
-		my_free(aux, get_kernel_mem());
+		my_free ( aux, get_kernel_mem() );
 	}
-	my_free(list, get_kernel_mem());
+	my_free ( list, get_kernel_mem() );
 }
 
-int is_empty_list(const list_adt list)
+int is_empty_list ( const list_adt list )
 {
 	return list == NULL || list->pre_next == NULL;
 }
 
-int size_list(const list_adt list)
+int size_list ( const list_adt list )
 {
-	if (list == NULL) {
+	if ( list == NULL ) {
 		return -1;
 	}
 	return list->size;
 }
 
-int add_list(list_adt list, elem_type_ptr elem)
+int add_list ( list_adt list, elem_type_ptr elem )
 {
-	if (list == NULL) {
+	if ( list == NULL ) {
 		return -1;
 	}
 
-	t_list new_node = my_malloc(sizeof(*new_node), get_kernel_mem());
-	if (new_node == NULL) {
+	t_list new_node = my_malloc ( sizeof ( *new_node ), get_kernel_mem() );
+	if ( new_node == NULL ) {
 		return -1;
 	}
-	
 
-	if (list->pre_next == NULL) {
+
+	if ( list->pre_next == NULL ) {
 		list->pre_next = new_node;
 		list->pre_next->tail = new_node;
 		list->pre_next->head = elem;
 	} else {
 		new_node->head = list->pre_next->head;
 		list->pre_next->head = elem;
-		
+
 		new_node->tail = list->pre_next->tail;
 		list->pre_next->tail = new_node;
 		list->pre_next = new_node;
 	}
 
-	
+
 
 	list->size++;
 	return 0;
 }
 
-elem_type_ptr next(list_adt list)
+elem_type_ptr next ( list_adt list )
 {
-	if (is_empty_list(list)) {
+	if ( is_empty_list ( list ) ) {
 		return NULL;
 	}
 
@@ -103,16 +103,16 @@ elem_type_ptr next(list_adt list)
 }
 
 
-int delete_list(list_adt list, elem_type_ptr elem)
+int delete_list ( list_adt list, elem_type_ptr elem )
 {
-	if (is_empty_list(list)) {
+	if ( is_empty_list ( list ) ) {
 		return -1;
 	}
-	if (list->size == 1) {
-		if (list->cmp(elem, list->pre_next->head) != 0) {
+	if ( list->size == 1 ) {
+		if ( list->cmp ( elem, list->pre_next->head ) != 0 ) {
 			return -1;
 		}
-		my_free(list->pre_next, get_kernel_mem());
+		my_free ( list->pre_next, get_kernel_mem() );
 		list->pre_next = NULL;
 		list->size = 0;
 		return 0;
@@ -120,13 +120,13 @@ int delete_list(list_adt list, elem_type_ptr elem)
 
 	t_list ant = list->pre_next;
 	t_list current = list->pre_next->tail;
-	for (int i = 0; i < list->size ; i++) {
-		if (list->cmp(elem, current->head) == 0) {
+	for ( int i = 0; i < list->size ; i++ ) {
+		if ( list->cmp ( elem, current->head ) == 0 ) {
 			ant->tail = current->tail;
-			if (list->pre_next == current) {
+			if ( list->pre_next == current ) {
 				list->pre_next = ant;
 			}
-			my_free(current, get_kernel_mem());
+			my_free ( current, get_kernel_mem() );
 			list->size -- ;
 			return 0;
 		}

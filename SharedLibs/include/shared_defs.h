@@ -49,7 +49,7 @@ typedef int64_t sem_t;
 typedef int64_t fd_t;
 
 typedef enum { LOW = 0, MEDIUM, HIGH } priority_t;
-typedef enum  {READER=0, WRITER} pipe_mode_t;
+typedef enum  {READER = 0, WRITER} pipe_mode_t;
 #define EOF 0
 
 typedef struct process_info {
@@ -73,12 +73,12 @@ typedef struct memory_info {
 	uint64_t free;
 } memory_info;
 
-#define FREE 0  
+#define FREE 0
 #define READY 1
 #define BLOCKED 2
 #define ZOMBIE 3
 
-typedef int (*main_function)(char ** argv, uint64_t argc);
+typedef int ( *main_function ) ( char ** argv, uint64_t argc );
 
 
 #endif

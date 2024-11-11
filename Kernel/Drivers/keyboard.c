@@ -27,32 +27,34 @@ static void f1key ( void )
 	reg_shot_flag = 1;
 }
 
-void set_keyboard_blocked_null(){
+void set_keyboard_blocked_null()
+{
 	blocked = NULL;
 }
-PCB * get_keyboard_blocked(){
+PCB * get_keyboard_blocked()
+{
 	return blocked;
 }
 
-int64_t stdin_read (uint8_t * buff, uint64_t amount )
+int64_t stdin_read ( uint8_t * buff, uint64_t amount )
 {
-	if(blocked != NULL){	// a process is already waiting to get a key...
+	if ( blocked != NULL ) {	// a process is already waiting to get a key...
 		return -1;
 	}
 
 	uint64_t i = 0;
-	
-	if(!buffer_has_next()){
+
+	if ( !buffer_has_next() ) {
 		blocked = get_running();
 		block_current();
 	}
-	
-	while ( i < amount && buffer_has_next() && buffer[buffer_current] != EOF) {
+
+	while ( i < amount && buffer_has_next() && buffer[buffer_current] != EOF ) {
 		buff[i] = get_current();
 		i++;
 	}
 
-	if(buffer[buffer_current] == EOF){
+	if ( buffer[buffer_current] == EOF ) {
 		get_current();
 	}
 	return i;
@@ -72,42 +74,42 @@ static void function_key_handler ( uint64_t code )
 {
 	int64_t i = -1;
 	switch ( code ) {
-		case F1:
-			i = 0;
-			break;
-		case F2:
-			i = 1;
-			break;
-		case F3:
-			i = 2;
-			break;
-		case F4:
-			i = 3;
-			break;
-		case F5:
-			i = 4;
-			break;
-		case F6:
-			i = 5;
-			break;
-		case F7:
-			i = 6;
-			break;
-		case F8:
-			i = 7;
-			break;
-		case F9:
-			i = 8;
-			break;
-		case F10:
-			i = 9;
-			break;
-		case F11:
-			i = 10;
-			break;
-		case F12:
-			i = 11;
-			break;
+	case F1:
+		i = 0;
+		break;
+	case F2:
+		i = 1;
+		break;
+	case F3:
+		i = 2;
+		break;
+	case F4:
+		i = 3;
+		break;
+	case F5:
+		i = 4;
+		break;
+	case F6:
+		i = 5;
+		break;
+	case F7:
+		i = 6;
+		break;
+	case F8:
+		i = 7;
+		break;
+	case F9:
+		i = 8;
+		break;
+	case F10:
+		i = 9;
+		break;
+	case F11:
+		i = 10;
+		break;
+	case F12:
+		i = 11;
+		break;
 	}
 	if ( i != -1 && function_key_fun_array[i] != 0 ) {
 		function_key_fun_array[i]();
@@ -200,31 +202,31 @@ void keyboard_handler()
 	}
 
 	function_key_handler ( code );
-	
-	if(!is_special_key(code) && special_key_pressed(LEFT_CONTROL)){
-		if(code == 'D' || code == 'd'){
+
+	if ( !is_special_key ( code ) && special_key_pressed ( LEFT_CONTROL ) ) {
+		if ( code == 'D' || code == 'd' ) {
 			code = EOF;
-		}else if(code == 'c' || code == 'C'){
+		} else if ( code == 'c' || code == 'C' ) {
 			ctrl_c_handler();
 			return;
 		}
 	}
-	if(is_special_key(code) || code > LAST_ASCII){
+	if ( is_special_key ( code ) || code > LAST_ASCII ) {
 		return;
 	}
 
 	buffer[buffer_dim] = code;
 	if ( buffer_dim < BUFFER_SIZE ) {
 		buffer_dim++;
-	} else if (buffer_current == buffer_dim){
+	} else if ( buffer_current == buffer_dim ) {
 		buffer[0] = code;
 		buffer_dim = 1;
 		buffer_current = 0;
-	}else{
+	} else {
 		return;
 	}
-	if(blocked != NULL){
-		ready(blocked);
+	if ( blocked != NULL ) {
+		ready ( blocked );
 		blocked = NULL;
 	}
 

@@ -11,9 +11,9 @@
 typedef struct memory_manager_cdt * memory_manager_adt;
 
 memory_manager_adt my_mm_init ( void * p );
-void * my_malloc ( uint64_t size , struct memory_manager_cdt * mem);
-void my_free ( void * p , memory_manager_adt adt);
-int64_t my_mem_info( memory_info * info , memory_manager_adt adt);
+void * my_malloc ( uint64_t size, struct memory_manager_cdt * mem );
+void my_free ( void * p, memory_manager_adt adt );
+int64_t my_mem_info ( memory_info * info, memory_manager_adt adt );
 
 
 

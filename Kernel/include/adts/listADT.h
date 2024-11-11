@@ -19,21 +19,21 @@ typedef PCB * elem_type_ptr;
 */
 
 
-typedef int (*t_compare)(elem_type_ptr e1, elem_type_ptr e2);
+typedef int ( *t_compare ) ( elem_type_ptr e1, elem_type_ptr e2 );
 
-list_adt new_list(t_compare cmp);
+list_adt new_list ( t_compare cmp );
 
-void free_list(list_adt list);
+void free_list ( list_adt list );
 
-int add_list(list_adt list, elem_type_ptr elem);
+int add_list ( list_adt list, elem_type_ptr elem );
 
-int delete_list(list_adt list, elem_type_ptr elem);
+int delete_list ( list_adt list, elem_type_ptr elem );
 
-int size_list(const list_adt list);
+int size_list ( const list_adt list );
 
-int is_empty_list(const list_adt list);
+int is_empty_list ( const list_adt list );
 
-elem_type_ptr next(list_adt list);
+elem_type_ptr next ( list_adt list );
 
 
 
