@@ -13,13 +13,12 @@
 #define TREE_BIT_MAP_SIZE (((MAX_MEM_SIZE / MIN_BLOCK_SIZE)) * 2)
 
 
-int next_power_of_2 ( int n );
-int get_index_level ( int index );
-int get_size_level ( int size );
-int get_block_from_index ( int index );
-
-void my_free_idx ( int index, int * flag, int n, memory_manager_adt mem );
-void *my_alloc ( int index, int level, memory_manager_adt mem );
+static int next_power_of_2 ( int n );
+static int get_index_level ( int index );
+static int get_size_level ( int size );
+static int get_block_from_index ( int index );
+static void my_free_idx ( int index, int * flag, int n, memory_manager_adt mem );
+static void *my_alloc ( int index, int level, memory_manager_adt mem );
 
 
 typedef struct {
@@ -55,7 +54,43 @@ memory_manager_adt my_mm_init ( void *p )
 	return ans;
 }
 
-void *my_alloc ( int index, int level, memory_manager_adt mem )
+
+
+void * my_malloc ( uint64_t size,  memory_manager_adt mem )
+{
+	memory_manager_cdt * aux = ( memory_manager_cdt * ) mem;
+	if( aux == NULL ){
+		return NULL;
+	}
+	int npo2 = next_power_of_2 ( size );
+	int real_size = npo2 >= MIN_BLOCK_SIZE ? npo2 : MIN_BLOCK_SIZE;
+	int level = get_size_level ( real_size );
+
+	void * ptr = my_alloc ( 0, level, mem );
+	if ( ptr != NULL ) {
+		aux->free_mem -= real_size;
+	}
+
+	return ptr;
+}
+
+void my_free ( void * p, memory_manager_adt mem )
+{
+	memory_manager_cdt * aux = ( memory_manager_cdt * ) mem;
+	if( aux == NULL ){
+		return;
+	}
+	if ( ( p - aux->start ) % MIN_BLOCK_SIZE != 0 ) {
+		return;
+	}
+
+	int index = ( ( p - aux->start ) / MIN_BLOCK_SIZE ) + MAX_MEM_SIZE / MIN_BLOCK_SIZE - 1; // we aux->start with the block of maximum granularity
+	int flag = 0;
+	int n = 1;
+	my_free_idx ( index, &flag, n, mem );
+}
+
+static void *my_alloc ( int index, int level, memory_manager_adt mem )
 {
 	memory_manager_cdt * aux = ( memory_manager_cdt * ) mem;
 	if ( aux == NULL ) {
@@ -84,24 +119,12 @@ void *my_alloc ( int index, int level, memory_manager_adt mem )
 	return ptr;
 }
 
-void * my_malloc ( uint64_t size,  memory_manager_adt mem )
+static void my_free_idx ( int index, int * flag, int n, memory_manager_adt mem )
 {
 	memory_manager_cdt * aux = ( memory_manager_cdt * ) mem;
-	int npo2 = next_power_of_2 ( size );
-	int real_size = npo2 >= MIN_BLOCK_SIZE ? npo2 : MIN_BLOCK_SIZE;
-	int level = get_size_level ( real_size );
-
-	void * ptr = my_alloc ( 0, level, mem );
-	if ( ptr != NULL ) {
-		aux->free_mem -= real_size;
+	if(aux == NULL){
+		return;
 	}
-
-	return ptr;
-}
-
-void my_free_idx ( int index, int * flag, int n, memory_manager_adt mem )
-{
-	memory_manager_cdt * aux = ( memory_manager_cdt * ) mem;
 	if ( index == 0 ) {
 		aux->tree_bitmap[index] = 0;
 		return;
@@ -118,20 +141,8 @@ void my_free_idx ( int index, int * flag, int n, memory_manager_adt mem )
 	my_free_idx ( GET_PARENT ( index ), flag, n * 2, mem );
 }
 
-void my_free ( void * p, memory_manager_adt mem )
-{
-	memory_manager_cdt * aux = ( memory_manager_cdt * ) mem;
-	if ( ( p - aux->start ) % MIN_BLOCK_SIZE != 0 ) {
-		return;
-	}
 
-	int index = ( ( p - aux->start ) / MIN_BLOCK_SIZE ) + MAX_MEM_SIZE / MIN_BLOCK_SIZE - 1; // we aux->start with the block of maximum granularity
-	int flag = 0;
-	int n = 1;
-	my_free_idx ( index, &flag, n, mem );
-}
-
-int next_power_of_2 ( int n )
+static int next_power_of_2 ( int n )
 {
 	int count = 0;
 	if ( n && ! ( n & ( n - 1 ) ) )
@@ -143,7 +154,7 @@ int next_power_of_2 ( int n )
 	return 1 << count;
 }
 
-int get_index_level ( int index )
+static int get_index_level ( int index )
 {
 	int level = 0;
 	for ( int acum = 0; index > acum; level++ ) {
@@ -152,7 +163,7 @@ int get_index_level ( int index )
 	return level;
 }
 
-int get_size_level ( int size )
+static int get_size_level ( int size )
 {
 	int level = 0;
 	for ( ; 2 * size - 1 < MAX_MEM_SIZE; level++ ) {
@@ -161,7 +172,7 @@ int get_size_level ( int size )
 	return level;
 }
 
-int get_block_from_index ( int index )
+static int get_block_from_index ( int index )
 {
 	int level = get_index_level ( index );
 	return ( index + 1 - ( 1 << level ) ) * ( ( MAX_MEM_SIZE / MIN_BLOCK_SIZE ) / ( 1 << level ) );
