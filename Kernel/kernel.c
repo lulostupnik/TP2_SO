@@ -7,18 +7,11 @@ extern uint8_t data;
 extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
-
-
 static const uint64_t PageSize = 0x1000;
-
 static void * const shellCodeModuleAddress = ( void * ) 0x400000;
 static void * const shellDataModuleAddress = ( void * ) 0x500000;
-
 static void * const heap = ( void * ) 0x600000;
-
 static memory_manager_adt kernel_mem, userland_mem;
-
-
 typedef int ( *EntryPoint ) ();
 
 
