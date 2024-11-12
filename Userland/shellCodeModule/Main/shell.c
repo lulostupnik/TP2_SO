@@ -315,6 +315,7 @@ static void kill_pid ( char ** argv, uint64_t argc )
 
 	if ( libc_kill ( pid ) < 0 ) {
 		libc_fprintf ( STDERR, "Error: Could not kill process %d\n", pid );
+		return;
 	}
 	libc_printf("Process with pid: %d killed\n", pid);
 
