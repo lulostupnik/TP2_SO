@@ -8,9 +8,18 @@ extern uint8_t bss;
 extern uint8_t endOfKernelBinary;
 extern uint8_t endOfKernel;
 static const uint64_t PageSize = 0x1000;
-static void * const shellCodeModuleAddress = ( void * ) 0x400000;
-static void * const shellDataModuleAddress = ( void * ) 0x500000;
-static void * const heap = ( void * ) 0x600000;
+
+
+
+const uint64_t shell_code_module_addr_int = 0x400000;
+const uint64_t shell_data_module_addr_int = 0x500000;
+const uint64_t heap_addr_int = 0x600000;
+
+static void * const shell_code_module_address = (void *) * ( &shell_code_module_addr_int );
+static void * const shell_data_module_address = (void *) * ( &shell_data_module_addr_int );
+static void * const heap = (void *) * ( &heap_addr_int );
+
+
 static memory_manager_adt kernel_mem, userland_mem;
 typedef int ( *EntryPoint ) ();
 
@@ -32,8 +41,8 @@ void * get_stack_base()
 void * initializeKernelBinary()
 {
 	void * moduleAddresses[] = {
-		shellCodeModuleAddress,
-		shellDataModuleAddress
+		shell_code_module_address,
+		shell_data_module_address
 	};
 	load_modules ( &endOfKernelBinary, moduleAddresses );
 	clearBSS ( &bss, &endOfKernel - &bss );
@@ -67,7 +76,7 @@ int main()
 	char * argv_shell[] = {"sh"};
 	fd_t idle_fds[3] = {-1, -1, -1};
 	fd_t shell_fds[3] = {STDOUT, STDERR, STDIN};
-	initialize_scheduler ( new_process ( ( main_function ) shellCodeModuleAddress, HIGH, 0, argv_shell, 1, shell_fds ), new_process ( ( main_function ) idle_process, LOW, 0, argv_idle, 1, idle_fds ) );
+	initialize_scheduler ( new_process ( ( main_function ) shell_code_module_address, HIGH, 0, argv_shell, 1, shell_fds ), new_process ( ( main_function ) idle_process, LOW, 0, argv_idle, 1, idle_fds ) );
 	pipe_init();
 	init_timer_handler();
 	timer_tick();
